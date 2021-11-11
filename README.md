@@ -1,5 +1,4 @@
-[![Master Workflow](https://github.com/PHT-Medic/local-tool/main/badge.svg)](https://github.com/PHT-Medic/local-tool)
-
+[![main](https://github.com/PHT-Medic/local-tool/actions/workflows/main.yml/badge.svg)](https://github.com/PHT-Medic/local-tool/actions/workflows/main.yml)
 
 # Local Tool 🗃
 This repository contains the Local-Tool of the Personal Health Train.

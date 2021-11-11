@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2021.
+ * Author Peter Placzek (tada5hi)
+ * For the full copyright and license information,
+ * view the LICENSE file that was distributed with this source code.
+ */
+
 /* eslint-disable */
 import { Menu, MenuItem, app } from 'electron'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
@@ -22,7 +29,7 @@ app.on('ready', () => {
   menu.append(refreshButton)
   Menu.setApplicationMenu(menu)
 
-  installExtension(VUEJS_DEVTOOLS)
+  installExtension(VUEJS_DEVTOOLS).then(r => r)
 })
 
 

@@ -1,19 +1,40 @@
-<template>
-  <div>
-    <app-header />
-    <nuxt />
-  </div>
-</template>
-
+<!--
+  - Copyright (c) 2021-2021.
+  - Author Peter Placzek (tada5hi)
+  - For the full copyright and license information,
+  - view the LICENSE file that was distributed with this source code.
+  -->
 <script>
-import appHeader from '@/components/header'
+import pageHeader from './header';
+import pageSidebar from './sidebar';
+import pageFooter from './footer';
+
 export default {
-  components: { appHeader }
+    name: 'App',
+    // eslint-disable-next-line vue/no-unused-components
+    components: { pageFooter, pageSidebar, pageHeader },
+    computed: {
+
+    }
 }
 </script>
 
+<template>
+    <div id="app">
+        <page-header />
+        <div class="page-wrapper">
+            <page-sidebar />
+            <div class="page-content">
+                <nuxt />
+            </div>
+        </div>
+        <page-footer />
+    </div>
+</template>
 <style>
-body {
-  margin: 0 !important;
+#__nuxt,
+#__layout,
+#app {
+    height: 100%;
 }
 </style>

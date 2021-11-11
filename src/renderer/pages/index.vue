@@ -1,91 +1,59 @@
-<template>
-  <div class="e-nuxt-container">
-    <div class="e-nuxt-content">
-      <div class="e-nuxt-logo">
-        <img style="max-width: 100%;" src="~assets/electron-nuxt.png">
-      </div>
-      <div class="e-nuxt-system-info">
-        <system-information />
-      </div>
-    </div>
-    <div class="e-nuxt-links">
-      <div class="e-nuxt-button" @click="openURL('https://github.com/michalzaq12/electron-nuxt')">
-        Github
-      </div>
-      <div class="e-nuxt-button" @click="openURL('https://nuxtjs.org/guide')">
-        Nuxt.js
-      </div>
-      <div class="e-nuxt-button" @click="openURL('https://electronjs.org/docs')">
-        Electron.js
-      </div>
-    </div>
-  </div>
-</template>
-
+<!--
+  - Copyright (c) 2021-2021.
+  - Author Peter Placzek (tada5hi)
+  - For the full copyright and license information,
+  - view the LICENSE file that was distributed with this source code.
+  -->
 <script>
-import { remote } from 'electron'
-import SystemInformation from '@/components/SystemInformation.vue'
+import { mapGetters } from 'vuex'
+import {Layout, LayoutNavigationID} from "../modules/layout/contants";
+import MedicineLab from "../components/svg/MedicineLab";
+import WorldSvg from "../components/svg/WorldSvg";
 
 export default {
-  components: {
-    SystemInformation
-  },
-  data () {
-    return {
-      externalContent: ''
+    components: {WorldSvg, MedicineLab},
+    meta: {
+        [Layout.NAVIGATION_ID_KEY]: LayoutNavigationID.DEFAULT
+    },
+    computed: {
+        ...mapGetters('auth', [
+            'loggedIn',
+            'user'
+        ])
     }
-  },
-  methods: {
-    openURL (url) {
-      remote.shell.openExternal(url)
-    }
-  }
 }
 </script>
+<template>
+    <div class="">
+        <h1 class="title no-border mb-5 text-center">
+            PHT <span class="sub-title">Discover the PHT today!</span>
+        </h1>
 
-<style>
-.e-nuxt-container {
-  min-height: calc(100vh - 50px);
-  background: linear-gradient(to right, #ece9e6, #ffffff);
-  font-family: Helvetica, sans-serif;
-}
+        <div class="row">
+            <div class="col-lg-6 col-12">
+                <world-svg width="100%" />
+                <div class="text-center">
+                    <p>The DIFUTURE implementation of the <strong>Personal Health Train (PHT)</strong> from Tübingen University as part of the PHT implementation network.</p>
+                </div>
+            </div>
+            <div class="col-lg-6 col-12">
+                <h6>Architecture</h6>
 
-.e-nuxt-content {
-  display: flex;
-  justify-content: space-around;
-  padding-top: 100px;
-  align-items: flex-start;
-  flex-wrap: wrap;
-}
-
-.e-nuxt-logo{
-  width: 400px;
-}
-
-.e-nuxt-system-info {
-  padding: 20px;
-  border-top: 1px solid #397c6d;
-  border-bottom: 1px solid #397c6d;
-}
-
-.e-nuxt-links {
-  padding: 100px 0;
-  display: flex;
-  justify-content: center;
-}
-
-.e-nuxt-button {
-  color: #364758;
-  padding: 5px 20px;
-  border: 1px solid #397c6d;
-  margin: 0 20px;
-  border-radius: 15px;
-  font-size: 1rem;
-}
-
-.e-nuxt-button:hover{
-  cursor: pointer;
-  color: white;
-  background-color: #397c6d;
-}
-</style>
+                <div>
+                    The Tübingen implementation of the PHT has several central services which are used to submit, control and execute trains.
+                    Our current implementation relies on the manual acceptance of each train before it can be executed at a hospital.
+                    Details regarding our implementation are described below.<br />
+                    <br />
+                    &bull; A manual review step of each executed train<br />
+                    &bull;  Use container technologies to adapt rapidly on the analytical requirements<br />
+                    &bull; A central architecture to submit and distribute trains to each station<br />
+                    <br />
+                    Code available at: <a href="https://github.com/PHT-Medic" target="_blank">github.com</a><br />
+                    Additional Information at: <a href="https://personalhealthtrain.de" target="_blank">personalhealthtrain.de</a>
+                </div>
+                <div class="text-center">
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

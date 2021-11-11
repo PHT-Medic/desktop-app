@@ -11,6 +11,8 @@
             You first have to load your private and public key or generate them...
         </div>
 
+        <alert-message :message="message" />
+
         <div>
             <div class="form-group">
                 <label>Passphrase</label>
@@ -37,32 +39,44 @@
 </template>
 <script>
 import {createSign, generateKeyPairSync} from 'crypto';
+import AlertMessage from "../../components/alert/AlertMessage";
 
 export default {
+    components: {AlertMessage},
     data() {
         return {
             hash: '',
             passphrase: '',
-            signature: ''
+            signature: '',
+
+            message: null,
         }
     },
     methods: {
         async sign() {
             if(!this.isHashValid || !this.privateKey) return;
-            
-            const sign = createSign('SHA512');
-            sign.update(this.hash);
 
-            const { privateKey, publicKey } = generateKeyPairSync('rsa', {
-                modulusLength: 2048,
-            });
-            
-            const signature = sign.sign({
-                key: this.privateKey,
-                passphrase: this.passphrase
-            });
+            try {
+                const sign = createSign('SHA512');
+                sign.update(this.hash);
 
-            this.signature = signature.toString('hex');
+                const signature = sign.sign({
+                    key: this.privateKey,
+                    passphrase: this.passphrase
+                });
+
+                this.signature = signature.toString('hex');
+
+                this.message = {
+                    isError: false,
+                    data: 'The signature was successfully generated.'
+                }
+            } catch (e) {
+                this.message = {
+                    isError: true,
+                    data: 'The passphrase was not valid.'
+                }
+            }
         }
     },
     computed: {
@@ -70,7 +84,7 @@ export default {
             return !!this.hash && this.hash.length !== 0;
         },
         privateKey() {
-            return this.$store.getters['secret/rsaPrivateKey'];
+            return this.$store.getters['secret/defaultPrivateKey'];
         }
     }
 }

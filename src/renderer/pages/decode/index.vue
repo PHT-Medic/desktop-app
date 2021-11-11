@@ -73,14 +73,14 @@ export default {
     },
     computed: {
         directoryPath() {
-            return this.$store.getters['secret/rsaPath'];
+            return this.$store.getters['secret/defaultPath'];
         },
         isDirectoryPathDefined() {
             return typeof this.directoryPath !== 'undefined';
         },
 
         privateKey() {
-            return this.$store.getters['secret/rsaPrivateKey'];
+            return this.$store.getters['secret/defaultPrivateKey'];
         },
 
         fileNames() {

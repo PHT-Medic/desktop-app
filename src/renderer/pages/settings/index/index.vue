@@ -25,12 +25,6 @@
 </script>
 <template>
     <div>
-        <h6 class="title">
-            Default
-        </h6>
-
-        <hr />
-
         <key-pair-picker :type="'default'" />
     </div>
 </template>

@@ -17,7 +17,7 @@ module.exports = {
     ssr: false,
     target: 'static',
     head: {
-        title: 'PHT - Local Tool',
+        title: 'PHT - LocalTool',
         meta: [
             { charset: 'utf-8' }
         ]

@@ -9,6 +9,7 @@ import path from 'path';
 import * as fs from 'fs';
 import {generateKeyPairSync} from 'crypto';
 import {ipcRenderer} from 'electron';
+import {maxLength, minLength, required} from "vuelidate/lib/validators";
 
 import AlertMessage from "./alert/AlertMessage";
 import {KeyPicker} from "../modules/key-picker/type";
@@ -42,8 +43,9 @@ export default {
                     this.$store.dispatch('secret/setDefaultPath', arg.filePaths[0]);
                     break;
             }
-
         };
+
+        console.log(this.$v);
 
         ipcRenderer.on('select-dirs-result', this.listener);
     },
@@ -133,6 +135,13 @@ export default {
         }
     },
     computed: {
+        isPassphraseDefined() {
+            return !!this.form.passphrase && this.form.passphrase.length !== 0
+        },
+        isPassphraseRequired() {
+            return this.type === KeyPicker.DEFAULT;
+        },
+
         directoryPath() {
             switch (this.type) {
                 case KeyPicker.HOMOMORPHIC_ENCRYPTION:
@@ -200,22 +209,39 @@ export default {
 <template>
     <div class="row">
         <div class="col">
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-sm" @click.prevent="selectDir">
-                    <i class="fa fa-file-archive"></i> Choose path
-                </button>
-            </div>
 
-            <div class="form-group">
+
+            <div class="form-group" :class="{ 'form-group-error':  !isDirectoryPathDefined }">
                 <label>Directory Path</label>
                 <input v-model="directoryPath" type="text" name="name" class="form-control" :disabled="true" placeholder="...">
+
+                <div v-if="!isDirectoryPathDefined" class="form-group-hint group-required">
+                    Select a directory path.
+                </div>
+            </div>
+
+            <div class="d-flex flex-row justify-space-between mb-2">
+                <div>
+                    <button type="submit" class="btn btn-dark btn-sm" @click.prevent="selectDir">
+                        <i class="fa fa-file"></i> Select
+                    </button>
+                </div>
+                <div class="ml-auto">
+                    <button type="submit" class="btn btn-primary btn-sm" @click.prevent="load" :disabled="!isDirectoryPathDefined">
+                        <i class="fa fa-sync"></i> Load
+                    </button>
+                </div>
             </div>
 
             <hr />
 
-            <div class="form-group">
-                <label>Passphrase (optional)</label>
+            <div v-if="isPassphraseRequired" class="form-group" :class="{ 'form-group-error':  !isPassphraseDefined }">
+                <label>Passphrase</label>
                 <input v-model="form.passphrase" type="text" name="name" class="form-control" placeholder="...">
+
+                <div v-if="isPassphraseRequired && !isPassphraseDefined" class="form-group-hint group-required">
+                    Enter a passphrase.
+                </div>
             </div>
 
             <div class="form-group">
@@ -226,23 +252,25 @@ export default {
                 <label>PublicKey file name (optional)</label>
                 <input v-model="form.publicKeyFileName" type="text" name="name" class="form-control" :placeholder="publicKeyDefaultFileName">
             </div>
-        </div>
-        <div class="col">
-            <div class="d-flex flex-row justify-space-between">
-                <div>
-                    <button type="submit" class="btn btn-primary btn-sm" @click.prevent="load" :disabled="!isDirectoryPathDefined">
-                        <i class="fa fa-file"></i> Load
-                    </button>
-                </div>
-                <div class="ml-auto">
-                    <button type="submit" class="btn btn-sm" :class="{'btn-dark': !privateKey && !publicKey, 'btn-danger': privateKey || publicKey}" @click.prevent="generate" :disabled="!isDirectoryPathDefined">
-                        <i class="fa fa-wrench"></i> Generate
-                    </button>
-                </div>
-            </div>
 
             <hr />
 
+            <button
+                type="submit"
+                class="btn btn-sm"
+                :class="{
+                            'btn-dark': !privateKey && !publicKey,
+                            'btn-danger': privateKey || publicKey
+                        }"
+                @click.prevent="generate"
+                :disabled="!isDirectoryPathDefined || (isPassphraseRequired && !isPassphraseDefined)"
+            >
+                <i class="fa fa-wrench"></i> Generate
+            </button>
+
+
+        </div>
+        <div class="col">
             <div class="form-group">
                 <label>PrivateKey</label>
                 <textarea class="form-control" v-model="privateKey" rows="8" placeholder="..."></textarea>

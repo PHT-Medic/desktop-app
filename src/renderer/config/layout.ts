@@ -30,21 +30,21 @@ export const LayoutSidebars : LayoutSidebarGroup = {
             rootLink: true
         },
         {
-            name: 'Decode',
-            type: 'link',
-            url: '/decode',
-            icon: 'fas fa-file'
-        },
-        {
             name: 'Hash',
             type: 'link',
             url: '/hash',
-            icon: 'fas fa-hashtag'
+            icon: 'fas fa-file-alt'
         },
         {
-            name: 'Homomorphic Encryption',
+            name: 'Result(s)',
             type: 'link',
-            url: '/homomorphic-encryption',
+            url: '/results',
+            icon: 'fas fa-file-download'
+        },
+        {
+            name: 'Paillier Number',
+            type: 'link',
+            url: '/paillier-number',
             icon: 'fa fa-key'
         },
         {

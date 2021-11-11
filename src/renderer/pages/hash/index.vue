@@ -7,6 +7,10 @@
 
 <template>
     <div>
+        <h1 class="title no-border mb-2">
+            <i class="fas fa-file-alt"></i> Hash
+        </h1>
+
         <div class="alert alert-danger alert-sm" v-if="!privateKey">
             You first have to load your private and public key or generate them...<br />
             <nuxt-link
@@ -23,25 +27,35 @@
         <hr />
 
         <div>
-            <div class="form-group">
+            <div class="form-group" :class="{ 'form-group-error': $v.form.passphrase.$error }">
                 <label>Passphrase</label>
-                <input type="text" class="form-control" v-model="passphrase"  placeholder="..." />
+                <input v-model="$v.form.passphrase.$model" type="text" name="name" class="form-control" placeholder="...">
+
+                <div v-if="!$v.form.passphrase.required && !$v.form.passphrase.$model" class="form-group-hint group-required">
+                    Please enter a passphrase.
+                </div>
+                <div v-if="!$v.form.passphrase.minLength" class="form-group-hint group-required">
+                    The length of the passphrase must be less than <strong>{{ $v.form.passphrase.$params.minLength.min }}</strong> characters.
+                </div>
+                <div v-if="!$v.form.passphrase.maxLength" class="form-group-hint group-required">
+                    The length of the passphrase must be greater than <strong>{{ $v.form.passphrase.$params.maxLength.max }}</strong> characters.
+                </div>
             </div>
 
             <div class="form-group">
                 <label>Hash</label>
-                <textarea class="form-control" v-model="hash" rows="6" placeholder="..."></textarea>
+                <textarea class="form-control" v-model="form.hash" rows="6" placeholder="..."></textarea>
             </div>
 
-            <button :disabled="!privateKey" type="submit" class="btn btn-dark btn-sm"  @click.prevent="sign">
-                <i class="fa fa-sign"></i> Sign
+            <button :disabled="!privateKey || $v.form.$invalid" type="submit" class="btn btn-dark btn-sm"  @click.prevent="sign">
+                <i class="fa fa-marker"></i> Sign
             </button>
 
             <hr />
 
             <div class="form-group">
                 <label>Signature (readonly)</label>
-                <textarea class="form-control" v-model="signature" rows="6" placeholder="..." :disabled="true"></textarea>
+                <textarea class="form-control" v-model="form.signature" rows="6" placeholder="..." :disabled="true"></textarea>
             </div>
         </div>
     </div>
@@ -49,16 +63,28 @@
 <script>
 import {createSign} from 'crypto';
 import AlertMessage from "../../components/alert/AlertMessage";
+import {maxLength, minLength, required} from "vuelidate/lib/validators";
 
 export default {
     components: {AlertMessage},
     data() {
         return {
-            hash: '',
-            passphrase: '',
-            signature: '',
+            form: {
+                hash: '',
+                passphrase: '',
+                signature: '',
+            },
 
             message: null,
+        }
+    },
+    validations: {
+        form: {
+            passphrase: {
+                required,
+                minLength: minLength(3),
+                maxLength: maxLength(256)
+            }
         }
     },
     methods: {
@@ -67,14 +93,14 @@ export default {
 
             try {
                 const sign = createSign('SHA512');
-                sign.update(this.hash);
+                sign.update(this.form.hash);
 
                 const signature = sign.sign({
                     key: this.privateKey,
-                    passphrase: this.passphrase
+                    passphrase: this.form.passphrase
                 });
 
-                this.signature = signature.toString('hex');
+                this.form.signature = signature.toString('hex');
 
                 this.message = {
                     isError: false,
@@ -83,14 +109,14 @@ export default {
             } catch (e) {
                 this.message = {
                     isError: true,
-                    data: 'The passphrase was not valid.'
+                    data: 'The passphrase is not valid.'
                 }
             }
         }
     },
     computed: {
         isHashValid() {
-            return !!this.hash && this.hash.length !== 0;
+            return !!this.form.hash && this.form.hash.length !== 0;
         },
         privateKey() {
             return this.$store.getters['secret/defaultPrivateKey'];

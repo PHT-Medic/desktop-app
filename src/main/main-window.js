@@ -6,14 +6,18 @@
  */
 
 import {ipcMain, dialog} from 'electron';
-import BrowserWinHandler from './BrowserWinHandler'
+import BrowserWinHandler from './browser-win-handler'
 
 const winHandler = new BrowserWinHandler({
-    height: 700,
-    width: 1000
+    height: 768,
+    width: 1024
 })
 
 winHandler.onCreated(_browserWindow => {
+    if(process.env.NODE_ENV !== 'development') {
+        _browserWindow.setMenu(null);
+    }
+
     winHandler.loadPage('/').then(r => r);
 
     ipcMain.on('select-dirs', async (event, arg) => {

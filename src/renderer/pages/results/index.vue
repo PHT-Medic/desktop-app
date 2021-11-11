@@ -7,6 +7,9 @@
 
 <template>
     <div>
+        <h1 class="title no-border mb-2">
+            <i class="fas fa-file-download"></i> Result(s)
+        </h1>
         <div class="alert alert-danger alert-sm" v-if="!privateKey">
             You first have to load your private and public key or generate them...<br />
             <nuxt-link
@@ -94,6 +97,10 @@ export default {
 
         privateKey() {
             return this.$store.getters['secret/defaultPrivateKey'];
+        },
+
+        isPassphraseDefined() {
+            return !!this.passphrase && this.passphrase.length > 0
         },
 
         fileNames() {

@@ -25,12 +25,6 @@ export default {
 </script>
 <template>
     <div>
-        <h6 class="title">
-            Homomorphic Encryption
-        </h6>
-
-        <hr />
-
         <key-pair-picker :type="'homomorphic-encryption'"/>
     </div>
 </template>

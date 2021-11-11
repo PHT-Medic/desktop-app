@@ -38,7 +38,7 @@
     </div>
 </template>
 <script>
-import {createSign, generateKeyPairSync} from 'crypto';
+import {createSign} from 'crypto';
 import AlertMessage from "../../components/alert/AlertMessage";
 
 export default {

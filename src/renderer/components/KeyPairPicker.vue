@@ -157,15 +157,18 @@ export default {
         },
         publicKeyFileName() {
             if(!this.form.publicKeyFileName || this.form.publicKeyFileName.length === 0) {
-                switch (this.type) {
-                    case KeyPicker.HOMOMORPHIC_ENCRYPTION:
-                        return 'public-he.key';
-                    case KeyPicker.DEFAULT:
-                        return 'public.pem';
-                }
+                return this.publicKeyDefaultFileName;
             }
 
             return this.form.publicKeyFileName;
+        },
+        publicKeyDefaultFileName() {
+            switch (this.type) {
+                case KeyPicker.HOMOMORPHIC_ENCRYPTION:
+                    return 'public-he.key';
+                case KeyPicker.DEFAULT:
+                    return 'public.pem';
+            }
         },
 
         privateKey() {
@@ -178,15 +181,18 @@ export default {
         },
         privateKeyFileName() {
             if(!this.form.privateKeyFileName || this.form.privateKeyFileName.length === 0) {
-                switch (this.type) {
-                    case KeyPicker.HOMOMORPHIC_ENCRYPTION:
-                        return 'private-he.key';
-                    case KeyPicker.DEFAULT:
-                        return 'private.pem';
-                }
+                return this.privateKeyDefaultFileName;
             }
 
             return this.form.privateKeyFileName;
+        },
+        privateKeyDefaultFileName() {
+            switch (this.type) {
+                case KeyPicker.HOMOMORPHIC_ENCRYPTION:
+                    return 'private-he.key';
+                case KeyPicker.DEFAULT:
+                    return 'private.pem';
+            }
         }
     }
 }
@@ -214,11 +220,11 @@ export default {
 
             <div class="form-group">
                 <label>PrivateKey file name (optional)</label>
-                <input v-model="form.privateKeyFileName" type="text" name="name" class="form-control" :placeholder="privateKeyFileName">
+                <input v-model="form.privateKeyFileName" type="text" name="name" class="form-control" :placeholder="privateKeyDefaultFileName">
             </div>
             <div class="form-group">
                 <label>PublicKey file name (optional)</label>
-                <input v-model="form.publicKeyFileName" type="text" name="name" class="form-control" :placeholder="publicKeyFileName">
+                <input v-model="form.publicKeyFileName" type="text" name="name" class="form-control" :placeholder="publicKeyDefaultFileName">
             </div>
         </div>
         <div class="col">

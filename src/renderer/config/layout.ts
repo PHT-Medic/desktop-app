@@ -42,6 +42,12 @@ export const LayoutSidebars : LayoutSidebarGroup = {
             icon: 'fas fa-hashtag'
         },
         {
+            name: 'Homomorphic Encryption',
+            type: 'link',
+            url: '/homomorphic-encryption',
+            icon: 'fa fa-key'
+        },
+        {
             name: 'Settings',
             type: 'link',
             url: '/settings',

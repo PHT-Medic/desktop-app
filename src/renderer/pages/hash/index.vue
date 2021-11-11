@@ -8,10 +8,19 @@
 <template>
     <div>
         <div class="alert alert-danger alert-sm" v-if="!privateKey">
-            You first have to load your private and public key or generate them...
+            You first have to load your private and public key or generate them...<br />
+            <nuxt-link
+                type="button"
+                class="btn btn-dark btn-xs"
+                :to="'/settings'"
+            >
+                <i class="fa fa-cog"></i> Settings
+            </nuxt-link>
         </div>
 
         <alert-message :message="message" />
+
+        <hr />
 
         <div>
             <div class="form-group">

@@ -12,30 +12,30 @@ import { ELECTRON_RELAUNCH_CODE } from '../../../.electron-nuxt/config'
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
 
 app.once('browser-window-created', (_, browserWindow) => {
-  browserWindow.webContents.once('did-frame-finish-load', () => {
-    browserWindow.webContents.openDevTools();
-  })
+    browserWindow.webContents.once('did-frame-finish-load', () => {
+        browserWindow.webContents.openDevTools();
+    })
 })
 
 app.on('ready', () => {
-  const menu = Menu.getApplicationMenu()
-  const refreshButton = new MenuItem({
-    label: 'Relaunch electron',
-    accelerator: 'CommandOrControl+E',
-    click: () => {
-      app.exit(ELECTRON_RELAUNCH_CODE)
-    }
-  })
-  menu.append(refreshButton)
-  Menu.setApplicationMenu(menu)
+    const menu = Menu.getApplicationMenu()
+    const refreshButton = new MenuItem({
+        label: 'Relaunch electron',
+        accelerator: 'CommandOrControl+E',
+        click: () => {
+            app.exit(ELECTRON_RELAUNCH_CODE)
+        }
+    })
+    menu.append(refreshButton)
+    Menu.setApplicationMenu(menu)
 
-  installExtension(VUEJS_DEVTOOLS).then(r => r)
+    installExtension(VUEJS_DEVTOOLS).then(r => r)
 })
 
 
 const handleProcessExit = () => {
-  app.exit(0)
-  process.exit(0)
+    app.exit(0)
+    process.exit(0)
 }
 
 process.on('SIGINT', handleProcessExit);

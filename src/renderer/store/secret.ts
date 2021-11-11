@@ -5,7 +5,6 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {SecurityKeyPair}  from '@typescript-auth/server';
 import {ActionTree, GetterTree, MutationTree} from "vuex";
 import {RootState} from "~/store/index";
 
@@ -31,7 +30,7 @@ export const actions : ActionTree<LayoutState, RootState> = {
     setRsaPath({commit}, path: string) {
         commit('setRsaPath', path);
     },
-    setRSAKeyPair({commit}, keyPair: SecurityKeyPair) {
+    setRSAKeyPair({commit}, keyPair: { privateKey: string, publicKey: string }) {
         commit('setRSAKeyPair', keyPair);
     }
 }
@@ -40,7 +39,7 @@ export const mutations : MutationTree<LayoutState> = {
     setRsaPath(state, path: string) {
         state.rsaPath = path;
     },
-    setRSAKeyPair(state, keyPair: SecurityKeyPair) {
+    setRSAKeyPair(state, keyPair: { privateKey: string, publicKey: string }) {
         state.rsaPrivateKey = keyPair.privateKey;
         state.rsaPublicKey = keyPair.publicKey;
     }

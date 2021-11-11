@@ -6,8 +6,6 @@
   -->
 <template>
     <div>
-        <h1 class="title no-border mb-3">Settings <span class="sub-title">manage your settings</span> </h1>
-
         <div class="m-b-20 m-t-10">
             <div class="panel-card">
                 <div class="panel-card-body">

@@ -29,6 +29,10 @@
                             </span>
                         </div>
                     </div>
+
+                    <div v-if="files.length === 0" class="alert alert-sm alert-warning mb-0">
+                        No files selected...
+                    </div>
                 </div>
             </div>
 

@@ -6,7 +6,7 @@
   -->
 <script>
     import AlertMessage from "../../../components/alert/AlertMessage";
-    import RsaSettings from "../../../components/RsaSettings";
+    import KeyPairPicker from "../../../components/KeyPairPicker";
 
     export default {
         meta: {
@@ -18,26 +18,19 @@
             }
         },
         components: {
-            RsaSettings,
+            KeyPairPicker,
             AlertMessage
         }
     }
 </script>
 <template>
     <div>
-        <div class="row">
-            <div class="col-12">
-                <h6 class="title">
-                    General
-                </h6>
+        <h6 class="title">
+            Default
+        </h6>
 
-                <hr />
+        <hr />
 
-                <rsa-settings />
-            </div>
-            <div class="col-6">
-
-            </div>
-        </div>
+        <key-pair-picker :type="'default'" />
     </div>
 </template>

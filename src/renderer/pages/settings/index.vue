@@ -8,6 +8,39 @@
     <div>
         <h1 class="title no-border mb-3">Settings <span class="sub-title">manage your settings</span> </h1>
 
+        <div class="m-b-20 m-t-10">
+            <div class="panel-card">
+                <div class="panel-card-body">
+                    <div class="flex-wrap flex-row d-flex">
+                        <div>
+                            <b-nav pills>
+                                <b-nav-item
+                                    :to="'/admin/realms'"
+                                    exact
+                                    exact-active-class="active"
+                                >
+                                    <i class="fa fa-arrow-left" />
+                                </b-nav-item>
+
+                                <b-nav-item
+                                    v-for="(item,key) in sidebar.items"
+                                    :key="key"
+                                    :disabled="item.active"
+                                    :to="'/settings' + item.urlSuffix"
+                                    exact
+                                    exact-active-class="active"
+                                >
+                                    <i :class="item.icon" />
+                                    {{ item.name }}
+                                </b-nav-item>
+                            </b-nav>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
         <nuxt-child />
     </div>
 </template>
@@ -23,7 +56,8 @@ export default {
             return {
                 sidebar: {
                     items: [
-                        { name: 'General', routeName: 'settings-id', icon: 'fas fa-bars', urlSuffix: '' }
+                        { name: 'Default', icon: 'fas fa-bars', urlSuffix: '' },
+                        { name: 'Homomorphic Encryption',  icon: 'fas fa-key', urlSuffix: '/homomorphic-encryption' }
                     ]
                 }
             }

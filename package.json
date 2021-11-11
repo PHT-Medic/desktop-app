@@ -60,7 +60,7 @@
         "roboto-fontface": "0.10.0",
         "stylus": "0.54.8",
         "stylus-loader": "3.0.2",
-        "typeorm": "^0.2.39",
+        "typeorm": "^0.2.40",
         "vue": "^2.6.12",
         "vue-form-wizard": "^0.8.4",
         "vue-gravatar": "^1.4.1",

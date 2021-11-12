@@ -18,7 +18,8 @@ winHandler.onCreated(_browserWindow => {
         _browserWindow.setMenu(null);
     }
 
-    winHandler.loadPage('/').then(r => r);
+    winHandler.loadPage('/')
+        .then(r => r);
 
     ipcMain.on('select-dirs', async (event, arg) => {
         const result = await dialog.showOpenDialog(_browserWindow, {
@@ -28,12 +29,15 @@ winHandler.onCreated(_browserWindow => {
         event.reply('select-dirs-result', result);
     });
 
-    ipcMain.on('select-files', async (event, arg) => {
+    ipcMain.on('result-file-select', async (event, arg) => {
         const result = await dialog.showOpenDialog(_browserWindow, {
-            properties: ['openFile', 'multiSelections']
+            properties: ['openFile'],
+            filters: [
+                {name: 'PHT-Result', extensions: ['tar']}
+            ]
         });
 
-        event.reply('select-files-result', result);
+        event.reply('result-file-selected', result);
     });
 });
 

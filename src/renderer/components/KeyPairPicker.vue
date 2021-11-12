@@ -45,8 +45,6 @@ export default {
             }
         };
 
-        console.log(this.$v);
-
         ipcRenderer.on('select-dirs-result', this.listener);
     },
     beforeDestroy() {

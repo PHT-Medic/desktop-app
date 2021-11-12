@@ -16,7 +16,7 @@
     <div>
         <div
             v-if="message"
-            :class="{'alert-warning': message.isError, 'alert-info': !message.isError}"
+            :class="{'alert-danger': message.isError, 'alert-info': !message.isError}"
             class="alert alert-sm">
             {{message.data}}
         </div>

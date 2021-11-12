@@ -54,7 +54,7 @@
         "fernet": "^0.4.0",
         "less-loader": "7.0.1",
         "moment": "^2.29.1",
-        "nuxt": "2.15.6",
+        "nuxt": "2.15.8",
         "require-extension-hooks": "0.3.3",
         "require-extension-hooks-babel": "1.0.0",
         "require-extension-hooks-vue": "0.4.2",

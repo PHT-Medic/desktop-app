@@ -56,7 +56,7 @@
         "require-extension-hooks-babel": "1.0.0",
         "require-extension-hooks-vue": "0.4.2",
         "roboto-fontface": "0.10.0",
-        "stylus": "0.54.8",
+        "stylus": "0.55.0",
         "tar": "^6.1.11",
         "stylus-loader": "4.3.3",
         "typeorm": "^0.2.40",

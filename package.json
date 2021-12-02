@@ -60,7 +60,7 @@
         "stylus": "0.55.0",
         "stylus-loader": "4.3.3",
         "tar": "^6.1.11",
-        "typeorm": "^0.2.40",
+        "typeorm": "^0.2.41",
         "vue": "^2.6.12",
         "vue-form-wizard": "^0.8.4",
         "vue-gravatar": "^1.4.1",

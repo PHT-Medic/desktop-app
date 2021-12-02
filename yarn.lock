@@ -2673,6 +2673,18 @@ big.js@^5.2.2:
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
   integrity sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==
 
+bigint-crypto-utils@^3.0.17:
+  version "3.0.21"
+  resolved "https://registry.yarnpkg.com/bigint-crypto-utils/-/bigint-crypto-utils-3.0.21.tgz#cfb5d2edc2b8f5246dbb730b98b208097756fa76"
+  integrity sha512-nJG6IQ5mgAl32V2QgdKpJOQndylgxiTwpKy92riMAPZdBy94jfZ6Z8IORY4y4/p8C9d+7Izd/YMKsxBcVocdFA==
+  dependencies:
+    bigint-mod-arith "^3.0.1"
+
+bigint-mod-arith@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/bigint-mod-arith/-/bigint-mod-arith-3.0.1.tgz#9d78e6840eef7b00e4e4ac46c7c860ba4a230c56"
+  integrity sha512-sEgnLaPHMNvY1Ylb/IxWXA+6anlg283FYSnKWi/odba2mvHSwt2sqSJihrE+mFUkiRrFb0Nxw+XdIwByOi42/w==
+
 binary-extensions@^1.0.0:
   version "1.13.1"
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-1.13.1.tgz#598afe54755b2868a5330d2aff9d4ebb53209b65"
@@ -7580,6 +7592,13 @@ package-json@^6.3.0:
     registry-auth-token "^4.0.0"
     registry-url "^5.0.0"
     semver "^6.2.0"
+
+paillier-bigint@^3.2.5:
+  version "3.2.5"
+  resolved "https://registry.yarnpkg.com/paillier-bigint/-/paillier-bigint-3.2.5.tgz#ec272e07f8ff6b59f67f8ec8bed7de51c94ea71e"
+  integrity sha512-bvp7Jzl3QGpomVuf4JbQgrZJ9PLgJljiEKmnWQ3VCOUxHdGVjvXp7NvqYeCSnzRAtfWfRMbXdCblR/z65Nps/Q==
+  dependencies:
+    bigint-crypto-utils "^3.0.17"
 
 pako@~1.0.2, pako@~1.0.5:
   version "1.0.11"

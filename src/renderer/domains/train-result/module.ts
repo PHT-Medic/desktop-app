@@ -43,16 +43,17 @@ export async function readTrainResult(context: TrainResultReadCompressedContext)
         const content = crypto.privateDecrypt({
             key: context.privateKey,
             passphrase: context.passphrase,
-            padding: crypto.constants.RSA_NO_PADDING
+            padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+            oaepHash: "sha512",
+            oaepLabel: undefined
         }, symBuff);
 
-        symmetricKey = content.toString('base64');
+        symmetricKey = content.toString('utf-8')
     } catch (e) {
         throw new Error('The symmetric key could not be decrypted using the private key.');
     }
 
     try {
-        // todo: not working
         const secret = new fernet.Secret(symmetricKey);
 
         const token = new fernet.Token({

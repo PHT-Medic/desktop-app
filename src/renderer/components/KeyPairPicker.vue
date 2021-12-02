@@ -9,7 +9,7 @@ import path from 'path';
 import * as fs from 'fs';
 import {generateKeyPairSync} from 'crypto';
 import {ipcRenderer} from 'electron';
-import {maxLength, minLength, required} from "vuelidate/lib/validators";
+import * as paillierBigint from 'paillier-bigint'
 
 import AlertMessage from "./alert/AlertMessage";
 import {KeyPicker} from "../modules/key-picker/type";
@@ -95,7 +95,19 @@ export default {
 
             switch (this.type) {
                 case KeyPicker.HOMOMORPHIC_ENCRYPTION:
-                    // todo :)
+                    const { publicKey, privateKey } = await paillierBigint.generateRandomKeys();
+
+                    BigInt.prototype.toJSON = function() { return this.toString()  }
+
+                    keyPair.publicKey = JSON.stringify({
+                        n: publicKey.n,
+                        g: publicKey.g
+                    });
+
+                    keyPair.privateKey = JSON.stringify({
+                        mu: privateKey.mu,
+                        lambda: privateKey.lambda
+                    });
                     break;
                 case KeyPicker.DEFAULT:
                     keyPair = generateKeyPairSync('rsa', {

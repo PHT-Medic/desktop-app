@@ -95,7 +95,7 @@ export default {
 
             switch (this.type) {
                 case KeyPicker.HOMOMORPHIC_ENCRYPTION:
-                    const { publicKey, privateKey } = await paillierBigint.generateRandomKeys();
+                    const { publicKey, privateKey } = await paillierBigint.generateRandomKeys(128);
 
                     BigInt.prototype.toJSON = function() { return this.toString()  }
 

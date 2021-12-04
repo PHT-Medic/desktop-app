@@ -19,7 +19,7 @@
             "peerDependencies": false
         }]
     },
-    "ignorePatterns": ["**/dist/*", "**/*.d.ts", "**/writable/**", "**/.electron-nuxt/*"],
+    "ignorePatterns": ["**/dist/*", "**/*.d.ts", "**/writable/**", "**/.electron-nuxt/*", "src/main/**"],
     "globals": {
         "NodeJS": true
     }

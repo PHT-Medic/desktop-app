@@ -35,7 +35,7 @@ winHandler.onCreated((_browserWindow) => {
     winHandler.loadPage('/')
         .then((r) => r);
 
-    ipcMain.on('dir-select', async (event, arg) => {
+    ipcMain.on('dir-select', async (event) => {
         const result = await dialog.showOpenDialog(_browserWindow, {
             properties: ['openDirectory'],
         });
@@ -43,7 +43,7 @@ winHandler.onCreated((_browserWindow) => {
         event.reply('dir-selected', result);
     });
 
-    ipcMain.on('result-file-select', async (event, arg) => {
+    ipcMain.on('result-file-select', async (event) => {
         const result = await dialog.showOpenDialog(_browserWindow, {
             properties: ['openFile'],
             filters: [

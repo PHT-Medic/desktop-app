@@ -20,7 +20,7 @@ indent_style = space
 indent_size = 4
 
 # https://google.github.io/styleguide/shell.xml#Indentation
-[*.{sh}]
+[*.sh]
 indent_style = space
 indent_size = 4
 

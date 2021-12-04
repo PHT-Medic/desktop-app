@@ -1876,10 +1876,10 @@
     change-case "^4.1.2"
     jsonwebtoken "^8.5.1"
 
-"@typescript-auth/core@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@typescript-auth/core/-/core-1.0.1.tgz#20aa7ae75ff6bda8465f70e8de4127ae91299545"
-  integrity sha512-4GfG0rDR4dYk7dzm049w7w2UvoJrKXJkovFslTz3Le2K5zCzqxw+YZbULxWzLMTerD7BtuvwcpFaYfFrgKeNSQ==
+"@typescript-auth/core@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@typescript-auth/core/-/core-1.0.2.tgz#51045527b4a9437145e46a26e6e03bb084d8c893"
+  integrity sha512-sZ94mqarzx95pDzIUXX6T5sqHJGOwU0O0CKppFDUfXB490ScEbhHgENDDVOdyPPW3jC6Y4yy6r5ZcovqpmYz3w==
   dependencies:
     "@casl/ability" "^5.3.1"
     axios "^0.24.0"

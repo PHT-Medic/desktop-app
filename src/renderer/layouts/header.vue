@@ -19,10 +19,22 @@ export default {
 <template>
     <div>
         <header class="page-header fixed-top">
-            <div class="header-title ml-3">
+            <div class="header-title">
+                <div class="toggle-box">
+                    <button
+                        v-b-toggle="'page-navbar'"
+                        type="button"
+                        class="toggle-trigger"
+                    >
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar" />
+                        <span class="icon-bar" />
+                        <span class="icon-bar" />
+                    </button>
+                </div>
                 <div class="logo">
                     <span>P</span>H<span>T</span>
-                    <span class="info-text">LocalTool</span>
+                    <span class="info-text">Local-Tool</span>
                 </div>
             </div>
             <nav class="page-navbar navbar-expand-md">
@@ -34,6 +46,36 @@ export default {
                         class="navbar-nav"
                         :tier="0"
                     />
+                    <ul
+                        v-if="loggedIn && user"
+                        class="navbar-nav nav-items navbar-gadgets"
+                    >
+                        <li class="nav-item">
+                            <nuxt-link
+                                class="nav-link user-link"
+                                :to="'/users/'+user.id"
+                            >
+                                <v-gravatar :email="user.email ? user.email : ''" />
+                                <span>{{ user.display_name ? user.display_name : user.name }}</span>
+                            </nuxt-link>
+                        </li>
+                        <li class="nav-item">
+                            <nuxt-link
+                                :to="'/settings'"
+                                class="nav-link"
+                            >
+                                <i class="fa fa-cog" />
+                            </nuxt-link>
+                        </li>
+                        <li class="nav-item">
+                            <nuxt-link
+                                :to="'/logout'"
+                                class="nav-link"
+                            >
+                                <i class="fa fa-power-off" />
+                            </nuxt-link>
+                        </li>
+                    </ul>
                 </b-collapse>
             </nav>
         </header>

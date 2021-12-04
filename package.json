@@ -44,6 +44,7 @@
         "babel-plugin-webpack-alias-7": "0.1.1",
         "bootstrap-vue": "^2.18.1",
         "browser-env": "3.3.0",
+        "cookie": "^0.4.1",
         "cross-env": "7.0.3",
         "deepmerge": "4.2.2",
         "electron": "16.0.1",
@@ -73,8 +74,5 @@
         "vuex": "^3.6.2",
         "webpack": "4.46.0",
         "webpack-node-externals": "3.0.0"
-    },
-    "dependencies": {
-        "cookie": "^0.4.1"
     }
 }

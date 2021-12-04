@@ -16,22 +16,13 @@ export default {
 };
 </script>
 <template>
-    <div class="">
-        <h1 class="title no-border mb-5 text-center">
+    <div class="container">
+        <h1 class="title no-border mb-2 text-center">
             PHT <span class="sub-title">Discover the PHT today!</span>
         </h1>
 
-        <div class="row">
-            <div class="col-lg-6 col-12">
-                <world-svg width="100%" />
-                <div class="text-center">
-                    <p>
-                        The DIFUTURE implementation of the <strong>Personal Health Train (PHT)</strong>
-                        from Tübingen University as part of the PHT implementation network.
-                    </p>
-                </div>
-            </div>
-            <div class="col-lg-6 col-12">
+        <div class="d-flex flex-column">
+            <div class="">
                 <h6>Architecture</h6>
 
                 <div>
@@ -52,7 +43,17 @@ export default {
                         target="_blank"
                     >personalhealthtrain.de</a>
                 </div>
-                <div class="text-center" />
+            </div>
+            <div class="">
+                <world-svg
+                    width="100%"
+                    height="100%"
+                />
+
+                <div class="text-center">
+                    The DIFUTURE implementation of the <strong>Personal Health Train (PHT)</strong>
+                    from Tübingen University as part of the PHT implementation network.
+                </div>
             </div>
         </div>
     </div>

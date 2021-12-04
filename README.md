@@ -3,6 +3,8 @@
 # Local Tool 🗃
 This repository contains the Local-Tool of the Personal Health Train.
 
+![](assets/ui.jpg)
+
 **Table of Contents**
 
 - [Installation](#installation)

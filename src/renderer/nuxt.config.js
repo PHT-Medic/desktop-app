@@ -5,11 +5,15 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
+const { hasOwnProperty } = require('@personalhealthtrain/ui-common');
+const path = require('path');
+
 module.exports = {
     publicRuntimeConfig() {
         return {
             apiUrl: process.env.API_URL || 'https://pht.personalhealthtrain.de/api/',
-        }
+        };
     },
     env: {
         apiUrl: process.env.API_URL || 'https://personalhealthtrain.de/api/',
@@ -19,40 +23,41 @@ module.exports = {
     head: {
         title: 'PHT - LocalTool',
         meta: [
-            { charset: 'utf-8' }
-        ]
+            { charset: 'utf-8' },
+        ],
     },
     loading: false,
     plugins: [
         '@/plugins/api',
         '@/plugins/store',
         '@/plugins/auth',
+        '@/plugins/layout',
         '@/plugins/app',
 
         '@/plugins/vuelidate',
         '@/plugins/vueFormWizard',
         '@/plugins/vueTimeAgo',
-        '@/plugins/vue'
+        '@/plugins/vue',
     ],
     buildModules: [
         '@nuxt/typescript-build',
-        '@nuxtjs/google-fonts'
+        '@nuxtjs/google-fonts',
     ],
     googleFonts: {
         families: {
             Asap: true,
-            Nunito: true
-        }
+            Nunito: true,
+        },
     },
     modules: [
-        'bootstrap-vue/nuxt'
+        'bootstrap-vue/nuxt',
     ],
     css: [
         '@fortawesome/fontawesome-free/css/all.css',
         'vue-form-wizard/dist/vue-form-wizard.min.css',
         'bootstrap/dist/css/bootstrap.min.css',
         'bootstrap-vue/dist/bootstrap-vue.css',
-
+        '@/assets/css/vue-layout-navigation.css',
         '@/assets/css/root.css',
         '@/assets/css/core/header.css',
         '@/assets/css/core/navbar.css',
@@ -63,10 +68,36 @@ module.exports = {
         '@/assets/css/colors.css',
         '@/assets/css/form.css',
 
-        '@/assets/css/bootstrap-override.css'
+        '@/assets/css/bootstrap-override.css',
     ],
     router: {
         // base: '/',
-        middleware: ['layout']
-    }
-}
+        middleware: ['layout'],
+    },
+
+    build: {
+        extend(config, ctx) {
+            if (!config.resolve) {
+                config.resolve = {};
+            }
+
+            if (!config.resolve.alias) {
+                config.resolve.alias = {};
+            }
+
+            if (!config.resolve.plugins) {
+                config.resolve.plugins = [];
+            }
+
+            config.resolve.plugins.push(new TsconfigPathsPlugin({ configFile: path.resolve(__dirname, 'tsconfig.json') }));
+
+            if (hasOwnProperty(config.resolve, '~')) {
+                delete config.resolve.alias['~'];
+            }
+
+            if (hasOwnProperty(config.resolve.alias, '@')) {
+                delete config.resolve.alias['@'];
+            }
+        },
+    },
+};

@@ -6,24 +6,27 @@
   -->
 <script>
 export default {
-  data () {
-    return {
-      startYear: 2020
-    }
-  },
-  computed: {
-    year () {
-      const year = new Date().getFullYear()
+    data() {
+        return {
+            startYear: 2020,
+        };
+    },
+    computed: {
+        year() {
+            const year = new Date().getFullYear();
 
-      return year === this.startYear ? year : this.startYear + '-' + year
-    }
-  }
-}
+            return year === this.startYear ? year : `${this.startYear}-${year}`;
+        },
+    },
+};
 </script>
 <template>
-  <div class="page-footer">
-    <div class="copyright">
-      &copy; PHT {{ year }} &bull; LocalTool - Design & Code by <a href="https://tada5hi.net" target="_blank">Peter Placzek</a>
+    <div class="page-footer">
+        <div class="copyright">
+            &copy; PHT {{ year }} &bull; LocalTool - Design & Code by <a
+                href="https://tada5hi.net"
+                target="_blank"
+            >Peter Placzek</a>
+        </div>
     </div>
-  </div>
 </template>

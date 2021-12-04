@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import Vue from 'vue'
-import Gravatar from 'vue-gravatar'
+import Vue from 'vue';
+import Gravatar from 'vue-gravatar';
 
-Vue.component('VGravatar', Gravatar)
+Vue.component('VGravatar', Gravatar);

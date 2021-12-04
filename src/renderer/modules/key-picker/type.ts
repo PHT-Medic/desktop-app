@@ -7,6 +7,6 @@
 
 export enum KeyPicker {
     DEFAULT = 'default',
-    HOMOMORPHIC_ENCRYPTION = 'homomorphic-encryption'
+    HOMOMORPHIC_ENCRYPTION = 'homomorphic-encryption',
 }
 export type KeyPickerType = `${KeyPicker}`;

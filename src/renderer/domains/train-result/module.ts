@@ -6,10 +6,10 @@
  */
 
 import crypto from 'crypto';
-import tar, {FileStat} from 'tar';
+import tar, { FileStat } from 'tar';
 import fernet from 'fernet';
 
-import {TarFile, TrainConfig, TrainResultReadCompressedContext} from './type';
+import { TarFile, TrainConfig, TrainResultReadCompressedContext } from './type';
 
 const TRAIN_CONFIG_FILE_NAME = 'train_config.json';
 const TRAIN_RESULT_FILE_NAME = 'pht_results/results.txt';
@@ -17,13 +17,13 @@ const TRAIN_RESULT_FILE_NAME = 'pht_results/results.txt';
 export async function readTrainResult(context: TrainResultReadCompressedContext) {
     const files : TarFile[] = await decompressTarFile(context.filePath);
 
-    const configIndex = files.findIndex(file => file.path === TRAIN_CONFIG_FILE_NAME);
-    if(configIndex === -1) {
+    const configIndex = files.findIndex((file) => file.path === TRAIN_CONFIG_FILE_NAME);
+    if (configIndex === -1) {
         throw new Error(`The ${TRAIN_CONFIG_FILE_NAME} does not exist in the compressed result file.`);
     }
 
-    const resultIndex = files.findIndex(file => file.path === TRAIN_RESULT_FILE_NAME);
-    if(resultIndex === -1) {
+    const resultIndex = files.findIndex((file) => file.path === TRAIN_RESULT_FILE_NAME);
+    if (resultIndex === -1) {
         throw new Error(`The ${TRAIN_RESULT_FILE_NAME} does not exist in the compressed result file.`);
     }
 
@@ -35,7 +35,7 @@ export async function readTrainResult(context: TrainResultReadCompressedContext)
         throw new Error(`The ${TRAIN_CONFIG_FILE_NAME} could not be parsed.`);
     }
 
-    const symBuff =  Buffer.from(config.user_encrypted_sym_key, 'hex');
+    const symBuff = Buffer.from(config.user_encrypted_sym_key, 'hex');
 
     let symmetricKey : string;
 
@@ -44,11 +44,11 @@ export async function readTrainResult(context: TrainResultReadCompressedContext)
             key: context.privateKey,
             passphrase: context.passphrase,
             padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-            oaepHash: "sha512",
-            oaepLabel: undefined
+            oaepHash: 'sha512',
+            oaepLabel: undefined,
         }, symBuff);
 
-        symmetricKey = content.toString('utf-8')
+        symmetricKey = content.toString('utf-8');
     } catch (e) {
         throw new Error('The symmetric key could not be decrypted using the private key.');
     }
@@ -59,8 +59,8 @@ export async function readTrainResult(context: TrainResultReadCompressedContext)
         const token = new fernet.Token({
             secret,
             token: files[resultIndex].content,
-            ttl: 0
-        })
+            ttl: 0,
+        });
 
         return token.decode();
     } catch (e) {
@@ -75,9 +75,9 @@ export async function decompressTarFile(filePath: string) : Promise<TarFile[]> {
         return tar.t({
             file: filePath,
             onentry(entry: FileStat) {
-                let data : Buffer[] = [];
+                const data : Buffer[] = [];
 
-                if(entry.type.toString() !== 'File') {
+                if (entry.type.toString() !== 'File') {
                     return;
                 }
 
@@ -85,19 +85,18 @@ export async function decompressTarFile(filePath: string) : Promise<TarFile[]> {
                 entry.on('end', () => {
                     files.push({
                         path: entry.path.toString(),
-                        content: Buffer.concat(data).toString('utf-8')
+                        content: Buffer.concat(data).toString('utf-8'),
                     });
                 });
-            }
+            },
         }, [], (err) => {
-            if(err) reject(err);
+            if (err) reject(err);
 
             resolve(files);
-        })
-    }))
+        });
+    }));
 }
 
 export async function saveExtractedTrainResult(filePath: string, files: any) {
-
 
 }

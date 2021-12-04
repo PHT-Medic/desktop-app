@@ -1,12 +1,11 @@
 /*
- * Copyright (c) 2021-2021.
+ * Copyright (c) 2021.
  * Author Peter Placzek (tada5hi)
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Context } from '@nuxt/types';
+import Vue from 'vue';
+import NavigationComponents from 'vue-layout-navigation';
 
-export default (ctx : Context) => {
-
-};
+Vue.use(NavigationComponents);

@@ -5,16 +5,16 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-export function clearObjectProperties (obj: {[key: string] : any}) {
-  for (const propName in obj) {
-    if (obj[propName] === null || obj[propName] === undefined) {
-      delete obj[propName]
+export function clearObjectProperties(obj: {[key: string] : any}) {
+    for (const propName in obj) {
+        if (obj[propName] === null || obj[propName] === undefined) {
+            delete obj[propName];
+        }
+
+        if (obj[propName] === '') {
+            obj[propName] = null;
+        }
     }
 
-    if (obj[propName] === '') {
-      obj[propName] = null
-    }
-  }
-
-  return obj
+    return obj;
 }

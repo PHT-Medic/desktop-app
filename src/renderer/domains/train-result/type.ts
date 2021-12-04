@@ -5,12 +5,12 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {readTrainResult} from "~/domains/train-result/module";
+import { readTrainResult } from '~/domains/train-result/module';
 
 export type TarFile = {
     path: string,
     content: string
-}
+};
 
 export type TrainConfig = {
     master_image: string,
@@ -20,11 +20,10 @@ export type TrainConfig = {
     proposal_id: string,
     user_encrypted_sym_key: string,
     [key: string]: any
-}
-
+};
 
 export type TrainResultReadCompressedContext = {
     filePath: string,
     privateKey: string,
     passphrase: string
-}
+};

@@ -5,26 +5,26 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 <script>
-import AlertMessage from "../../../components/alert/AlertMessage";
-import KeyPairPicker from "../../../components/KeyPairPicker";
+import AlertMessage from '../../../components/alert/AlertMessage';
+import KeyPairPicker from '../../../components/KeyPairPicker';
 
 export default {
     meta: {
-        requireLoggedIn: true
+        requireLoggedIn: true,
+    },
+    components: {
+        KeyPairPicker,
+        AlertMessage,
     },
     computed: {
         user() {
             return this.$store.getters['auth/user'];
-        }
+        },
     },
-    components: {
-        KeyPairPicker,
-        AlertMessage
-    }
-}
+};
 </script>
 <template>
     <div>
-        <key-pair-picker :type="'homomorphic-encryption'"/>
+        <key-pair-picker :type="'homomorphic-encryption'" />
     </div>
 </template>

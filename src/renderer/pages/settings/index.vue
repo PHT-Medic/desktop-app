@@ -7,7 +7,7 @@
 <template>
     <div>
         <h1 class="title no-border mb-2">
-            <i class="fa fa-cog"></i> Settings
+            <i class="fa fa-cog" /> Settings
         </h1>
 
         <div class="m-b-20 m-t-10">
@@ -30,7 +30,6 @@
                             </b-nav>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -39,22 +38,21 @@
     </div>
 </template>
 <script>
-import {Layout, LayoutNavigationID} from "../../modules/layout/contants";
+import { LayoutKey, LayoutNavigationID } from '../../config/layout/contants';
 
 export default {
-        meta: {
-            [Layout.REQUIRED_LOGGED_IN_KEY]: true,
-            [Layout.NAVIGATION_ID_KEY]: LayoutNavigationID.DEFAULT
-        },
-        data () {
-            return {
-                sidebar: {
-                    items: [
-                        { name: 'Default', icon: 'fas fa-bars', urlSuffix: '' },
-                        { name: 'Homomorphic Encryption',  icon: 'fas fa-key', urlSuffix: '/homomorphic-encryption' }
-                    ]
-                }
-            }
-        },
-    }
+    meta: {
+        [LayoutKey.NAVIGATION_ID]: LayoutNavigationID.DEFAULT,
+    },
+    data() {
+        return {
+            sidebar: {
+                items: [
+                    { name: 'Default', icon: 'fas fa-bars', urlSuffix: '' },
+                    { name: 'Homomorphic Encryption', icon: 'fas fa-key', urlSuffix: '/homomorphic-encryption' },
+                ],
+            },
+        };
+    },
+};
 </script>

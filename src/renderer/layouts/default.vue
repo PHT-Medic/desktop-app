@@ -15,8 +15,8 @@ export default {
     components: { pageFooter, pageSidebar, pageHeader },
     computed: {
 
-    }
-}
+    },
+};
 </script>
 
 <template>

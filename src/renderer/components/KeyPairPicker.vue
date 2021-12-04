@@ -7,19 +7,19 @@
 <script>
 import path from 'path';
 import * as fs from 'fs';
-import {generateKeyPairSync} from 'crypto';
-import {ipcRenderer} from 'electron';
-import * as paillierBigint from 'paillier-bigint'
+import { generateKeyPairSync } from 'crypto';
+import { ipcRenderer } from 'electron';
+import * as paillierBigint from 'paillier-bigint';
 
-import AlertMessage from "./alert/AlertMessage";
-import {KeyPicker} from "../modules/key-picker/type";
+import AlertMessage from './alert/AlertMessage';
+import { KeyPicker } from '../modules/key-picker/type';
 
 export default {
-    props: {
-        type: KeyPicker
-    },
     components: {
-        AlertMessage
+        AlertMessage,
+    },
+    props: {
+        type: KeyPicker,
     },
     data() {
         return {
@@ -27,126 +27,13 @@ export default {
             form: {
                 passphrase: '',
                 privateKeyFileName: this.privateKeyFileName,
-                publicKeyFileName: this.publicKeyFileName
-            }
-        }
-    },
-    created() {
-        this.listener = (event, arg) => {
-            if(arg.canceled || arg.filePaths.length === 0) return;
-
-            switch (this.type) {
-                case KeyPicker.HOMOMORPHIC_ENCRYPTION:
-                    this.$store.dispatch('secret/setHePath', arg.filePaths[0]);
-                    break;
-                case KeyPicker.DEFAULT:
-                    this.$store.dispatch('secret/setDefaultPath', arg.filePaths[0]);
-                    break;
-            }
+                publicKeyFileName: this.publicKeyFileName,
+            },
         };
-
-        ipcRenderer.on('select-dirs-result', this.listener);
-    },
-    beforeDestroy() {
-        ipcRenderer.removeListener('select-dirs-result', this.listener);
-    },
-    methods: {
-        selectDir() {
-            ipcRenderer.send('select-dirs');
-        },
-        async load() {
-            if(!this.isDirectoryPathDefined) return;
-
-            const privateKeyPath = path.join(this.directoryPath, this.privateKeyFileName);
-            const publicKeyPath = path.join(this.directoryPath, this.publicKeyFileName);
-
-            let keyPair = {};
-
-            try {
-                await fs.promises.access(privateKeyPath, fs.constants.F_OK);
-                keyPair.privateKey = await fs.promises.readFile(privateKeyPath);
-            } catch (e) {
-                // do nothing
-            }
-
-            try {
-                await fs.promises.access(publicKeyPath, fs.constants.F_OK);
-                keyPair.publicKey = await fs.promises.readFile(publicKeyPath);
-            } catch (e) {
-                // do nothing
-            }
-
-            switch (this.type) {
-                case KeyPicker.HOMOMORPHIC_ENCRYPTION:
-                    await this.$store.dispatch('secret/setHeKeyPair', keyPair);
-                    break;
-                case KeyPicker.DEFAULT:
-                    await this.$store.dispatch('secret/setDefaultKeyPair', keyPair);
-                    break;
-            }
-        },
-        async generate() {
-            if(!this.isDirectoryPathDefined) return;
-
-            let keyPair = {
-                privateKey: '',
-                publicKey: ''
-            }
-
-            switch (this.type) {
-                case KeyPicker.HOMOMORPHIC_ENCRYPTION:
-                    const { publicKey, privateKey } = await paillierBigint.generateRandomKeys(128);
-
-                    BigInt.prototype.toJSON = function() { return this.toString()  }
-
-                    keyPair.publicKey = JSON.stringify({
-                        n: publicKey.n,
-                        g: publicKey.g
-                    });
-
-                    keyPair.privateKey = JSON.stringify({
-                        mu: privateKey.mu,
-                        lambda: privateKey.lambda
-                    });
-                    break;
-                case KeyPicker.DEFAULT:
-                    keyPair = generateKeyPairSync('rsa', {
-                        modulusLength: 2048,
-                        publicKeyEncoding: {
-                            type: 'pkcs1',
-                            format: 'pem'
-                        },
-                        privateKeyEncoding: {
-                            type: 'pkcs8',
-                            format: 'pem',
-                            cipher: 'aes-192-cbc',
-                            passphrase: this.form.passphrase
-                        }
-                    });
-                    break;
-            }
-
-            fs.writeFileSync(path.join(this.directoryPath, this.privateKeyFileName), keyPair.privateKey, {
-                encoding: 'utf-8'
-            });
-
-            fs.writeFileSync(path.join(this.directoryPath, this.publicKeyFileName), keyPair.publicKey, {
-                encoding: 'utf-8'
-            });
-
-            switch (this.type) {
-                case KeyPicker.HOMOMORPHIC_ENCRYPTION:
-                    await this.$store.dispatch('secret/setHeKeyPair', keyPair);
-                    break;
-                case KeyPicker.DEFAULT:
-                    await this.$store.dispatch('secret/setDefaultKeyPair', keyPair);
-                    break;
-            }
-        }
     },
     computed: {
         isPassphraseDefined() {
-            return !!this.form.passphrase && this.form.passphrase.length !== 0
+            return !!this.form.passphrase && this.form.passphrase.length !== 0;
         },
         isPassphraseRequired() {
             return this.type === KeyPicker.DEFAULT;
@@ -175,7 +62,7 @@ export default {
             }
         },
         publicKeyFileName() {
-            if(!this.form.publicKeyFileName || this.form.publicKeyFileName.length === 0) {
+            if (!this.form.publicKeyFileName || this.form.publicKeyFileName.length === 0) {
                 return this.publicKeyDefaultFileName;
             }
 
@@ -199,7 +86,7 @@ export default {
             }
         },
         privateKeyFileName() {
-            if(!this.form.privateKeyFileName || this.form.privateKeyFileName.length === 0) {
+            if (!this.form.privateKeyFileName || this.form.privateKeyFileName.length === 0) {
                 return this.privateKeyDefaultFileName;
             }
 
@@ -212,83 +99,249 @@ export default {
                 case KeyPicker.DEFAULT:
                     return 'private.pem';
             }
-        }
-    }
-}
+        },
+    },
+    created() {
+        this.listener = (event, arg) => {
+            if (arg.canceled || arg.filePaths.length === 0) return;
+
+            switch (this.type) {
+                case KeyPicker.HOMOMORPHIC_ENCRYPTION:
+                    this.$store.dispatch('secret/setHePath', arg.filePaths[0]);
+                    break;
+                case KeyPicker.DEFAULT:
+                    this.$store.dispatch('secret/setDefaultPath', arg.filePaths[0]);
+                    break;
+            }
+        };
+
+        ipcRenderer.on('select-dirs-result', this.listener);
+    },
+    beforeDestroy() {
+        ipcRenderer.removeListener('select-dirs-result', this.listener);
+    },
+    methods: {
+        selectDir() {
+            ipcRenderer.send('select-dirs');
+        },
+        async load() {
+            if (!this.isDirectoryPathDefined) return;
+
+            const privateKeyPath = path.join(this.directoryPath, this.privateKeyFileName);
+            const publicKeyPath = path.join(this.directoryPath, this.publicKeyFileName);
+
+            const keyPair = {};
+
+            try {
+                await fs.promises.access(privateKeyPath, fs.constants.F_OK);
+                keyPair.privateKey = await fs.promises.readFile(privateKeyPath);
+            } catch (e) {
+                // do nothing
+            }
+
+            try {
+                await fs.promises.access(publicKeyPath, fs.constants.F_OK);
+                keyPair.publicKey = await fs.promises.readFile(publicKeyPath);
+            } catch (e) {
+                // do nothing
+            }
+
+            switch (this.type) {
+                case KeyPicker.HOMOMORPHIC_ENCRYPTION:
+                    await this.$store.dispatch('secret/setHeKeyPair', keyPair);
+                    break;
+                case KeyPicker.DEFAULT:
+                    await this.$store.dispatch('secret/setDefaultKeyPair', keyPair);
+                    break;
+            }
+        },
+        async generate() {
+            if (!this.isDirectoryPathDefined) return;
+
+            let keyPair = {
+                privateKey: '',
+                publicKey: '',
+            };
+
+            switch (this.type) {
+                case KeyPicker.HOMOMORPHIC_ENCRYPTION:
+                    const { publicKey, privateKey } = await paillierBigint.generateRandomKeys(128);
+
+                    BigInt.prototype.toJSON = function () { return this.toString(); };
+
+                    keyPair.publicKey = JSON.stringify({
+                        n: publicKey.n,
+                        g: publicKey.g,
+                    });
+
+                    keyPair.privateKey = JSON.stringify({
+                        mu: privateKey.mu,
+                        lambda: privateKey.lambda,
+                    });
+                    break;
+                case KeyPicker.DEFAULT:
+                    keyPair = generateKeyPairSync('rsa', {
+                        modulusLength: 2048,
+                        publicKeyEncoding: {
+                            type: 'pkcs1',
+                            format: 'pem',
+                        },
+                        privateKeyEncoding: {
+                            type: 'pkcs8',
+                            format: 'pem',
+                            cipher: 'aes-192-cbc',
+                            passphrase: this.form.passphrase,
+                        },
+                    });
+                    break;
+            }
+
+            fs.writeFileSync(path.join(this.directoryPath, this.privateKeyFileName), keyPair.privateKey, {
+                encoding: 'utf-8',
+            });
+
+            fs.writeFileSync(path.join(this.directoryPath, this.publicKeyFileName), keyPair.publicKey, {
+                encoding: 'utf-8',
+            });
+
+            switch (this.type) {
+                case KeyPicker.HOMOMORPHIC_ENCRYPTION:
+                    await this.$store.dispatch('secret/setHeKeyPair', keyPair);
+                    break;
+                case KeyPicker.DEFAULT:
+                    await this.$store.dispatch('secret/setDefaultKeyPair', keyPair);
+                    break;
+            }
+        },
+    },
+};
 </script>
 <template>
     <div class="row">
         <div class="col">
-
-
-            <div class="form-group" :class="{ 'form-group-error':  !isDirectoryPathDefined }">
+            <div
+                class="form-group"
+                :class="{ 'form-group-error': !isDirectoryPathDefined }"
+            >
                 <label>Directory Path</label>
-                <input v-model="directoryPath" type="text" name="name" class="form-control" :disabled="true" placeholder="...">
+                <input
+                    v-model="directoryPath"
+                    type="text"
+                    name="name"
+                    class="form-control"
+                    :disabled="true"
+                    placeholder="..."
+                >
 
-                <div v-if="!isDirectoryPathDefined" class="form-group-hint group-required">
+                <div
+                    v-if="!isDirectoryPathDefined"
+                    class="form-group-hint group-required"
+                >
                     Select a directory path.
                 </div>
             </div>
 
             <div class="d-flex flex-row justify-space-between mb-2">
                 <div>
-                    <button type="submit" class="btn btn-dark btn-sm" @click.prevent="selectDir">
-                        <i class="fa fa-file"></i> Select
+                    <button
+                        type="submit"
+                        class="btn btn-dark btn-sm"
+                        @click.prevent="selectDir"
+                    >
+                        <i class="fa fa-file" /> Select
                     </button>
                 </div>
                 <div class="ml-auto">
-                    <button type="submit" class="btn btn-primary btn-sm" @click.prevent="load" :disabled="!isDirectoryPathDefined">
-                        <i class="fa fa-sync"></i> Load
+                    <button
+                        type="submit"
+                        class="btn btn-primary btn-sm"
+                        :disabled="!isDirectoryPathDefined"
+                        @click.prevent="load"
+                    >
+                        <i class="fa fa-sync" /> Load
                     </button>
                 </div>
             </div>
 
-            <hr />
+            <hr>
 
-            <div v-if="isPassphraseRequired" class="form-group" :class="{ 'form-group-error':  !isPassphraseDefined }">
+            <div
+                v-if="isPassphraseRequired"
+                class="form-group"
+                :class="{ 'form-group-error': !isPassphraseDefined }"
+            >
                 <label>Passphrase</label>
-                <input v-model="form.passphrase" type="text" name="name" class="form-control" placeholder="...">
+                <input
+                    v-model="form.passphrase"
+                    type="text"
+                    name="name"
+                    class="form-control"
+                    placeholder="..."
+                >
 
-                <div v-if="isPassphraseRequired && !isPassphraseDefined" class="form-group-hint group-required">
+                <div
+                    v-if="isPassphraseRequired && !isPassphraseDefined"
+                    class="form-group-hint group-required"
+                >
                     Enter a passphrase.
                 </div>
             </div>
 
             <div class="form-group">
                 <label>PrivateKey file name (optional)</label>
-                <input v-model="form.privateKeyFileName" type="text" name="name" class="form-control" :placeholder="privateKeyDefaultFileName">
+                <input
+                    v-model="form.privateKeyFileName"
+                    type="text"
+                    name="name"
+                    class="form-control"
+                    :placeholder="privateKeyDefaultFileName"
+                >
             </div>
             <div class="form-group">
                 <label>PublicKey file name (optional)</label>
-                <input v-model="form.publicKeyFileName" type="text" name="name" class="form-control" :placeholder="publicKeyDefaultFileName">
+                <input
+                    v-model="form.publicKeyFileName"
+                    type="text"
+                    name="name"
+                    class="form-control"
+                    :placeholder="publicKeyDefaultFileName"
+                >
             </div>
 
-            <hr />
+            <hr>
 
             <button
                 type="submit"
                 class="btn btn-sm"
                 :class="{
-                            'btn-dark': !privateKey && !publicKey,
-                            'btn-danger': privateKey || publicKey
-                        }"
-                @click.prevent="generate"
+                    'btn-dark': !privateKey && !publicKey,
+                    'btn-danger': privateKey || publicKey
+                }"
                 :disabled="!isDirectoryPathDefined || (isPassphraseRequired && !isPassphraseDefined)"
+                @click.prevent="generate"
             >
-                <i class="fa fa-wrench"></i> Generate
+                <i class="fa fa-wrench" /> Generate
             </button>
-
-
         </div>
         <div class="col">
             <div class="form-group">
                 <label>PrivateKey</label>
-                <textarea class="form-control" v-model="privateKey" rows="8" placeholder="..."></textarea>
+                <textarea
+                    v-model="privateKey"
+                    class="form-control"
+                    rows="8"
+                    placeholder="..."
+                />
             </div>
 
             <div class="form-group">
                 <label>PublicKey</label>
-                <textarea class="form-control" v-model="publicKey" rows="8" placeholder="..."></textarea>
+                <textarea
+                    v-model="publicKey"
+                    class="form-control"
+                    rows="8"
+                    placeholder="..."
+                />
             </div>
         </div>
     </div>

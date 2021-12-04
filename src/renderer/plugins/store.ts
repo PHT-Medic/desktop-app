@@ -5,12 +5,13 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Context } from '@nuxt/types'
-import { Inject } from '@nuxt/types/app'
+import { Context } from '@nuxt/types';
+import { Inject } from '@nuxt/types/app';
 
-import BaseStorage from '~/modules/storage'
-import AuthStorage from '~/modules/auth/storage'
-import AppStorage from '~/modules/app/storage'
+import BaseStorage from '~/modules/storage';
+import AuthStorage from '~/modules/auth/storage';
+import AppStorage from '~/modules/app/storage';
+import { NavigationProvider } from '~/config/layout/module';
 
 declare module 'vue/types/vue' {
     // this.$myInjectedFunction inside Vue components
@@ -43,11 +44,14 @@ declare module 'vuex/types/index' {
 }
 
 export default (ctx : Context, inject : Inject) => {
-    const appWarehouse = new AppStorage(ctx)
-    inject('warehouse', appWarehouse)
+    const appWarehouse = new AppStorage(ctx);
+    inject('warehouse', appWarehouse);
 
     // --------------------------------------------------------------------
 
-    const authWarehouse = new AuthStorage(ctx)
-    inject('authWarehouse', authWarehouse)
-}
+    const authWarehouse = new AuthStorage(ctx);
+    inject('authWarehouse', authWarehouse);
+
+    const navigationProvider = new NavigationProvider(ctx);
+    inject('layoutNavigationProvider', navigationProvider);
+};

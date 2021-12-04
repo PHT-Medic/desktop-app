@@ -5,10 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Context } from '@nuxt/types'
-import { Inject } from '@nuxt/types/app'
+import { Context } from '@nuxt/types';
+import { Inject } from '@nuxt/types/app';
 
-import AuthModule from '~/modules/auth'
+import AuthModule from '~/modules/auth';
 
 declare module 'vue/types/vue' {
     // this.$myInjectedFunction inside Vue components
@@ -32,11 +32,11 @@ declare module 'vuex/types/index' {
 }
 
 export default (context: Context, inject: Inject) => {
-  const auth = new AuthModule(context, {
-    tokenHost: context.$config.apiUrl,
-    tokenPath: 'token',
-    userInfoPath: 'users/me'
-  })
+    const auth = new AuthModule(context, {
+        tokenHost: context.$config.apiUrl,
+        tokenPath: 'token',
+        userInfoPath: 'users/me',
+    });
 
-  inject('auth', auth)
-}
+    inject('auth', auth);
+};

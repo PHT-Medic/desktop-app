@@ -5,8 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {ActionTree, GetterTree, MutationTree} from "vuex";
-import {RootState} from "~/store/index";
+import { ActionTree, GetterTree, MutationTree } from 'vuex';
+import { RootState } from '~/store/index';
 
 export interface LayoutState {
     defaultPath: string | undefined,
@@ -25,34 +25,34 @@ export const state = () : LayoutState => ({
 
     hePath: undefined,
     hePrivateKey: undefined,
-    hePublicKey: undefined
-})
+    hePublicKey: undefined,
+});
 
 export const getters : GetterTree<LayoutState, RootState> = {
-    defaultPath: state => state.defaultPath,
-    defaultPublicKey: state => state.defaultPublicKey,
-    defaultPrivateKey: state => state.defaultPrivateKey,
+    defaultPath: (state) => state.defaultPath,
+    defaultPublicKey: (state) => state.defaultPublicKey,
+    defaultPrivateKey: (state) => state.defaultPrivateKey,
 
-    hePath: state => state.hePath,
-    hePublicKey: state => state.hePublicKey,
-    hePrivateKey: state => state.hePrivateKey,
-}
+    hePath: (state) => state.hePath,
+    hePublicKey: (state) => state.hePublicKey,
+    hePrivateKey: (state) => state.hePrivateKey,
+};
 
 export const actions : ActionTree<LayoutState, RootState> = {
-    setDefaultPath({commit}, path: string) {
+    setDefaultPath({ commit }, path: string) {
         commit('setDefaultPath', path);
     },
-    setDefaultKeyPair({commit}, keyPair: { privateKey: string, publicKey: string }) {
+    setDefaultKeyPair({ commit }, keyPair: { privateKey: string, publicKey: string }) {
         commit('setDefaultKeyPair', keyPair);
     },
 
-    setHePath({commit}, path: string) {
+    setHePath({ commit }, path: string) {
         commit('setHePath', path);
     },
-    setHeKeyPair({commit}, keyPair: { privateKey: string, publicKey: string }) {
+    setHeKeyPair({ commit }, keyPair: { privateKey: string, publicKey: string }) {
         commit('setHeKeyPair', keyPair);
-    }
-}
+    },
+};
 
 export const mutations : MutationTree<LayoutState> = {
     setDefaultPath(state, path: string) {
@@ -70,7 +70,7 @@ export const mutations : MutationTree<LayoutState> = {
         state.hePrivateKey = keyPair.privateKey;
         state.hePublicKey = keyPair.publicKey;
     },
-}
+};
 
 // --------------------------------------------------------------------
 
@@ -79,6 +79,5 @@ export default {
     state,
     getters,
     actions,
-    mutations
-}
-
+    mutations,
+};

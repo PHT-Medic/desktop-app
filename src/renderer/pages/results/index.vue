@@ -8,73 +8,98 @@
 <template>
     <div>
         <h1 class="title no-border mb-2">
-            <i class="fas fa-file-download"></i> Result
+            <i class="fas fa-file-download" /> Result
         </h1>
 
         <alert-message :message="message" />
 
-        <div class="alert alert-danger alert-sm" v-if="!privateKey">
-            You first have to load your private and public key or generate them...<br />
+        <div
+            v-if="!privateKey"
+            class="alert alert-danger alert-sm"
+        >
+            You first have to load your private and public key or generate them...<br>
             <nuxt-link
                 type="button"
                 class="btn btn-dark btn-xs"
                 :to="'/settings'"
             >
-                <i class="fa fa-cog"></i> Settings
+                <i class="fa fa-cog" /> Settings
             </nuxt-link>
         </div>
 
-        <hr />
+        <hr>
 
         <div>
             <div class="form-group">
                 <button
                     type="submit"
                     class="btn btn-primary btn-sm"
-                    @click.prevent="selectFile"
                     :disabled="!privateKey"
+                    @click.prevent="selectFile"
                 >
-                    <i class="fa fa-file-archive"></i> Select
+                    <i class="fa fa-file-archive" /> Select
                 </button>
             </div>
 
             <div class="form-group">
                 <label>File</label>
-                <input type="text" class="form-control" :disabled="true" :value="tarFile" placeholder="*.tar" />
+                <input
+                    type="text"
+                    class="form-control"
+                    :disabled="true"
+                    :value="tarFile"
+                    placeholder="*.tar"
+                >
             </div>
 
-            <hr />
+            <hr>
 
             <div class="form-group">
                 <label>Passphrase</label>
-                <input type="text" class="form-control" v-model="passphrase"  placeholder="..." />
+                <input
+                    v-model="passphrase"
+                    type="text"
+                    class="form-control"
+                    placeholder="..."
+                >
             </div>
 
             <button
                 :disabled="!privateKey || !isTarFileDefined"
                 type="submit"
                 class="btn btn-dark btn-sm"
-                @click.prevent="decrypt">
-                <i class="fa fa-file-code"></i> Decrypt
+                @click.prevent="decrypt"
+            >
+                <i class="fa fa-file-code" /> Decrypt
             </button>
         </div>
 
-        <hr />
+        <hr>
 
         <div class="form-group">
             <label>Result</label>
-            <textarea rows="8" class="form-control" :value="result" :disabled="true" placeholder="{...}" />
+            <textarea
+                rows="8"
+                class="form-control"
+                :value="result"
+                :disabled="true"
+                placeholder="{...}"
+            />
         </div>
     </div>
 </template>
 <script>
-import {ipcRenderer} from "electron";
-import path from "path";
-import {readTrainResult} from "../../domains/train-result/module";
-import AlertMessage from "../../components/alert/AlertMessage";
+import { ipcRenderer } from 'electron';
+import path from 'path';
+import { readTrainResult } from '../../domains/train-result/module';
+import AlertMessage from '../../components/alert/AlertMessage';
+import { LayoutKey, LayoutNavigationID } from '../../config/layout/contants';
 
 export default {
-    components: {AlertMessage},
+    meta: {
+        [LayoutKey.NAVIGATION_ID]: LayoutNavigationID.DEFAULT,
+    },
+    components: { AlertMessage },
     data() {
         return {
             message: null,
@@ -84,44 +109,11 @@ export default {
 
             hash: '',
             passphrase: '',
-        }
-    },
-    created() {
-        ipcRenderer.on('result-file-selected', async(event, arg) => {
-            if(arg.canceled || arg.filePaths.length === 0) return;
-
-            this.tarFile = arg.filePaths[0];
-        });
-    },
-    methods: {
-        async selectFile() {
-            ipcRenderer.send('result-file-select');
-        },
-        async decrypt() {
-            if(!this.privateKey && !this.isTarFileDefined) return;
-
-            try {
-                this.result = await readTrainResult({
-                    filePath: this.tarFile,
-                    privateKey: this.privateKey,
-                    passphrase: this.passphrase
-                });
-
-                this.message = {
-                    isError: false,
-                    data: 'The compressed train file was successfully decompressed.'
-                }
-            } catch (e) {
-                this.message = {
-                    data: e.message,
-                    isError: true
-                }
-            }
-        }
+        };
     },
     computed: {
         isTarFileDefined() {
-            return !!this.tarFile && this.tarFile.length > 0
+            return !!this.tarFile && this.tarFile.length > 0;
         },
 
         directoryPath() {
@@ -136,12 +128,45 @@ export default {
         },
 
         isPassphraseDefined() {
-            return !!this.passphrase && this.passphrase.length > 0
+            return !!this.passphrase && this.passphrase.length > 0;
         },
 
         fileNames() {
-            return this.files.map(file => path.basename(file));
-        }
-    }
-}
+            return this.files.map((file) => path.basename(file));
+        },
+    },
+    created() {
+        ipcRenderer.on('result-file-selected', async (event, arg) => {
+            if (arg.canceled || arg.filePaths.length === 0) return;
+
+            this.tarFile = arg.filePaths[0];
+        });
+    },
+    methods: {
+        async selectFile() {
+            ipcRenderer.send('result-file-select');
+        },
+        async decrypt() {
+            if (!this.privateKey && !this.isTarFileDefined) return;
+
+            try {
+                this.result = await readTrainResult({
+                    filePath: this.tarFile,
+                    privateKey: this.privateKey,
+                    passphrase: this.passphrase,
+                });
+
+                this.message = {
+                    isError: false,
+                    data: 'The compressed train file was successfully decompressed.',
+                };
+            } catch (e) {
+                this.message = {
+                    data: e.message,
+                    isError: true,
+                };
+            }
+        },
+    },
+};
 </script>

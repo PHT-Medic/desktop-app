@@ -20,7 +20,7 @@ jobs:
             - name: Install Node.js, NPM and Yarn
               uses: actions/setup-node@v2.5.0
               with:
-                  node-version: 12
+                  node-version: 16
 
             - name: Build/release Electron app
               uses: michalzaq12/action-electron-nuxt@v1.5.0

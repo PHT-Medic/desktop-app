@@ -367,9 +367,9 @@ export default {
                 <label class="d-flex flex-row">PrivateKey <a
                     v-if="privateKey"
                     href="javascript:void(0)"
-                    class="badge badge-primary ml-auto"
+                    class="badge badge-dark ml-auto"
                     @click.prevent="copyToClipboard('privateKey')"
-                ><i class="fa fa-clipboard" /> Copy</a></label>
+                ><i class="fa fa-copy" /> Copy</a></label>
                 <textarea
                     v-model="privateKey"
                     class="form-control"
@@ -382,9 +382,9 @@ export default {
                 <label class="d-flex flex-row">PublicKey <a
                     v-if="publicKey"
                     href="javascript:void(0)"
-                    class="badge badge-primary ml-auto"
+                    class="badge badge-dark ml-auto"
                     @click.prevent="copyToClipboard('publicKey')"
-                ><i class="fa fa-clipboard" /> Copy</a></label>
+                ><i class="fa fa-copy" /> Copy</a></label>
                 <textarea
                     v-model="publicKey"
                     class="form-control"

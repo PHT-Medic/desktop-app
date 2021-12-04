@@ -17,7 +17,9 @@
             "devDependencies": true,
             "optionalDependencies": false,
             "peerDependencies": false
-        }]
+        }],
+
+        "@typescript-eslint/no-var-requires": "off"
     },
     "ignorePatterns": ["**/dist/*", "**/*.d.ts", "**/writable/**", "**/.electron-nuxt/*", "src/main/**"],
     "globals": {

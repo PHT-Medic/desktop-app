@@ -1,7 +1,7 @@
 {
     "name": "local-tool",
     "private": true,
-    "version": "0.0.6",
+    "version": "0.0.7",
     "description": "This project contains the local-tool of the PHT.",
     "main": "./dist/main/index.js",
     "scripts": {

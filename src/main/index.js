@@ -8,6 +8,7 @@
 import {
     app, clipboard, dialog, ipcMain,
 } from 'electron';
+
 import BrowserWinHandler from './module';
 
 // Quit when all windows are closed.

@@ -17,52 +17,52 @@ const electronLogger = new Logger('Electron', 'teal')
 electronLogger.ignore(text => text.includes('nhdogjmejiglipccpnnnanhbledajbpd')) // Clear vue devtools errors
 
 const launcher = new ElectronLauncher({
-  logger: electronLogger,
-  electronPath: electron,
-  entryFile: path.join(DIST_DIR, 'main/index.js')
+    logger: electronLogger,
+    electronPath: electron,
+    entryFile: path.join(DIST_DIR, 'main/index.js')
 })
 
 function hasConfigArgument (array) {
-  for (const el of array) if (el === '--config' || el === '-c') return true
-  return false
+    for (const el of array) if (el === '--config' || el === '-c') return true
+    return false
 }
 const argumentsArray = process.argv.slice(2)
 if (!hasConfigArgument(argumentsArray)) argumentsArray.push('--config', 'builder.config.js')
 
 const builder = new ElectronBuilder({
-  processArgv: argumentsArray
+    processArgv: argumentsArray
 })
 
 const webpackConfig = Webpack.getBaseConfig({
-  entry: isDev
-    ? path.join(MAIN_PROCESS_DIR, 'boot/index.dev.js')
-    : path.join(MAIN_PROCESS_DIR, 'boot/index.prod.js'),
-  output: {
-    filename: 'index.js',
-    path: path.join(DIST_DIR, 'main')
-  },
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.resourcesPath': resourcesPath.mainProcess(),
-      'process.env.DEV_SERVER_URL': `'${SERVER_HOST}:${SERVER_PORT}'`
-    })
-  ]
+    entry: isDev
+        ? path.join(MAIN_PROCESS_DIR, 'boot/index.dev.js')
+        : path.join(MAIN_PROCESS_DIR, 'boot/index.prod.js'),
+    output: {
+        filename: 'index.js',
+        path: path.join(DIST_DIR, 'main')
+    },
+    plugins: [
+        new webpack.DefinePlugin({
+            'process.resourcesPath': resourcesPath.mainProcess(),
+            'process.env.DEV_SERVER_URL': `'${SERVER_HOST}:${SERVER_PORT}'`
+        })
+    ]
 })
 
 const webpackMain = new Webpack({
-  logger: new Logger('Main', 'olive'),
-  webpackConfig,
-  launcher // need to restart launcher after compilation
+    logger: new Logger('Main', 'olive'),
+    webpackConfig,
+    launcher // need to restart launcher after compilation
 })
 
 const nuxt = new NuxtApp(new Logger('Nuxt', 'green'))
 
 const pipe = new Pipeline({
-  title: 'Electron-nuxt',
-  isDevelopment: isDev,
-  steps: [webpackMain, nuxt],
-  launcher,
-  builder
+    title: 'Electron-nuxt',
+    isDevelopment: isDev,
+    steps: [webpackMain, nuxt],
+    launcher,
+    builder
 })
 
 pipe.run()

@@ -5,27 +5,27 @@ const RESOURCES_DIR_PATH = RESOURCES_DIR.replace(/\\/g, '/')
 const isProduction = process.env.NODE_ENV === 'production'
 
 function devPath () {
-  return `'${RESOURCES_DIR_PATH}'` // Overwrite path
+    return `'${RESOURCES_DIR_PATH}'` // Overwrite path
 }
 
 function productionPath () {
-  return `process.resourcesPath`; // Keep path provided by Electron
+    return `process.resourcesPath`; // Keep path provided by Electron
 }
 
 module.exports = {
 
-  // MAIN PROCESS
+    // MAIN PROCESS
 
-  mainProcess () {
-    return isProduction ? productionPath() : devPath()
-  },
+    mainProcess () {
+        return isProduction ? productionPath() : devPath()
+    },
 
-  // RENDERER PROCESS
+    // RENDERER PROCESS
 
-  nuxtClient () {
-    return isProduction ? productionPath() : devPath()
-  },
+    nuxtClient () {
+        return isProduction ? productionPath() : devPath()
+    },
 
-  nuxtServer: devPath
+    nuxtServer: devPath
 
 }

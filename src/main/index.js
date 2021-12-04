@@ -21,6 +21,7 @@ const winHandler = new BrowserWinHandler({
     height: 768,
     width: 1024,
     autoHideMenuBar: true,
+    title: 'PHT - Local Tool',
     webPreferences: {
         devTools: !app.isPackaged,
     },

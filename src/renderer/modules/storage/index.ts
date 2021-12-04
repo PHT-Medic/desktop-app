@@ -10,8 +10,8 @@ import { CookieSerializeOptions, parse as parseCookie, serialize as serializeCoo
 import { Context } from '@nuxt/types';
 import {
     decodeValue, encodeValue, isSet, isUnset,
-} from '~/modules/storage/utils';
-import { StorageOptionsInterface } from '~/modules/storage/types';
+} from './utils';
+import { StorageOptionsInterface } from './types';
 
 export default class BaseStorage {
     public ctx: Context;

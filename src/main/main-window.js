@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {ipcMain, dialog} from 'electron';
+import {ipcMain, dialog, clipboard} from 'electron';
 import BrowserWinHandler from './browser-win-handler'
 
 const winHandler = new BrowserWinHandler({
@@ -21,12 +21,12 @@ winHandler.onCreated(_browserWindow => {
     winHandler.loadPage('/')
         .then(r => r);
 
-    ipcMain.on('select-dirs', async (event, arg) => {
+    ipcMain.on('dir-select', async (event, arg) => {
         const result = await dialog.showOpenDialog(_browserWindow, {
             properties: ['openDirectory']
         });
 
-        event.reply('select-dirs-result', result);
+        event.reply('dir-selected', result);
     });
 
     ipcMain.on('result-file-select', async (event, arg) => {
@@ -39,6 +39,10 @@ winHandler.onCreated(_browserWindow => {
 
         event.reply('result-file-selected', result);
     });
+
+    ipcMain.on('copy-to-clipboard', async (event, arg) => {
+        clipboard.writeText(arg);
+    })
 });
 
 export default winHandler

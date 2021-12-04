@@ -16,14 +16,6 @@
         "strict": true,
         "noEmit": true,
         "baseUrl": ".",
-        "paths": {
-            "~/*": [
-                "./*"
-            ],
-            "@/*": [
-                "./*"
-            ]
-        },
         "types": [
             "@nuxt/types"
         ]

@@ -11,19 +11,15 @@ import { generateKeyPairSync } from 'crypto';
 import { ipcRenderer } from 'electron';
 import * as paillierBigint from 'paillier-bigint';
 
-import AlertMessage from './alert/AlertMessage';
 import { KeyPicker } from '../modules/key-picker/type';
 
 export default {
-    components: {
-        AlertMessage,
-    },
     props: {
         type: KeyPicker,
     },
     data() {
         return {
-            listener: null,
+            dirListener: null,
             form: {
                 passphrase: '',
                 privateKeyFileName: this.privateKeyFileName,
@@ -102,7 +98,7 @@ export default {
         },
     },
     created() {
-        this.listener = (event, arg) => {
+        this.dirListener = (event, arg) => {
             if (arg.canceled || arg.filePaths.length === 0) return;
 
             switch (this.type) {
@@ -115,14 +111,14 @@ export default {
             }
         };
 
-        ipcRenderer.on('select-dirs-result', this.listener);
+        ipcRenderer.on('dir-selected', this.dirListener);
     },
     beforeDestroy() {
-        ipcRenderer.removeListener('select-dirs-result', this.listener);
+        ipcRenderer.removeListener('dir-selected', this.dirListener);
     },
     methods: {
         selectDir() {
-            ipcRenderer.send('select-dirs');
+            ipcRenderer.send('dir-select');
         },
         async load() {
             if (!this.isDirectoryPathDefined) return;
@@ -164,10 +160,13 @@ export default {
             };
 
             switch (this.type) {
-                case KeyPicker.HOMOMORPHIC_ENCRYPTION:
+                case KeyPicker.HOMOMORPHIC_ENCRYPTION: {
                     const { publicKey, privateKey } = await paillierBigint.generateRandomKeys(128);
 
-                    BigInt.prototype.toJSON = function () { return this.toString(); };
+                    // eslint-disable-next-line no-extend-native
+                    BigInt.prototype.toJSON = function () {
+                        return this.toString();
+                    };
 
                     keyPair.publicKey = JSON.stringify({
                         n: publicKey.n,
@@ -179,6 +178,7 @@ export default {
                         lambda: privateKey.lambda,
                     });
                     break;
+                }
                 case KeyPicker.DEFAULT:
                     keyPair = generateKeyPairSync('rsa', {
                         modulusLength: 2048,
@@ -212,6 +212,45 @@ export default {
                     await this.$store.dispatch('secret/setDefaultKeyPair', keyPair);
                     break;
             }
+        },
+        copyToClipboard(key) {
+            let text;
+
+            switch (key) {
+                case 'privateKey':
+                    text = this.privateKey;
+                    break;
+                case 'publicKey':
+                    text = this.publicKey;
+                    break;
+            }
+
+            if (!text) {
+                this.$bvToast.toast('There does not exist a valid key to copy.', {
+                    variant: 'danger',
+                    toaster: 'b-toaster-top-center',
+                });
+
+                return;
+            }
+
+            text = text.toString();
+
+            if (text.length === 0) {
+                this.$bvToast.toast('The key to copy is empty.', {
+                    variant: 'warning',
+                    toaster: 'b-toaster-top-center',
+                });
+
+                return;
+            }
+
+            ipcRenderer.send('copy-to-clipboard', text);
+
+            this.$bvToast.toast('Successfully copied key to clipboard', {
+                variant: 'success',
+                toaster: 'b-toaster-top-center',
+            });
         },
     },
 };
@@ -248,7 +287,7 @@ export default {
                         class="btn btn-dark btn-sm"
                         @click.prevent="selectDir"
                     >
-                        <i class="fa fa-file" /> Select
+                        <i class="fa fa-file" /> Select directory
                     </button>
                 </div>
                 <div class="ml-auto">
@@ -258,7 +297,7 @@ export default {
                         :disabled="!isDirectoryPathDefined"
                         @click.prevent="load"
                     >
-                        <i class="fa fa-sync" /> Load
+                        <i class="fa fa-sync" /> Load key-pair
                     </button>
                 </div>
             </div>
@@ -320,12 +359,17 @@ export default {
                 :disabled="!isDirectoryPathDefined || (isPassphraseRequired && !isPassphraseDefined)"
                 @click.prevent="generate"
             >
-                <i class="fa fa-wrench" /> Generate
+                <i class="fa fa-wrench" /> Generate key-pair
             </button>
         </div>
         <div class="col">
             <div class="form-group">
-                <label>PrivateKey</label>
+                <label class="d-flex flex-row">PrivateKey <a
+                    v-if="privateKey"
+                    href="javascript:void(0)"
+                    class="badge badge-primary ml-auto"
+                    @click.prevent="copyToClipboard('privateKey')"
+                ><i class="fa fa-clipboard" /> Copy</a></label>
                 <textarea
                     v-model="privateKey"
                     class="form-control"
@@ -335,7 +379,12 @@ export default {
             </div>
 
             <div class="form-group">
-                <label>PublicKey</label>
+                <label class="d-flex flex-row">PublicKey <a
+                    v-if="publicKey"
+                    href="javascript:void(0)"
+                    class="badge badge-primary ml-auto"
+                    @click.prevent="copyToClipboard('publicKey')"
+                ><i class="fa fa-clipboard" /> Copy</a></label>
                 <textarea
                     v-model="publicKey"
                     class="form-control"

@@ -7,11 +7,10 @@
 
 import { Context } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
-
-import BaseStorage from '~/modules/storage';
-import AuthStorage from '~/modules/auth/storage';
-import AppStorage from '~/modules/app/storage';
-import { NavigationProvider } from '~/config/layout/module';
+import BaseStorage from '../modules/storage';
+import AppStorage from '../modules/app/storage';
+import AuthStorage from '../modules/auth/storage';
+import { NavigationProvider } from '../config/layout/module';
 
 declare module 'vue/types/vue' {
     // this.$myInjectedFunction inside Vue components

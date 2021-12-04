@@ -17,7 +17,7 @@ import {
 } from '@typescript-auth/core';
 import axios from 'axios';
 import { Store } from 'vuex';
-import { AuthStoreToken } from '@/store/auth';
+import { AuthStoreToken } from '../../store/auth';
 
 export type AuthModuleOptions = {
     tokenHost: string,

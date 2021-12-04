@@ -6,7 +6,7 @@
  */
 
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
-import { RootState } from '~/store/index';
+import { RootState } from './index';
 
 export interface LayoutState {
     defaultPath: string | undefined,

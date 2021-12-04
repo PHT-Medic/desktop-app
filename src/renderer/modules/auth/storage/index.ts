@@ -6,8 +6,8 @@
  */
 
 import { Context } from '@nuxt/types';
-import BaseStorage from '~/modules/storage';
-import { StorageOptionsInterface } from '~/modules/storage/types';
+import BaseStorage from '../../storage';
+import { StorageOptionsInterface } from '../../storage/types';
 
 export class AuthStorage extends BaseStorage {
     constructor(ctx: Context, options?: StorageOptionsInterface) {

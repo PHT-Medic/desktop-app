@@ -5,12 +5,12 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { User } from '@personalhealthtrain/ui-common';
+import { User, hasOwnProperty } from '@personalhealthtrain/ui-common';
 import Vue from 'vue';
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
 
 import { Oauth2TokenResponse, PermissionItem } from '@typescript-auth/core';
-import { RootState } from '~/store/index';
+import { RootState } from './index';
 
 export const AuthStoreKey = {
     user: 'user',
@@ -82,7 +82,7 @@ export const actions : ActionTree<AuthState, RootState> = {
     triggerSetToken({ commit }, token) {
         this.$authWarehouse.set(AuthStoreKey.token, token);
 
-        if (typeof token === 'object' && token.hasOwnProperty('accessToken')) {
+        if (typeof token === 'object' && hasOwnProperty(token, 'accessToken')) {
             this.$auth.setRequestToken(token.accessToken);
         }
 

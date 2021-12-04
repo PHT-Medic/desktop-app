@@ -98,6 +98,17 @@ module.exports = {
             if (hasOwnProperty(config.resolve.alias, '@')) {
                 delete config.resolve.alias['@'];
             }
+
+            if (Object.prototype.toString.call(config.externals) === '[object Object]') {
+                config.externals = {
+                    ...config.externals,
+                    'react-native-sqlite-storage': null,
+                };
+            }
+
+            if (Object.prototype.toString.call(config.externals) === '[object Array]') {
+                config.externals.push('react-native-sqlite-storage');
+            }
         },
     },
 };

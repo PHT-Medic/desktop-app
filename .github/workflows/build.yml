@@ -11,7 +11,7 @@ jobs:
 
         strategy:
             matrix:
-                os: [macos-latest, ubuntu-latest, windows-latest]
+                os: [macos-latest, windows-latest]
 
         steps:
             - name: Check out Git repository
@@ -22,33 +22,13 @@ jobs:
               with:
                   node-version: 16
 
-            - name: Get yarn cache
-              id: yarn-cache
-              run: echo "::set-output name=dir::$(yarn cache dir)"
-
-            - name: Cache Node.js modules
-              uses: actions/cache@v1
+            - name: Use cache
+              uses: actions/cache@v2
               with:
-                 path: ${{ steps.yarn-cache.outputs.dir }}
-                 key: ${{ runner.os }}-yarn-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
-                 restore-keys: |
-                      ${{ runner.os }}-yarn-
-
-            - name: Cache Electron
-              uses: actions/cache@v1
-              with:
-                 path: ${{ github.workspace }}/.cache/electron
-                 key: ${{ runner.os }}-electron-cache-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
-                 restore-keys: |
-                      ${{ runner.os }}-electron-cache-
-
-            - name: Cache Electron-Builder
-              uses: actions/cache@v1
-              with:
-                  path: ${{ github.workspace }}/.cache/electron-builder
-                  key: ${{ runner.os }}-electron-builder-cache-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
-                  restore-keys: |
-                      ${{ runner.os }}-electron-builder-cache-
+                 path: |
+                    node_modules
+                    */*/node_modules
+                 key: ${{ runner.os }}-${{ hashFiles('**/package.json') }}
 
             - name: Build/release Electron app
               uses: samuelmeuli/action-electron-builder@v1

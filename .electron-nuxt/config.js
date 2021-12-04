@@ -3,6 +3,8 @@ const path = require('path')
 const PROJECT_ROOT = path.join(__dirname, '..')
 const SRC_DIR = path.join(PROJECT_ROOT, 'src')
 
+console.log(PROJECT_ROOT);
+
 const config = {
     ELECTRON_RELAUNCH_CODE: 250, // valid range in unix system: <1,255>
     ELECTRON_INSPECTION_PORT: 5858,

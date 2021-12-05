@@ -1,5 +1,8 @@
 import {app, BrowserWindow, ipcMain, dialog, clipboard} from 'electron';
+import serve, {loadURL} from 'electron-serve';
+
 import {watchFile} from "fs";
+import * as path from "path";
 
 app.on('window-all-closed', () => {
     // On mac-os it is common for applications and their menu bar
@@ -9,6 +12,7 @@ app.on('window-all-closed', () => {
 
 const isProd: boolean = process.env.NODE_ENV === 'production';
 
+
 if (!isProd) {
     watchFile(__filename, () => {
         app.exit(0);
@@ -16,6 +20,13 @@ if (!isProd) {
 }
 
 (async () => {
+    let load : undefined | loadURL;
+
+    if(isProd) {
+        const directory = __dirname.split(path.sep).pop();
+        load = serve({directory: directory || '.electron-adapter'});
+    }
+
     await app.whenReady();
 
     let mainWindow : BrowserWindow  = new BrowserWindow({
@@ -30,8 +41,9 @@ if (!isProd) {
         }
     });
 
-    if (isProd) {
-        await mainWindow.loadURL('app://./index.html');
+    if (isProd && !!load) {
+        await load(mainWindow);
+        // await mainWindow.loadURL('app://./index.html');
     } else {
         const port = process.env.ELECTRON_MAIN_PORT || 8888;
         await mainWindow.loadURL(`http://localhost:${port}`);

@@ -42,6 +42,7 @@
         "electron": "^16.0.4",
         "electron-adapter": "^0.0.7",
         "electron-builder": "22.9.1",
+        "electron-serve": "^1.1.0",
         "eslint": "^8.3.0",
         "fernet": "^0.4.0",
         "less-loader": "7.0.1",

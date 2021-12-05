@@ -3,8 +3,7 @@
         "@tada5hi/eslint-config-vue-typescript"
     ],
     "parserOptions": {
-        "project": "./src/renderer/tsconfig.json",
-        "extraFileExtensions": [".vue"]
+        "project": "./src/renderer/tsconfig.json"
     },
     "rules": {
         "no-underscore-dangle": "off",

@@ -3,6 +3,7 @@
     "private": true,
     "version": "0.0.8",
     "description": "This project contains the local-tool of the PHT.",
+    "main": ".electron-adapter/index.js",
     "scripts": {
         "dev": "electron-adapter dev",
         "build": "electron-adapter build --config electron-builder.config.js",

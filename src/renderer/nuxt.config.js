@@ -5,10 +5,6 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
-const { hasOwnProperty } = require('@personalhealthtrain/ui-common');
-const path = require('path');
-
 module.exports = {
     publicRuntimeConfig() {
         return {
@@ -71,44 +67,13 @@ module.exports = {
         '@/assets/css/bootstrap-override.css',
     ],
     router: {
-        // base: '/',
+        mode: 'hash',
         middleware: ['layout'],
     },
 
     build: {
         extend(config, ctx) {
-            if (!config.resolve) {
-                config.resolve = {};
-            }
-
-            if (!config.resolve.alias) {
-                config.resolve.alias = {};
-            }
-
-            if (!config.resolve.plugins) {
-                config.resolve.plugins = [];
-            }
-
-            config.resolve.plugins.push(new TsconfigPathsPlugin({ configFile: path.resolve(__dirname, 'tsconfig.json') }));
-
-            if (hasOwnProperty(config.resolve, '~')) {
-                delete config.resolve.alias['~'];
-            }
-
-            if (hasOwnProperty(config.resolve.alias, '@')) {
-                delete config.resolve.alias['@'];
-            }
-
-            if (Object.prototype.toString.call(config.externals) === '[object Object]') {
-                config.externals = {
-                    ...config.externals,
-                    'react-native-sqlite-storage': null,
-                };
-            }
-
-            if (Object.prototype.toString.call(config.externals) === '[object Array]') {
-                config.externals.push('react-native-sqlite-storage');
-            }
+            config.target = 'electron-renderer';
         },
     },
 };

@@ -74,6 +74,33 @@ module.exports = {
     build: {
         extend(config, ctx) {
             config.target = 'electron-renderer';
+
+            if (!config.resolve) {
+                config.resolve = {};
+            }
+
+            if (!config.resolve.alias) {
+                config.resolve.alias = {};
+            }
+
+            if (!config.resolve.plugins) {
+                config.resolve.plugins = [];
+            }
+
+            // eslint-disable-next-line no-prototype-builtins
+            if (config.resolve.alias.hasOwnProperty('~')) {
+                delete config.resolve.alias['~'];
+            }
+
+            // eslint-disable-next-line no-prototype-builtins
+            if (config.resolve.alias.hasOwnProperty('@')) {
+                delete config.resolve.alias['@'];
+            }
+
+            config.externals = {
+                ...config.externals,
+                'react-native-sqlite-storage': 'react-native-sqlite-storage',
+            };
         },
     },
 };

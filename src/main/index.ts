@@ -1,5 +1,5 @@
 import {app, BrowserWindow, ipcMain, dialog, clipboard} from 'electron';
-import serve, {loadURL} from 'electron-serve';
+import {registerRenderedFiles} from 'electron-adapter';
 
 import {watchFile} from "fs";
 import * as path from "path";
@@ -20,11 +20,9 @@ if (!isProd) {
 }
 
 (async () => {
-    let load : undefined | loadURL;
-
     if(isProd) {
         const directory = __dirname.split(path.sep).pop();
-        load = serve({directory: directory || '.electron-adapter'});
+        registerRenderedFiles({directory: directory || '.electron-adapter'});
     }
 
     await app.whenReady();
@@ -41,9 +39,8 @@ if (!isProd) {
         }
     });
 
-    if (isProd && !!load) {
-        await load(mainWindow);
-        // await mainWindow.loadURL('app://./index.html');
+    if (isProd) {
+        await mainWindow.loadURL(`app://-`);
     } else {
         const port = process.env.ELECTRON_MAIN_PORT || 8888;
         await mainWindow.loadURL(`http://localhost:${port}`);

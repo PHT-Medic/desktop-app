@@ -1422,10 +1422,10 @@
     mustache "^2.3.0"
     stack-trace "0.0.10"
 
-"@personalhealthtrain/ui-common@^1.0.0-alpha.2":
-  version "1.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@personalhealthtrain/ui-common/-/ui-common-1.0.0-alpha.2.tgz#243adfaff4dfbfd94c1caf2a7071a89a0358fbdb"
-  integrity sha512-gDEQQefWVGiSH25RNMJPcdtOSPQpEMr64wwxbXv+4KMxLLaZ7+o6D+H+UMmvx0pP/MPjS5lHUDyyi6c7cdeOtQ==
+"@personalhealthtrain/ui-common@^1.0.0-alpha.3":
+  version "1.0.0-alpha.3"
+  resolved "https://registry.yarnpkg.com/@personalhealthtrain/ui-common/-/ui-common-1.0.0-alpha.3.tgz#54852309e09b2f09bdb986812b0f5d6132cdc7e9"
+  integrity sha512-lKkSZgz6ajDwIZsPzr8dMXpObBC4N9H1uy4qmO9OtY3wS5cYnEyQtkL2wEJDqI4w3he+GyxWITdTs5Hw1fWxgw==
   dependencies:
     "@trapi/query" "^2.0.1"
     "@typescript-auth/core" "^1.0.1"

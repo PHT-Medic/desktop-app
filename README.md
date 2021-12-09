@@ -1,7 +1,7 @@
-[![main](https://github.com/PHT-Medic/local-tool/actions/workflows/main.yml/badge.svg)](https://github.com/PHT-Medic/local-tool/actions/workflows/main.yml)
+[![main](https://github.com/PHT-Medic/desktop-app/actions/workflows/main.yml/badge.svg)](https://github.com/PHT-Medic/desktop-app/actions/workflows/main.yml)
 
-# Local Tool 🗃
-This repository contains the Local-Tool of the Personal Health Train.
+# Desktop App 🖥
+This repository contains the desktop app of the Personal Health Train.
 
 ![](assets/ui.jpg)
 

@@ -51,13 +51,13 @@ export default {
                         class="navbar-nav nav-items navbar-gadgets"
                     >
                         <li class="nav-item">
-                            <nuxt-link
+                            <a
                                 class="nav-link user-link"
-                                :to="'/users/'+user.id"
+                                href="javascript:void(0)"
                             >
                                 <v-gravatar :email="user.email ? user.email : ''" />
                                 <span>{{ user.display_name ? user.display_name : user.name }}</span>
-                            </nuxt-link>
+                            </a>
                         </li>
                         <li class="nav-item">
                             <nuxt-link

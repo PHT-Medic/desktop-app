@@ -6,10 +6,10 @@
  */
 
 module.exports = {
-    productName: 'PHT - App',
-    appId: 'de.personalhealthtrain.app',
+    productName: 'PHT: Desktop-App',
+    appId: 'de.personalhealthtrain.app-desktop',
     // eslint-disable-next-line no-template-curly-in-string
-    artifactName: 'pht-app-${version}.${ext}',
+    artifactName: 'pht-desktop-app-${version}.${ext}',
     directories: {
         output: 'dist',
         buildResources: 'resources'

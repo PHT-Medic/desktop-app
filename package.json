@@ -1,8 +1,8 @@
 {
-    "name": "pht-app",
+    "name": "desktop-app",
     "private": true,
     "version": "0.0.12",
-    "description": "This project contains the local-tool of the PHT.",
+    "description": "This project contains the desktop-app of the PHT.",
     "main": ".electron-adapter/index.js",
     "scripts": {
         "dev": "electron-adapter dev",
@@ -30,7 +30,7 @@
         "@nuxt/types": "^2.14.5",
         "@nuxt/typescript-build": "2.1.0",
         "@nuxtjs/google-fonts": "^1.2.0",
-        "@personalhealthtrain/ui-common": "^1.0.0-alpha.3",
+        "@personalhealthtrain/ui-common": "^1.0.0-alpha.4",
         "@tada5hi/eslint-config-vue-typescript": "0.0.22",
         "@types/tar": "^6.1.1",
         "@typescript-auth/core": "^1.0.2",

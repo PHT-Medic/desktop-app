@@ -1,8 +1,9 @@
-import {app, BrowserWindow, ipcMain, dialog, clipboard} from 'electron';
+import {app, BrowserWindow, ipcMain, dialog, clipboard, nativeImage, Tray, Menu} from 'electron';
 import {registerRenderedFiles} from 'electron-adapter';
 
 import {watchFile} from "fs";
 import * as path from "path";
+import {buildContextMenu} from "./utils/context-menu";
 
 app.on('window-all-closed', () => {
     // On mac-os it is common for applications and their menu bar
@@ -19,6 +20,8 @@ if (!isProd) {
     });
 }
 
+let mainWindow : BrowserWindow;
+
 (async () => {
     if(isProd) {
         const directory = __dirname.split(path.sep).pop();
@@ -27,7 +30,7 @@ if (!isProd) {
 
     await app.whenReady();
 
-    let mainWindow : BrowserWindow  = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         height: 768,
         width: 1024,
         autoHideMenuBar: true,
@@ -70,6 +73,9 @@ if (!isProd) {
     });
 })();
 
+app.on('ready', () => {
+    buildContextMenu();
+})
 app.on('window-all-closed', () => {
     app.quit();
 });

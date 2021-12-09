@@ -17,7 +17,7 @@ module.exports = {
     ssr: false,
     target: 'static',
     head: {
-        title: 'PHT - App',
+        title: 'PHT: Desktop-App',
         meta: [
             { charset: 'utf-8' },
         ],

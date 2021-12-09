@@ -5,8 +5,17 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-export enum KeyPicker {
+export enum KeyPairVariant {
     DEFAULT = 'default',
     HOMOMORPHIC_ENCRYPTION = 'homomorphic-encryption',
 }
-export type KeyPickerType = `${KeyPicker}`;
+export type KeyPairVariantType = `${KeyPairVariant}`;
+
+// ---------------------------------------------------
+
+export enum KeyVariant {
+    PRIVATE = 'private',
+    PUBLIC = 'public',
+}
+
+export type KeyVariantType = `${KeyVariant}`;

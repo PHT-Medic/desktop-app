@@ -1,5 +1,5 @@
 <!--
-  - Copyright (c) 2021.
+  - Copyright (c) 2021-2021.
   - Author Peter Placzek (tada5hi)
   - For the full copyright and license information,
   - view the LICENSE file that was distributed with this source code.
@@ -7,10 +7,6 @@
 
 <template>
     <div>
-        <h1 class="title no-border mb-2">
-            <i class="fas fa-file-alt" /> Hash
-        </h1>
-
         <div
             v-if="!privateKey"
             class="alert alert-danger alert-sm"
@@ -19,7 +15,7 @@
             <nuxt-link
                 type="button"
                 class="btn btn-dark btn-xs"
-                :to="'/settings'"
+                :to="'/settings/secrets'"
             >
                 <i class="fa fa-cog" /> Settings
             </nuxt-link>
@@ -64,7 +60,7 @@
             </div>
 
             <div class="form-group">
-                <label>Hash</label>
+                <label>Content</label>
                 <textarea
                     v-model="form.hash"
                     class="form-control"
@@ -100,8 +96,8 @@
 <script>
 import { createSign } from 'crypto';
 import { maxLength, minLength, required } from 'vuelidate/lib/validators';
-import AlertMessage from '../../components/alert/AlertMessage';
-import { LayoutKey, LayoutNavigationID } from '../../config/layout/contants';
+import AlertMessage from '../../../components/alert/AlertMessage';
+import { LayoutKey, LayoutNavigationID } from '../../../config/layout/contants';
 
 export default {
     meta: {

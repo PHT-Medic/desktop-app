@@ -26,7 +26,7 @@ export const state = () : LayoutState => ({
     hePath: undefined,
     hePrivateKey: undefined,
     hePublicKey: undefined,
-});
+} as LayoutState);
 
 export const getters : GetterTree<LayoutState, RootState> = {
     defaultPath: (state) => state.defaultPath,

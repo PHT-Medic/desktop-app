@@ -13,6 +13,7 @@ import {
     applyAuthRestrictionForNavigationComponents,
 } from 'vue-layout-navigation';
 import { Context } from '@nuxt/types';
+import { hasOwnProperty } from '@personalhealthtrain/ui-common';
 import { LayoutSideDefaultNavigation, LayoutTopNavigation } from './index';
 import { LayoutKey } from './contants';
 
@@ -76,6 +77,14 @@ export class NavigationProvider implements NavigationProviderInterface {
 
                 break;
         }
+
+        items = items.filter((item) => {
+            if (!hasOwnProperty(item, 'mode')) {
+                return true;
+            }
+
+            return item.mode === this.ctx.store.getters['global/mode'];
+        });
 
         return applyAuthRestrictionForNavigationComponents(items, {
             loggedIn: this.ctx.store.getters['auth/loggedIn'],

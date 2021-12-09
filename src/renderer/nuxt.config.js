@@ -17,7 +17,7 @@ module.exports = {
     ssr: false,
     target: 'static',
     head: {
-        title: 'PHT - LocalTool',
+        title: 'PHT - App',
         meta: [
             { charset: 'utf-8' },
         ],
@@ -68,7 +68,7 @@ module.exports = {
     ],
     router: {
         mode: 'hash',
-        middleware: ['layout'],
+        middleware: ['auth', 'layout'],
     },
 
     build: {

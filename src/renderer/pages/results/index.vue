@@ -21,7 +21,7 @@
             <nuxt-link
                 type="button"
                 class="btn btn-dark btn-xs"
-                :to="'/settings'"
+                :to="'/settings/secrets'"
             >
                 <i class="fa fa-cog" /> Settings
             </nuxt-link>
@@ -33,11 +33,11 @@
             <div class="form-group">
                 <button
                     type="submit"
-                    class="btn btn-primary btn-sm"
+                    class="btn btn-block btn-primary btn-sm pt-4 pb-4"
                     :disabled="!privateKey"
                     @click.prevent="selectFile"
                 >
-                    <i class="fa fa-file-archive" /> Select
+                    <h4><i class="fa fa-file-archive mr-2" /> Select Result-File <small>(.tar)</small></h4>
                 </button>
             </div>
 

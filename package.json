@@ -1,7 +1,7 @@
 {
-    "name": "local-tool",
+    "name": "pht-app",
     "private": true,
-    "version": "0.0.10",
+    "version": "0.0.12",
     "description": "This project contains the local-tool of the PHT.",
     "main": ".electron-adapter/index.js",
     "scripts": {
@@ -30,7 +30,7 @@
         "@nuxt/types": "^2.14.5",
         "@nuxt/typescript-build": "2.1.0",
         "@nuxtjs/google-fonts": "^1.2.0",
-        "@personalhealthtrain/ui-common": "^1.0.0-alpha.2",
+        "@personalhealthtrain/ui-common": "^1.0.0-alpha.3",
         "@tada5hi/eslint-config-vue-typescript": "0.0.22",
         "@types/tar": "^6.1.1",
         "@typescript-auth/core": "^1.0.2",

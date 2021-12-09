@@ -5,16 +5,11 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 <script>
-import AlertMessage from '../../../components/alert/AlertMessage';
-import KeyPairPicker from '../../../components/KeyPairPicker';
+import KeyPairPicker from '../../../../components/key/KeyPairPicker';
 
 export default {
-    meta: {
-        requireLoggedIn: true,
-    },
     components: {
         KeyPairPicker,
-        AlertMessage,
     },
     computed: {
         user() {
@@ -25,6 +20,6 @@ export default {
 </script>
 <template>
     <div>
-        <key-pair-picker :type="'homomorphic-encryption'" />
+        <key-pair-picker :variant="'default'" />
     </div>
 </template>

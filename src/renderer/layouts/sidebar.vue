@@ -6,8 +6,12 @@
   -->
 <script>
 
+import GlobalModeSwitcher from '../components/GlobalModeSwitcher';
+
 export default {
-    components: { },
+    components: {
+        GlobalModeSwitcher,
+    },
     computed: {
         loggedIn(vm) {
             return vm.$store.getters['auth/loggedIn'];
@@ -20,6 +24,10 @@ export default {
 </script>
 <template>
     <div class="page-sidebar">
+        <div class="sidebar-header p-0">
+            <global-mode-switcher />
+        </div>
+
         <navigation-components
             class="sidebar-menu navbar-nav"
             :tier="1"

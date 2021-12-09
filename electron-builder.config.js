@@ -6,10 +6,10 @@
  */
 
 module.exports = {
-    productName: 'PHT - LocalTool',
+    productName: 'PHT - App',
     appId: 'de.personalhealthtrain.app',
     // eslint-disable-next-line no-template-curly-in-string
-    artifactName: 'setup-${version}.${ext}',
+    artifactName: 'pht-app-${version}.${ext}',
     directories: {
         output: 'dist',
         buildResources: 'resources'
@@ -26,7 +26,7 @@ module.exports = {
         ]
     },
     win: {
-        icon: `assets/icons/win-icon.ico`,
+        icon: `assets/icons/icon.ico`,
         publisherName: 'tada5hi',
         target: 'nsis',
     },
@@ -39,7 +39,7 @@ module.exports = {
     },
     mac: {
         target: 'dmg',
-        icon: `assets/icons/con.icns`,
+        icon: `assets/icons/512x512.png`,
     },
     dmg: {
         contents: [

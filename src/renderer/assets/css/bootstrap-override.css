@@ -123,3 +123,7 @@ a:focus{
     padding: .5rem;
 }
 
+.modal-content {
+    background: #fafafa;
+}
+

@@ -10,20 +10,21 @@ import * as fs from 'fs';
 import { generateKeyPairSync } from 'crypto';
 import { ipcRenderer } from 'electron';
 import * as paillierBigint from 'paillier-bigint';
-
-import { KeyPicker } from '../modules/key-picker/type';
+import { KeyPairVariant } from '../../modules/key-picker/type';
+import KeyDisplay from './KeyDisplay';
 
 export default {
+    components: { KeyDisplay },
     props: {
-        type: KeyPicker,
+        variant: KeyPairVariant,
     },
     data() {
         return {
             dirListener: null,
             form: {
                 passphrase: '',
-                privateKeyFileName: this.privateKeyFileName,
-                publicKeyFileName: this.publicKeyFileName,
+                privateKeyFileName: '',
+                publicKeyFileName: '',
             },
         };
     },
@@ -32,14 +33,14 @@ export default {
             return !!this.form.passphrase && this.form.passphrase.length !== 0;
         },
         isPassphraseRequired() {
-            return this.type === KeyPicker.DEFAULT;
+            return this.variant === KeyPairVariant.DEFAULT;
         },
 
         directoryPath() {
-            switch (this.type) {
-                case KeyPicker.HOMOMORPHIC_ENCRYPTION:
+            switch (this.variant) {
+                case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
                     return this.$store.getters['secret/hePath'];
-                case KeyPicker.DEFAULT:
+                case KeyPairVariant.DEFAULT:
                     return this.$store.getters['secret/defaultPath'];
             }
 
@@ -50,10 +51,10 @@ export default {
         },
 
         publicKey() {
-            switch (this.type) {
-                case KeyPicker.HOMOMORPHIC_ENCRYPTION:
+            switch (this.variant) {
+                case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
                     return this.$store.getters['secret/hePublicKey'];
-                case KeyPicker.DEFAULT:
+                default:
                     return this.$store.getters['secret/defaultPublicKey'];
             }
         },
@@ -65,19 +66,19 @@ export default {
             return this.form.publicKeyFileName;
         },
         publicKeyDefaultFileName() {
-            switch (this.type) {
-                case KeyPicker.HOMOMORPHIC_ENCRYPTION:
+            switch (this.variant) {
+                case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
                     return 'public-he.key';
-                case KeyPicker.DEFAULT:
+                default:
                     return 'public.pem';
             }
         },
 
         privateKey() {
-            switch (this.type) {
-                case KeyPicker.HOMOMORPHIC_ENCRYPTION:
+            switch (this.variant) {
+                case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
                     return this.$store.getters['secret/hePrivateKey'];
-                case KeyPicker.DEFAULT:
+                default:
                     return this.$store.getters['secret/defaultPrivateKey'];
             }
         },
@@ -89,23 +90,26 @@ export default {
             return this.form.privateKeyFileName;
         },
         privateKeyDefaultFileName() {
-            switch (this.type) {
-                case KeyPicker.HOMOMORPHIC_ENCRYPTION:
+            switch (this.variant) {
+                case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
                     return 'private-he.key';
-                case KeyPicker.DEFAULT:
+                default:
                     return 'private.pem';
             }
         },
     },
     created() {
+        this.form.privateKeyFileName = this.privateKeyFileName;
+        this.form.publicKeyFileName = this.publicKeyFileName;
+
         this.dirListener = (event, arg) => {
             if (arg.canceled || arg.filePaths.length === 0) return;
 
-            switch (this.type) {
-                case KeyPicker.HOMOMORPHIC_ENCRYPTION:
+            switch (this.variant) {
+                case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
                     this.$store.dispatch('secret/setHePath', arg.filePaths[0]);
                     break;
-                case KeyPicker.DEFAULT:
+                default:
                     this.$store.dispatch('secret/setDefaultPath', arg.filePaths[0]);
                     break;
             }
@@ -132,6 +136,12 @@ export default {
                 await fs.promises.access(privateKeyPath, fs.constants.F_OK);
                 keyPair.privateKey = await fs.promises.readFile(privateKeyPath);
             } catch (e) {
+                this.$bvToast.toast('The private key could not be found or be read.', {
+                    variant: 'warning',
+                    toaster: 'b-toaster-top-center',
+                });
+
+                return;
                 // do nothing
             }
 
@@ -139,17 +149,28 @@ export default {
                 await fs.promises.access(publicKeyPath, fs.constants.F_OK);
                 keyPair.publicKey = await fs.promises.readFile(publicKeyPath);
             } catch (e) {
+                this.$bvToast.toast('The public key could not be found or be read.', {
+                    variant: 'warning',
+                    toaster: 'b-toaster-top-center',
+                });
+
+                return;
                 // do nothing
             }
 
-            switch (this.type) {
-                case KeyPicker.HOMOMORPHIC_ENCRYPTION:
+            switch (this.variant) {
+                case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
                     await this.$store.dispatch('secret/setHeKeyPair', keyPair);
                     break;
-                case KeyPicker.DEFAULT:
+                case KeyPairVariant.DEFAULT:
                     await this.$store.dispatch('secret/setDefaultKeyPair', keyPair);
                     break;
             }
+
+            this.$bvToast.toast('The key pair was successfully loaded.', {
+                variant: 'success',
+                toaster: 'b-toaster-top-center',
+            });
         },
         async generate() {
             if (!this.isDirectoryPathDefined) return;
@@ -159,85 +180,45 @@ export default {
                 publicKey: '',
             };
 
-            switch (this.type) {
-                case KeyPicker.HOMOMORPHIC_ENCRYPTION: {
-                    const { publicKey, privateKey } = await paillierBigint.generateRandomKeys(128);
+            try {
+                switch (this.variant) {
+                    case KeyPairVariant.HOMOMORPHIC_ENCRYPTION: {
+                        const { publicKey, privateKey } = await paillierBigint.generateRandomKeys(128);
 
-                    // eslint-disable-next-line no-extend-native
-                    BigInt.prototype.toJSON = function () {
-                        return this.toString();
-                    };
+                        // eslint-disable-next-line no-extend-native
+                        BigInt.prototype.toJSON = function () {
+                            return this.toString();
+                        };
 
-                    keyPair.publicKey = JSON.stringify({
-                        n: publicKey.n,
-                        g: publicKey.g,
-                    });
+                        keyPair.publicKey = JSON.stringify({
+                            n: publicKey.n,
+                            g: publicKey.g,
+                        });
 
-                    keyPair.privateKey = JSON.stringify({
-                        mu: privateKey.mu,
-                        lambda: privateKey.lambda,
-                    });
-                    break;
+                        keyPair.privateKey = JSON.stringify({
+                            mu: privateKey.mu,
+                            lambda: privateKey.lambda,
+                        });
+                        break;
+                    }
+                    case KeyPairVariant.DEFAULT:
+                        keyPair = generateKeyPairSync('rsa', {
+                            modulusLength: 2048,
+                            publicKeyEncoding: {
+                                type: 'pkcs1',
+                                format: 'pem',
+                            },
+                            privateKeyEncoding: {
+                                type: 'pkcs8',
+                                format: 'pem',
+                                cipher: 'aes-192-cbc',
+                                passphrase: this.form.passphrase,
+                            },
+                        });
+                        break;
                 }
-                case KeyPicker.DEFAULT:
-                    keyPair = generateKeyPairSync('rsa', {
-                        modulusLength: 2048,
-                        publicKeyEncoding: {
-                            type: 'pkcs1',
-                            format: 'pem',
-                        },
-                        privateKeyEncoding: {
-                            type: 'pkcs8',
-                            format: 'pem',
-                            cipher: 'aes-192-cbc',
-                            passphrase: this.form.passphrase,
-                        },
-                    });
-                    break;
-            }
-
-            fs.writeFileSync(path.join(this.directoryPath, this.privateKeyFileName), keyPair.privateKey, {
-                encoding: 'utf-8',
-            });
-
-            fs.writeFileSync(path.join(this.directoryPath, this.publicKeyFileName), keyPair.publicKey, {
-                encoding: 'utf-8',
-            });
-
-            switch (this.type) {
-                case KeyPicker.HOMOMORPHIC_ENCRYPTION:
-                    await this.$store.dispatch('secret/setHeKeyPair', keyPair);
-                    break;
-                case KeyPicker.DEFAULT:
-                    await this.$store.dispatch('secret/setDefaultKeyPair', keyPair);
-                    break;
-            }
-        },
-        copyToClipboard(key) {
-            let text;
-
-            switch (key) {
-                case 'privateKey':
-                    text = this.privateKey;
-                    break;
-                case 'publicKey':
-                    text = this.publicKey;
-                    break;
-            }
-
-            if (!text) {
-                this.$bvToast.toast('There does not exist a valid key to copy.', {
-                    variant: 'danger',
-                    toaster: 'b-toaster-top-center',
-                });
-
-                return;
-            }
-
-            text = text.toString();
-
-            if (text.length === 0) {
-                this.$bvToast.toast('The key to copy is empty.', {
+            } catch (e) {
+                this.$bvToast.toast('The key pair could not be generated.', {
                     variant: 'warning',
                     toaster: 'b-toaster-top-center',
                 });
@@ -245,9 +226,33 @@ export default {
                 return;
             }
 
-            ipcRenderer.send('copy-to-clipboard', text);
+            try {
+                fs.writeFileSync(path.join(this.directoryPath, this.privateKeyFileName), keyPair.privateKey, {
+                    encoding: 'utf-8',
+                });
 
-            this.$bvToast.toast('Successfully copied key to clipboard', {
+                fs.writeFileSync(path.join(this.directoryPath, this.publicKeyFileName), keyPair.publicKey, {
+                    encoding: 'utf-8',
+                });
+            } catch (e) {
+                this.$bvToast.toast('The key pair could not be written to the specified directory.', {
+                    variant: 'warning',
+                    toaster: 'b-toaster-top-center',
+                });
+
+                return;
+            }
+
+            switch (this.variant) {
+                case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
+                    await this.$store.dispatch('secret/setHeKeyPair', keyPair);
+                    break;
+                case KeyPairVariant.DEFAULT:
+                    await this.$store.dispatch('secret/setDefaultKeyPair', keyPair);
+                    break;
+            }
+
+            this.$bvToast.toast('The key pair was successfully generated.', {
                 variant: 'success',
                 toaster: 'b-toaster-top-center',
             });
@@ -363,35 +368,15 @@ export default {
             </button>
         </div>
         <div class="col">
-            <div class="form-group">
-                <label class="d-flex flex-row">PrivateKey <a
-                    v-if="privateKey"
-                    href="javascript:void(0)"
-                    class="badge badge-dark ml-auto"
-                    @click.prevent="copyToClipboard('privateKey')"
-                ><i class="fa fa-copy" /> Copy</a></label>
-                <textarea
-                    v-model="privateKey"
-                    class="form-control"
-                    rows="8"
-                    placeholder="..."
-                />
-            </div>
+            <key-display
+                :key-pair-variant="variant"
+                :key-variant="'private'"
+            />
 
-            <div class="form-group">
-                <label class="d-flex flex-row">PublicKey <a
-                    v-if="publicKey"
-                    href="javascript:void(0)"
-                    class="badge badge-dark ml-auto"
-                    @click.prevent="copyToClipboard('publicKey')"
-                ><i class="fa fa-copy" /> Copy</a></label>
-                <textarea
-                    v-model="publicKey"
-                    class="form-control"
-                    rows="8"
-                    placeholder="..."
-                />
-            </div>
+            <key-display
+                :key-pair-variant="variant"
+                :key-variant="'public'"
+            />
         </div>
     </div>
 </template>

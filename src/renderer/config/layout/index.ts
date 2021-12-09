@@ -6,7 +6,7 @@
  */
 
 import { NavigationComponentConfig } from 'vue-layout-navigation';
-import { LayoutNavigationID } from './contants';
+import { LayoutKey, LayoutNavigationID } from './contants';
 
 export const LayoutTopNavigation : NavigationComponentConfig[] = [
     {
@@ -23,12 +23,6 @@ export const LayoutSideDefaultNavigation : NavigationComponentConfig[] = [
         url: '/',
         icon: 'fas fa-info',
         rootLink: true,
-    },
-    {
-        name: 'Hash',
-        type: 'link',
-        url: '/hash',
-        icon: 'fas fa-file-alt',
     },
     {
         name: 'Result(s)',

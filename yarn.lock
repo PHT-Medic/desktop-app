@@ -1955,10 +1955,10 @@
   resolved "https://registry.yarnpkg.com/@types/zen-observable/-/zen-observable-0.8.3.tgz#781d360c282436494b32fe7d9f7f8e64b3118aa3"
   integrity sha512-fbF6oTd4sGGy0xjHPKAt+eS2CrxJ3+6gQ3FGcBoIJR2TLAyCkCyI8JqZNy+FeON0AhVgNJoUumVoZQjBFUqHkw==
 
-"@typescript-auth/core@^1.0.1", "@typescript-auth/core@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@typescript-auth/core/-/core-1.0.2.tgz#51045527b4a9437145e46a26e6e03bb084d8c893"
-  integrity sha512-sZ94mqarzx95pDzIUXX6T5sqHJGOwU0O0CKppFDUfXB490ScEbhHgENDDVOdyPPW3jC6Y4yy6r5ZcovqpmYz3w==
+"@typescript-auth/core@^1.0.1", "@typescript-auth/core@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@typescript-auth/core/-/core-1.0.4.tgz#0baa8924dc67ed2e4c808a33f10e9aaef48f2a94"
+  integrity sha512-AjLUCa2fEFmrOA3lgmcWIWqtzF5Y8IwRUaNgZ3iYmM/JZOUwSIn9DurpMG0pTUzueXYJ+DPPt0ejqA2841rk2A==
   dependencies:
     "@casl/ability" "^5.3.1"
     axios "^0.24.0"

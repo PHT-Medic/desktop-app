@@ -274,7 +274,6 @@ export default {
                 <div>
                     <div
                         class="form-group"
-                        :class="{ 'form-group-error': !isDirectoryPathDefined }"
                     >
                         <label>Directory Path</label>
                         <div class="input-group mb-3">
@@ -310,7 +309,6 @@ export default {
                 <div
                     v-if="isPassphraseRequired"
                     class="form-group"
-                    :class="{ 'form-group-error': !isPassphraseDefined }"
                 >
                     <label>Passphrase</label>
                     <input

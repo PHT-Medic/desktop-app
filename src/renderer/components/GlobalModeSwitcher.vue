@@ -7,6 +7,7 @@
 
 <script>
 import LoginForm from './LoginForm';
+import { LayoutKey } from '../config/layout/contants';
 
 export default {
     components: { LoginForm },
@@ -24,9 +25,9 @@ export default {
             return this.$store.getters['auth/loggedIn'];
         },
         label() {
-            return this.loggedIn
-                ? 'Online'
-                : 'Offline';
+            return this.loggedIn ?
+                'Online' :
+                'Offline';
         },
     },
     created() {
@@ -37,12 +38,11 @@ export default {
             if (this.busy) return;
 
             if (this.loggedIn) {
-                await this.$router.push({
-                    path: '/logout',
-                    query: {
-                        redirect: this.$route.fullPath,
-                    },
-                });
+                if (this.$route.meta[LayoutKey.REQUIRED_LOGGED_IN]) {
+                    await this.$router.push('/logout');
+                } else {
+                    await this.$store.dispatch('auth/triggerLogout');
+                }
             } else {
                 this.$refs.form.show();
             }

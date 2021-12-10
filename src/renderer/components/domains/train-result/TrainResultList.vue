@@ -73,6 +73,15 @@ export default {
         }
     },
     methods: {
+        clear() {
+            this.meta = {
+                limit: 10,
+                offset: 0,
+                total: 0,
+            };
+
+            this.items = [];
+        },
         async load() {
             if (this.busy) return;
 

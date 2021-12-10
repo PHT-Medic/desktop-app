@@ -7,8 +7,11 @@
 
 <script>
 import { LayoutKey, LayoutNavigationID } from '../../config/layout/contants';
+import TrainResultSelector from '../../components/domains/train-result/TrainResultSelector';
+import TrainResultList from '../../components/domains/train-result/TrainResultList';
 
 export default {
+    components: { TrainResultList, TrainResultSelector },
     meta: {
         [LayoutKey.NAVIGATION_ID]: LayoutNavigationID.DEFAULT,
     },
@@ -33,18 +36,31 @@ export default {
         privateKey() {
             return this.$store.getters['secret/defaultPrivateKey'];
         },
+        query() {
+            return this.$store.getters['auth/loggedIn'] ?
+                {
+                    filter: {
+                        user_id: this.$store.getters['auth/userId'],
+                    },
+                    sort: {
+                        created_at: 'DESC',
+                    },
+                } : {};
+        },
     },
     watch: {
         async loggedIN(val, oldVal) {
             if (val === oldVal) {
                 return;
             }
-
             if (
-                !val &&
-                this.$nuxt.$route.fullPath === '/results/list'
+                this.$refs.list
             ) {
-                await this.$nuxt.$router.push('/results');
+                if (val) {
+                    await this.$refs.list.load();
+                } else {
+                    await this.$refs.list.clear();
+                }
             }
         },
     },
@@ -72,30 +88,13 @@ export default {
             </nuxt-link>
         </div>
 
-        <div class="content-wrapper">
-            <div class="content-sidebar flex-column">
-                <b-nav
-                    pills
-                    vertical
-                >
-                    <template v-for="(item,key) in sidebar.items">
-                        <b-nav-item
-                            v-if="(item.requireLoggedIn && loggedIn) || !item.requireLoggedIn"
-                            :key="key"
-                            :disabled="item.active"
-                            :to="'/results' + item.urlSuffix"
-                            exact
-                            exact-active-class="active"
-                        >
-                            <i :class="item.icon" />
-                            {{ item.name }}
-                        </b-nav-item>
-                    </template>
-                </b-nav>
-            </div>
-            <div class="content-container">
-                <nuxt-child />
-            </div>
+        <train-result-selector />
+
+        <div v-if="loggedIn">
+            <train-result-list
+                ref="list"
+                :query="query"
+            />
         </div>
     </div>
 </template>

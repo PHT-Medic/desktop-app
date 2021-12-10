@@ -10,7 +10,6 @@ module.exports = {
     framework: 'nuxt',
 
     mainDirectory: 'src/main',
-    buildDirectory: '.electron-adapter',
 
     rendererDirectory: 'src/renderer'
 }

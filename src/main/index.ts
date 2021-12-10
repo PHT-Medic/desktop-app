@@ -1,4 +1,4 @@
-import {app, BrowserWindow, ipcMain, dialog, clipboard, nativeImage, Tray, Menu} from 'electron';
+import {app, BrowserWindow, ipcMain, dialog, clipboard, shell} from 'electron';
 import {registerRenderedFiles} from 'electron-adapter';
 
 import {watchFile} from "fs";
@@ -70,6 +70,10 @@ let mainWindow : BrowserWindow;
 
     ipcMain.on('copy-to-clipboard', async (event, arg) => {
         clipboard.writeText(arg);
+    });
+
+    ipcMain.on('dir-open', async (event, arg) => {
+        await shell.openPath(arg);
     });
 })();
 

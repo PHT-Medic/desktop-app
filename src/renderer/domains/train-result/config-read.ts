@@ -28,7 +28,6 @@ export async function readTrainResultConfig(context: ReadTrainResultConfigContex
     try {
         const content = crypto.privateDecrypt({
             key: context.encryption.privateKey,
-            passphrase: context.encryption.passphrase,
             padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
             oaepHash: 'sha512',
             oaepLabel: undefined,

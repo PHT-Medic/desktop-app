@@ -127,3 +127,11 @@ a:focus{
     background: #fafafa;
 }
 
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: #8c8e8f;
+}
+
+.nav-item .dropdown-item {
+    font-size: 0.8rem;
+}

@@ -6,12 +6,12 @@
   -->
 
 <script>
-import TrainResultDecrypt from '../../../components/domains/train-result/TrainResultDecrypt';
+import TrainResultSelector from '../../../components/domains/train-result/TrainResultSelector';
 
 export default {
-    components: { TrainResultDecrypt },
+    components: { TrainResultSelector },
 };
 </script>
 <template>
-    <train-result-decrypt />
+    <train-result-selector />
 </template>

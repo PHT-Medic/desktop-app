@@ -6,9 +6,8 @@
   -->
 
 <script>
-import { hasOwnProperty, isHex } from '@personalhealthtrain/ui-common';
 import { ipcRenderer } from 'electron';
-import { KeyPairVariant, KeyVariant } from '../../modules/key-picker/type';
+import { KeyPairVariant, KeyVariant } from '../../modules/encryption/type';
 
 export default {
     props: {
@@ -21,7 +20,9 @@ export default {
                 case KeyVariant.PRIVATE:
                     switch (this.keyPairVariant) {
                         case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
-                            return this.$store.getters['secret/hePrivateKey'];
+                            return this.$store.getters['secret/hePrivateKey'] ?
+                                JSON.stringify(this.$store.getters['secret/hePrivateKey']) :
+                                undefined;
                         case KeyPairVariant.DEFAULT:
                             return this.$store.getters['secret/defaultPrivateKey'];
                     }
@@ -29,7 +30,9 @@ export default {
                 case KeyVariant.PUBLIC:
                     switch (this.keyPairVariant) {
                         case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
-                            return this.$store.getters['secret/hePublicKey'];
+                            return this.$store.getters['secret/hePublicKey'] ?
+                                JSON.stringify(this.$store.getters['secret/hePublicKey']) :
+                                undefined;
                         case KeyPairVariant.DEFAULT:
                             return this.$store.getters['secret/defaultPublicKey'];
                     }
@@ -43,14 +46,20 @@ export default {
 
             if (!content) return undefined;
 
-            if (
-                typeof content !== 'string'
-                && hasOwnProperty(content, 'toString')
-            ) {
-                content = content.toString('hex');
+            if (Buffer.isBuffer(content)) {
+                content = content.toString();
             }
 
-            return isHex(content) ? content : content.toString('hex');
+            if (ArrayBuffer.isView(content)) {
+                content = content.toString();
+            }
+
+            if (typeof content === 'number') {
+                content = content.toString();
+            }
+
+            return Buffer.from(content, 'utf-8')
+                .toString('hex');
         },
 
         label() {

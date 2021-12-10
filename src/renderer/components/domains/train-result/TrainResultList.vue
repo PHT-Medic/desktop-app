@@ -5,7 +5,9 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 <script>
-import { getAPITrainResults, mergeDeep } from '@personalhealthtrain/ui-common';
+import {
+    TrainResultStatus, dropAPITrainResult, getAPITrainResults, mergeDeep,
+} from '@personalhealthtrain/ui-common';
 import Vue from 'vue';
 import Pagination from '../../Pagination';
 
@@ -39,6 +41,8 @@ export default {
                 total: 0,
             },
             itemBusy: false,
+
+            resultStatusOptions: TrainResultStatus,
         };
     },
     computed: {
@@ -82,6 +86,21 @@ export default {
                     },
                 }, this.query));
 
+                response.data = [
+                    ...response.data,
+                    {
+                        id: 'xxxx-xxxx-xxxx-xxxx',
+                        image: 'master/python/2.7',
+                        status: TrainResultStatus.FINISHED,
+                        train_id: 'xxxx-xxxx-xxxx-xxxx',
+                        train: {
+                            id: 'xxxx-xxxx-xxxx-xxxx',
+                            name: 'Chu Chu Train',
+                        },
+                        updated_at: new Date('2021-12-01 12:00:00'),
+                    },
+                ];
+
                 this.items = response.data;
                 const { total } = response.meta;
 
@@ -91,6 +110,23 @@ export default {
             }
 
             this.busy = false;
+        },
+        async drop(id) {
+            if (this.itemBusy) return;
+
+            this.itemBusy = true;
+
+            try {
+                await dropAPITrainResult(id);
+
+                this.dropArrayItem({ id });
+
+                this.$emit('deleted', { id });
+            } catch (e) {
+                // ...
+            }
+
+            this.itemBusy = false;
         },
         goTo(options, resolve, reject) {
             if (options.offset === this.meta.offset) return;
@@ -161,17 +197,54 @@ export default {
                 >
                     <div class="c-list-content align-items-center">
                         <div class="c-list-icon">
-                            <i class="fa fa-group" />
+                            <i class="fa fa-file-archive" />
                         </div>
-                        <slot name="item-name">
-                            <span class="mb-0">{{ item.train.id }}</span>
-                        </slot>
+                        <div>
+                            <slot name="item-name">
+                                <span class="mb-0">{{ item.train.id }}</span>
+                            </slot>
+                        </div>
 
                         <div class="ml-auto">
-                            <slot
-                                name="item-actions"
-                                :item="item"
-                            />
+                            <div class="d-flex flex-column p-1">
+                                <div>
+                                    <slot
+                                        name="item-actions"
+                                        :item="item"
+                                    >
+                                        <div class="d-flex flex-row">
+                                            <div>
+                                                <button
+                                                    v-if="item.status === resultStatusOptions.FINISHED"
+                                                    type="button"
+                                                    class="btn btn-dark btn-xs"
+                                                    :disabled="itemBusy"
+                                                    @click.prevent="inspect(item.id)"
+                                                >
+                                                    <i class="fa fa-search" />
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-xs btn-danger"
+                                                    :disabled="itemBusy"
+                                                    @click.prevent="drop(item.id)"
+                                                >
+                                                    <i class="fas fa-trash" />
+                                                </button>
+                                            </div>
+                                            <slot
+                                                name="item-actions-extra"
+                                                :busy="busy"
+                                                :item-busy="itemBusy"
+                                                :item="item"
+                                            />
+                                        </div>
+                                    </slot>
+                                </div>
+                                <div class="text-right">
+                                    <small class="text-muted"><timeago :datetime="item.updated_at" /></small>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

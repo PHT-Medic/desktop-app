@@ -20,6 +20,9 @@ export default {
 </script>
 <template>
     <div>
+        <h6>
+            RSA Encryption
+        </h6>
         <key-pair-picker :variant="'default'" />
     </div>
 </template>

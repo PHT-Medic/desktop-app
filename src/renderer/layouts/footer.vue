@@ -8,7 +8,7 @@
 export default {
     data() {
         return {
-            startYear: 2020,
+            startYear: 2021,
         };
     },
     computed: {
@@ -23,7 +23,7 @@ export default {
 <template>
     <div class="page-footer">
         <div class="copyright">
-            &copy; PHT {{ year }} &bull; LocalTool - Design & Code by <a
+            &copy; PHT {{ year }} &bull; Desktop-App - Design & Code by <a
                 href="https://tada5hi.net"
                 target="_blank"
             >Peter Placzek</a>

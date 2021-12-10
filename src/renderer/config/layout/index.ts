@@ -31,12 +31,6 @@ export const LayoutSideDefaultNavigation : NavigationComponentConfig[] = [
         icon: 'fas fa-file-download',
     },
     {
-        name: 'Paillier Number',
-        type: 'link',
-        url: '/paillier-number',
-        icon: 'fa fa-key',
-    },
-    {
         name: 'Settings',
         type: 'link',
         url: '/settings',

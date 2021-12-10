@@ -15,6 +15,7 @@ import {
     PermissionItem,
     buildAbilityMetaFromName,
 } from '@typescript-auth/core';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import axios from 'axios';
 import { Store } from 'vuex';
 import { AuthStoreToken } from '../../store/auth';
@@ -98,8 +99,8 @@ class AuthModule {
                 case 'auth/unsetPermissions':
                     this.setPermissions([]);
                     break;
-                case 'auth/setToken':
-                    const token = <AuthStoreToken> mutation.payload;
+                case 'auth/setToken': {
+                    const token = <AuthStoreToken>mutation.payload;
                     if (this.refreshTokenJob) {
                         clearTimeout(this.refreshTokenJob);
                     }
@@ -129,6 +130,7 @@ class AuthModule {
                         this.refreshTokenJob = setTimeout(callback, timeoutMilliSeconds);
                     }
                     break;
+                }
                 case 'auth/unsetToken':
                     if (this.refreshTokenJob) {
                         clearTimeout(this.refreshTokenJob);
@@ -140,13 +142,13 @@ class AuthModule {
 
     // --------------------------------------------------------------------
 
-    public resolveMe() : Promise<Record<string, any> | undefined> {
+    public async resolveMe() : Promise<Record<string, any> | undefined> {
         if (typeof this.identifyPromise !== 'undefined') {
             return this.identifyPromise;
         }
 
         const token : AuthStoreToken | undefined = this.ctx.store.getters['auth/token'];
-        if (!token) return new Promise((resolve) => resolve(undefined));
+        if (!token) return Promise.resolve(undefined);
 
         const resolved = this.ctx.store.getters['auth/permissionsResolved'];
         if (typeof resolved !== 'undefined' && resolved) {
@@ -155,7 +157,7 @@ class AuthModule {
                 ...this.ctx.store.getters['auth/user'],
             };
 
-            return new Promise((resolve) => resolve(userInfo));
+            return Promise.resolve(userInfo);
         }
 
         this.identifyPromise = this.getUserInfo(token.access_token)

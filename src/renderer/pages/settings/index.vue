@@ -11,14 +11,37 @@
             <i class="fa fa-cog" /> Settings <span class="sub-title">Management</span>
         </h1>
 
-        <div class="content-wrapper">
-            <div class="content-sidebar flex-column">
-                <b-nav
-                    pills
-                    vertical
-                >
+        <b-nav
+            pills
+        >
+            <template
+                v-for="(item,key) in sidebar.items"
+            >
+                <template v-if="item.items">
+                    <b-nav-item-dropdown
+                        :key="key"
+                        split
+                        split-variant="outline-primary"
+                        :disabled="item.active"
+                        toggle-class="nav-link-custom"
+                        right
+                    >
+                        <template slot="button-content">
+                            <i :class="item.icon" />
+                            {{ item.name }}
+                        </template>
+
+                        <b-dropdown-item
+                            v-for="(sub, subKey) in item.items"
+                            :key="subKey"
+                            :to="'/settings' + item.urlSuffix + sub.urlSuffix"
+                        >
+                            {{ sub.name }}
+                        </b-dropdown-item>
+                    </b-nav-item-dropdown>
+                </template>
+                <template v-else>
                     <b-nav-item
-                        v-for="(item,key) in sidebar.items"
                         :key="key"
                         :disabled="item.active"
                         :to="'/settings' + item.urlSuffix"
@@ -28,12 +51,13 @@
                         <i :class="item.icon" />
                         {{ item.name }}
                     </b-nav-item>
-                </b-nav>
-            </div>
-            <div class="content-container">
-                <nuxt-child />
-            </div>
-        </div>
+                </template>
+            </template>
+        </b-nav>
+
+        <hr>
+
+        <nuxt-child />
     </div>
 </template>
 <script>
@@ -48,13 +72,23 @@ export default {
             sidebar: {
                 items: [
                     {
-                        name: 'Account', icon: 'fas fa-bars', urlSuffix: '',
+                        name: 'Overview', icon: 'fas fa-bars', urlSuffix: '',
                     },
                     {
-                        name: 'Signing', icon: 'fas fa-file-alt', urlSuffix: '/signing',
+                        name: 'Signature', icon: 'fas fa-file-alt', urlSuffix: '/signature',
                     },
                     {
-                        name: 'Secrets', icon: 'fa fa-key', urlSuffix: '/secrets',
+                        name: 'Encryption',
+                        icon: 'fa fa-lock',
+                        urlSuffix: '/encryption',
+                        items: [
+                            {
+                                name: 'RSA', icon: 'fa fa-key', urlSuffix: '/',
+                            },
+                            {
+                                name: 'Homomorphic', icon: 'fa fa-key', urlSuffix: '/homomorphic',
+                            },
+                        ],
                     },
                 ],
             },

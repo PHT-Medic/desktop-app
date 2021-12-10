@@ -21,6 +21,7 @@ module.exports = {
     files: {
         from: '.',
         filter: [
+            'assets',
             'package.json',
             '.electron-adapter/**/*'
         ]

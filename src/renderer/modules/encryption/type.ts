@@ -5,6 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { PublicKey } from 'paillier-bigint';
+
 export enum KeyPairVariant {
     DEFAULT = 'default',
     HOMOMORPHIC_ENCRYPTION = 'homomorphic-encryption',
@@ -19,3 +21,16 @@ export enum KeyVariant {
 }
 
 export type KeyVariantType = `${KeyVariant}`;
+
+// ---------------------------------------------------
+
+export type PaillierPrivateKey = {
+    mu: string,
+    lambda: string,
+    publicKey?: PublicKey
+};
+
+export type PaillierPublicKey = {
+    n: string,
+    g: string
+};

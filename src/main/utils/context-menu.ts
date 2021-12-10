@@ -11,7 +11,8 @@ import * as path from "path";
 let tray;
 
 export function buildContextMenu() {
-    const image = nativeImage.createFromPath(path.join(__dirname, '..', 'assets', 'icons', '512x512.png'));
+    const imagePath : string = path.join(__dirname, '..', 'assets', 'icons', '512x512.png');
+    const image = nativeImage.createFromPath(imagePath);
     tray = new Tray(image);
     tray.setTitle('PHT: Desktop-App');
 

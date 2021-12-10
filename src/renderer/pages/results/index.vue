@@ -17,7 +17,7 @@ export default {
             sidebar: {
                 items: [
                     {
-                        name: 'Decrypt', icon: 'fas fa-lock-open', urlSuffix: '/',
+                        name: 'Upload', icon: 'fas fa-file-upload', urlSuffix: '/',
                     },
                     {
                         name: 'Overview', icon: 'fas fa-bars', urlSuffix: '/list', requireLoggedIn: true,
@@ -41,8 +41,8 @@ export default {
             }
 
             if (
-                !val
-                && this.$nuxt.$route.fullPath === '/results/list'
+                !val &&
+                this.$nuxt.$route.fullPath === '/results/list'
             ) {
                 await this.$nuxt.$router.push('/results');
             }
@@ -66,7 +66,7 @@ export default {
             <nuxt-link
                 type="button"
                 class="btn btn-dark btn-xs"
-                :to="'/settings/secrets'"
+                :to="'/settings/encryption'"
             >
                 <i class="fa fa-cog" /> Settings
             </nuxt-link>

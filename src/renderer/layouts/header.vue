@@ -34,7 +34,7 @@ export default {
                 </div>
                 <div class="logo">
                     <span>P</span>H<span>T</span>
-                    <span class="info-text">Local-Tool</span>
+                    <span class="info-text">Desktop-App</span>
                 </div>
             </div>
             <nav class="page-navbar navbar-expand-md">

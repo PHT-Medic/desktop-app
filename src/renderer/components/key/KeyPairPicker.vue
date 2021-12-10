@@ -7,11 +7,12 @@
 <script>
 import path from 'path';
 import * as fs from 'fs';
-import { generateKeyPairSync } from 'crypto';
 import { ipcRenderer } from 'electron';
 import * as paillierBigint from 'paillier-bigint';
-import { KeyPairVariant } from '../../modules/key-picker/type';
+import { isHex } from '@personalhealthtrain/ui-common';
+import { KeyPairVariant } from '../../modules/encryption/type';
 import KeyDisplay from './KeyDisplay';
+import { decryptRSAPrivateKey, generateRSAKeyPair } from '../../modules/encryption/utils/rsa';
 
 export default {
     components: { KeyDisplay },
@@ -102,6 +103,10 @@ export default {
         this.form.privateKeyFileName = this.privateKeyFileName;
         this.form.publicKeyFileName = this.publicKeyFileName;
 
+        if (this.$store.getters['secret/defaultPassphrase']) {
+            this.form.passphrase = this.$store.getters['secret/defaultPassphrase'];
+        }
+
         this.dirListener = (event, arg) => {
             if (arg.canceled || arg.filePaths.length === 0) return;
 
@@ -134,7 +139,7 @@ export default {
 
             try {
                 await fs.promises.access(privateKeyPath, fs.constants.F_OK);
-                keyPair.privateKey = await fs.promises.readFile(privateKeyPath);
+                keyPair.privateKey = await fs.promises.readFile(privateKeyPath, { encoding: 'utf-8' });
             } catch (e) {
                 this.$bvToast.toast('The private key could not be found or be read.', {
                     variant: 'warning',
@@ -147,7 +152,7 @@ export default {
 
             try {
                 await fs.promises.access(publicKeyPath, fs.constants.F_OK);
-                keyPair.publicKey = await fs.promises.readFile(publicKeyPath);
+                keyPair.publicKey = await fs.promises.readFile(publicKeyPath, { encoding: 'utf-8' });
             } catch (e) {
                 this.$bvToast.toast('The public key could not be found or be read.', {
                     variant: 'warning',
@@ -162,9 +167,27 @@ export default {
                 case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
                     await this.$store.dispatch('secret/setHeKeyPair', keyPair);
                     break;
-                case KeyPairVariant.DEFAULT:
+                case KeyPairVariant.DEFAULT: {
+                    try {
+                        keyPair.privateKey = await decryptRSAPrivateKey(keyPair.privateKey, this.form.passphrase);
+                    } catch (e) {
+                        this.$bvToast.toast('The encrypted private key could not be decrypted with the given passphrase.', {
+                            variant: 'warning',
+                            toaster: 'b-toaster-top-center',
+                        });
+
+                        return;
+                    }
+
+                    this.$store.commit('secret/setDefaultPassphrase', this.form.passphrase);
+
+                    keyPair.publicKey = isHex(keyPair.publicKey) ?
+                        Buffer.from(keyPair.publicKey, 'hex').toString('utf-8') :
+                        keyPair.publicKey;
+
                     await this.$store.dispatch('secret/setDefaultKeyPair', keyPair);
                     break;
+                }
             }
 
             this.$bvToast.toast('The key pair was successfully loaded.', {
@@ -185,36 +208,19 @@ export default {
                     case KeyPairVariant.HOMOMORPHIC_ENCRYPTION: {
                         const { publicKey, privateKey } = await paillierBigint.generateRandomKeys(128);
 
-                        // eslint-disable-next-line no-extend-native
-                        BigInt.prototype.toJSON = function () {
-                            return this.toString();
-                        };
-
                         keyPair.publicKey = JSON.stringify({
-                            n: publicKey.n,
-                            g: publicKey.g,
+                            n: publicKey.n.toString(),
+                            g: publicKey.g.toString(),
                         });
 
                         keyPair.privateKey = JSON.stringify({
-                            mu: privateKey.mu,
-                            lambda: privateKey.lambda,
+                            mu: privateKey.mu.toString(),
+                            lambda: privateKey.lambda.toString(),
                         });
                         break;
                     }
                     case KeyPairVariant.DEFAULT:
-                        keyPair = generateKeyPairSync('rsa', {
-                            modulusLength: 2048,
-                            publicKeyEncoding: {
-                                type: 'pkcs1',
-                                format: 'pem',
-                            },
-                            privateKeyEncoding: {
-                                type: 'pkcs8',
-                                format: 'pem',
-                                cipher: 'aes-192-cbc',
-                                passphrase: this.form.passphrase,
-                            },
-                        });
+                        keyPair = await generateRSAKeyPair(this.form.passphrase);
                         break;
                 }
             } catch (e) {
@@ -248,6 +254,7 @@ export default {
                     await this.$store.dispatch('secret/setHeKeyPair', keyPair);
                     break;
                 case KeyPairVariant.DEFAULT:
+                    this.$store.commit('secret/setDefaultPassphrase', this.form.passphrase);
                     await this.$store.dispatch('secret/setDefaultKeyPair', keyPair);
                     break;
             }
@@ -261,122 +268,127 @@ export default {
 };
 </script>
 <template>
-    <div class="row">
-        <div class="col">
-            <div
-                class="form-group"
-                :class="{ 'form-group-error': !isDirectoryPathDefined }"
-            >
-                <label>Directory Path</label>
-                <input
-                    v-model="directoryPath"
-                    type="text"
-                    name="name"
-                    class="form-control"
-                    :disabled="true"
-                    placeholder="..."
-                >
-
-                <div
-                    v-if="!isDirectoryPathDefined"
-                    class="form-group-hint group-required"
-                >
-                    Select a directory path.
-                </div>
-            </div>
-
-            <div class="d-flex flex-row justify-space-between mb-2">
+    <div>
+        <div class="row">
+            <div class="col">
                 <div>
-                    <button
-                        type="submit"
-                        class="btn btn-dark btn-sm"
-                        @click.prevent="selectDir"
+                    <div
+                        class="form-group"
+                        :class="{ 'form-group-error': !isDirectoryPathDefined }"
                     >
-                        <i class="fa fa-file" /> Select directory
-                    </button>
-                </div>
-                <div class="ml-auto">
-                    <button
-                        type="submit"
-                        class="btn btn-primary btn-sm"
-                        :disabled="!isDirectoryPathDefined"
-                        @click.prevent="load"
-                    >
-                        <i class="fa fa-sync" /> Load key-pair
-                    </button>
-                </div>
-            </div>
+                        <label>Directory Path</label>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <button
+                                    type="submit"
+                                    class="btn btn-dark btn-sm"
+                                    @click.prevent="selectDir"
+                                >
+                                    <i class="fa fa-file" />
+                                </button>
+                            </div>
 
-            <hr>
+                            <input
+                                v-model="directoryPath"
+                                type="text"
+                                name="name"
+                                class="form-control"
+                                :disabled="true"
+                                placeholder="..."
+                            >
+                        </div>
 
-            <div
-                v-if="isPassphraseRequired"
-                class="form-group"
-                :class="{ 'form-group-error': !isPassphraseDefined }"
-            >
-                <label>Passphrase</label>
-                <input
-                    v-model="form.passphrase"
-                    type="text"
-                    name="name"
-                    class="form-control"
-                    placeholder="..."
-                >
+                        <div
+                            v-if="!isDirectoryPathDefined"
+                            class="form-group-hint group-required"
+                        >
+                            Select a directory path.
+                        </div>
+                    </div>
+                </div>
 
                 <div
-                    v-if="isPassphraseRequired && !isPassphraseDefined"
-                    class="form-group-hint group-required"
+                    v-if="isPassphraseRequired"
+                    class="form-group"
+                    :class="{ 'form-group-error': !isPassphraseDefined }"
                 >
-                    Enter a passphrase.
+                    <label>Passphrase</label>
+                    <input
+                        v-model="form.passphrase"
+                        type="text"
+                        name="name"
+                        class="form-control"
+                        placeholder="..."
+                    >
+
+                    <div
+                        v-if="isPassphraseRequired && !isPassphraseDefined"
+                        class="form-group-hint group-required"
+                    >
+                        Enter a passphrase.
+                    </div>
                 </div>
             </div>
-
-            <div class="form-group">
-                <label>PrivateKey file name (optional)</label>
-                <input
-                    v-model="form.privateKeyFileName"
-                    type="text"
-                    name="name"
-                    class="form-control"
-                    :placeholder="privateKeyDefaultFileName"
-                >
+            <div class="col">
+                <div class="form-group">
+                    <label>PrivateKey file name (optional)</label>
+                    <input
+                        v-model="form.privateKeyFileName"
+                        type="text"
+                        name="name"
+                        class="form-control"
+                        :placeholder="privateKeyDefaultFileName"
+                    >
+                </div>
+                <div class="form-group">
+                    <label>PublicKey file name (optional)</label>
+                    <input
+                        v-model="form.publicKeyFileName"
+                        type="text"
+                        name="name"
+                        class="form-control"
+                        :placeholder="publicKeyDefaultFileName"
+                    >
+                </div>
             </div>
-            <div class="form-group">
-                <label>PublicKey file name (optional)</label>
-                <input
-                    v-model="form.publicKeyFileName"
-                    type="text"
-                    name="name"
-                    class="form-control"
-                    :placeholder="publicKeyDefaultFileName"
-                >
-            </div>
-
-            <hr>
-
-            <button
-                type="submit"
-                class="btn btn-sm"
-                :class="{
-                    'btn-dark': !privateKey && !publicKey,
-                    'btn-danger': privateKey || publicKey
-                }"
-                :disabled="!isDirectoryPathDefined || (isPassphraseRequired && !isPassphraseDefined)"
-                @click.prevent="generate"
-            >
-                <i class="fa fa-wrench" /> Generate key-pair
-            </button>
         </div>
-        <div class="col">
-            <key-display
-                :key-pair-variant="variant"
-                :key-variant="'private'"
-            />
 
-            <key-display
-                :key-pair-variant="variant"
-                :key-variant="'public'"
-            />
+        <div class="d-flex flex-row justify-content-around mb-2">
+            <div>
+                <button
+                    type="submit"
+                    class="btn btn-primary btn-sm"
+                    :disabled="!isDirectoryPathDefined || (isPassphraseRequired && !isPassphraseDefined)"
+                    @click.prevent="load"
+                >
+                    <i class="fa fa-file-upload" /> Load
+                </button>
+            </div>
+            <div>
+                <button
+                    type="submit"
+                    class="btn btn-sm"
+                    :class="{
+                        'btn-dark': !privateKey && !publicKey,
+                        'btn-danger': privateKey || publicKey
+                    }"
+                    :disabled="!isDirectoryPathDefined || (isPassphraseRequired && !isPassphraseDefined)"
+                    @click.prevent="generate"
+                >
+                    <i class="fa fa-wrench" /> Generate
+                </button>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col">
+                <key-display
+                    :key-pair-variant="variant"
+                    :key-variant="'public'"
+                />
+            </div>
         </div>
     </div>
 </template>

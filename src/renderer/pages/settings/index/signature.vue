@@ -15,7 +15,7 @@
             <nuxt-link
                 type="button"
                 class="btn btn-dark btn-xs"
-                :to="'/settings/secrets'"
+                :to="'/settings/encryption'"
             >
                 <i class="fa fa-cog" /> Settings
             </nuxt-link>
@@ -26,39 +26,6 @@
         <hr>
 
         <div>
-            <div
-                class="form-group"
-                :class="{ 'form-group-error': $v.form.passphrase.$error }"
-            >
-                <label>Passphrase</label>
-                <input
-                    v-model="$v.form.passphrase.$model"
-                    type="text"
-                    name="name"
-                    class="form-control"
-                    placeholder="..."
-                >
-
-                <div
-                    v-if="!$v.form.passphrase.required && !$v.form.passphrase.$model"
-                    class="form-group-hint group-required"
-                >
-                    Please enter a passphrase.
-                </div>
-                <div
-                    v-if="!$v.form.passphrase.minLength"
-                    class="form-group-hint group-required"
-                >
-                    The length of the passphrase must be less than <strong>{{ $v.form.passphrase.$params.minLength.min }}</strong> characters.
-                </div>
-                <div
-                    v-if="!$v.form.passphrase.maxLength"
-                    class="form-group-hint group-required"
-                >
-                    The length of the passphrase must be greater than <strong>{{ $v.form.passphrase.$params.maxLength.max }}</strong> characters.
-                </div>
-            </div>
-
             <div class="form-group">
                 <label>Content</label>
                 <textarea
@@ -70,7 +37,7 @@
             </div>
 
             <button
-                :disabled="!privateKey || $v.form.$invalid"
+                :disabled="!privateKey"
                 type="submit"
                 class="btn btn-dark btn-sm"
                 @click.prevent="sign"
@@ -108,21 +75,11 @@ export default {
         return {
             form: {
                 hash: '',
-                passphrase: '',
                 signature: '',
             },
 
             message: null,
         };
-    },
-    validations: {
-        form: {
-            passphrase: {
-                required,
-                minLength: minLength(3),
-                maxLength: maxLength(256),
-            },
-        },
     },
     computed: {
         isHashValid() {
@@ -142,7 +99,6 @@ export default {
 
                 const signature = sign.sign({
                     key: this.privateKey,
-                    passphrase: this.form.passphrase,
                 });
 
                 this.form.signature = signature.toString('hex');

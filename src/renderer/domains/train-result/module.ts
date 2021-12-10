@@ -7,23 +7,42 @@
 
 import fernet from 'fernet';
 
-import { ReadTrainResultContext, TarFile, TrainResultConfig } from './type';
-import { decompressTarFile } from '../../modules/fs/decompress';
+import { TarFile, TrainResultConfig, TrainResultLoaderContext } from './type';
 import { readTrainResultConfig } from './config-read';
 import { TrainConfig } from '../../config/constants';
+import { TrainResultSourceOption } from './constants';
+import { decompressTarFile } from '../../modules/fs/decompress';
+import { decryptPaillierNumberInTarFiles } from '../../modules/encryption/utils/paillier';
 
-export async function readTrainResult(context: ReadTrainResultContext) : Promise<{
+export async function loadTrainResult(context: TrainResultLoaderContext) : Promise<{
     config: TrainResultConfig,
     files: TarFile[]
 }> {
-    const files : TarFile[] = await decompressTarFile(context.filePath);
+    let files : TarFile[] = [];
+
+    switch (context.sourceOption) {
+        case TrainResultSourceOption.FILE:
+            files = await decompressTarFile(context.source);
+            break;
+        case TrainResultSourceOption.URL:
+            break;
+    }
+
+    if (files.length === 0) {
+        throw new Error();
+    }
 
     const config = await readTrainResultConfig({
         files,
-        encryption: context.encryption,
+        encryption: context.encryption.rsa,
     });
 
-    const resultFiles = files.filter((file) => file.path.startsWith(TrainConfig.RESULT_PATH));
+    let resultFiles : TarFile[] = files
+        .filter((file) => file.path.startsWith(TrainConfig.RESULT_PATH))
+        .map((file) => {
+            file.path = file.path.replace(`${TrainConfig.RESULT_PATH}/`, '');
+            return file;
+        });
 
     for (let i = 0; i < resultFiles.length; i++) {
         try {
@@ -35,10 +54,17 @@ export async function readTrainResult(context: ReadTrainResultContext) : Promise
                 ttl: 0,
             });
 
-            resultFiles[i] = token.decode();
+            resultFiles[i].content = token.decode();
         } catch (e) {
             throw new Error('The result file could not be decrypted with the decrypted symmetric key.');
         }
+    }
+
+    if (context.encryption.paillier) {
+        resultFiles = decryptPaillierNumberInTarFiles(
+            context.encryption.paillier.privateKey,
+            resultFiles,
+        );
     }
 
     return {
@@ -47,6 +73,6 @@ export async function readTrainResult(context: ReadTrainResultContext) : Promise
     };
 }
 
-export async function saveExtractedTrainResult(filePath: string, files: any) {
-
+export async function saveExtractedTrainResult(filePath: string, files: TarFile[]) {
+    // ...
 }

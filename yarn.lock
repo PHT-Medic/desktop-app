@@ -4818,10 +4818,10 @@ ejs@^3.1.6:
   dependencies:
     jake "^10.6.1"
 
-electron-adapter@^0.0.10:
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/electron-adapter/-/electron-adapter-0.0.10.tgz#73abfd820975a49684b581408d0825ba9cb16b6d"
-  integrity sha512-p8mglYp6zAqVmUSgZ1Wu76Br1KgnM+JYEtG93yrRW/KhhAXIqCAmnIi7DENBPvZIsM/wYoD9G0A+9puZtQLFAA==
+electron-adapter@^0.0.12:
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/electron-adapter/-/electron-adapter-0.0.12.tgz#6e3d87303f73889ced855865256023d69ab0bdeb"
+  integrity sha512-pahsBrrRheRWy34QR/9/rvypo7Y/DfB0W1jGur6LrG9CfhoZXcejonPjZTnJd6x9yJqoG5jqWI1bHVz+uW5Csw==
   dependencies:
     "@babel/core" "^7.12.3"
     "@babel/preset-typescript" "^7.12.1"
@@ -4829,8 +4829,9 @@ electron-adapter@^0.0.10:
     cross-spawn "^7.0.3"
     fs-extra "^10.0.0"
     glob "^7.1.7"
+    mustache "^4.2.0"
     reflect-metadata "^0.1.13"
-    webpack "^5.2.0"
+    webpack "^5.65.0"
     webpack-merge "5.8.0"
     yargs "^17.0.1"
 
@@ -8053,6 +8054,11 @@ mustache@^2.3.0:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/mustache/-/mustache-2.3.2.tgz#a6d4d9c3f91d13359ab889a812954f9230a3d0c5"
   integrity sha512-KpMNwdQsYz3O/SBS1qJ/o3sqUJ5wSb8gb0pul8CO0S56b9Y2ALm8zCfsjPXsqGFfoNBkDwZuZIAjhsZI03gYVQ==
+
+mustache@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/mustache/-/mustache-4.2.0.tgz#e5892324d60a12ec9c2a73359edca52972bf6f64"
+  integrity sha512-71ippSywq5Yb7/tVYyGbkBggbU8H3u5Rz56fH60jGFgr8uHwxs+aSKeqmluIVzM0m0kB7xQjKS6qPfd0b2ZoqQ==
 
 mute-stream@0.0.7:
   version "0.0.7"
@@ -12067,10 +12073,10 @@ watchpack@^1.7.4:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"
 
-watchpack@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-2.3.0.tgz#a41bca3da6afaff31e92a433f4c856a0c25ea0c4"
-  integrity sha512-MnN0Q1OsvB/GGHETrFeZPQaOelWh/7O+EiFlj8sM9GPjtQkis7k01aAxrg/18kTfoIVcLL+haEVFlXDaSRwKRw==
+watchpack@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-2.3.1.tgz#4200d9447b401156eeca7767ee610f8809bc9d25"
+  integrity sha512-x0t0JuydIo8qCNctdDrn1OzH/qDzk2+rdCOC3YzumZ42fiMqmQ7T3xQurykYMhYfHaPHTp4ZxAx2NfUo1K6QaA==
   dependencies:
     glob-to-regexp "^0.4.1"
     graceful-fs "^4.1.2"
@@ -12177,10 +12183,10 @@ webpack@^4.46.0:
     watchpack "^1.7.4"
     webpack-sources "^1.4.1"
 
-webpack@^5.2.0:
-  version "5.64.4"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.64.4.tgz#e1454b6a13009f57cc2c78e08416cd674622937b"
-  integrity sha512-LWhqfKjCLoYJLKJY8wk2C3h77i8VyHowG3qYNZiIqD6D0ZS40439S/KVuc/PY48jp2yQmy0mhMknq8cys4jFMw==
+webpack@^5.65.0:
+  version "5.65.0"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.65.0.tgz#ed2891d9145ba1f0d318e4ea4f89c3fa18e6f9be"
+  integrity sha512-Q5or2o6EKs7+oKmJo7LaqZaMOlDWQse9Tm5l1WAfU/ujLGN5Pb0SqGeVkN/4bpPmEqEP5RnVhiqsOtWtUVwGRw==
   dependencies:
     "@types/eslint-scope" "^3.7.0"
     "@types/estree" "^0.0.50"
@@ -12204,7 +12210,7 @@ webpack@^5.2.0:
     schema-utils "^3.1.0"
     tapable "^2.1.1"
     terser-webpack-plugin "^5.1.3"
-    watchpack "^2.3.0"
+    watchpack "^2.3.1"
     webpack-sources "^3.2.2"
 
 webpackbar@^4.0.0:

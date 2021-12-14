@@ -11,19 +11,20 @@
     list-style: none;
 }
 
-.nav-items .nav-link i {
-    padding-right: 4px;
+.nav-items .nav-link-text {
+    padding-left: 4px;
 }
 
 .nav-items .nav-link,
 .nav-items .nav-item .nav-sub-title {
     cursor: pointer;
     color: #aeb2b7;
-    padding: 18px 15px 18px 15px;
+    padding: 18px 15px;
     display: block;
     font-size: 13px;
-    text-align: left;
+    text-align: center;
     text-decoration: none;
+    margin: 0;
 }
 
 /* for now */

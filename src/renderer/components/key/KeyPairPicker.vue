@@ -313,7 +313,7 @@ export default {
                     <label>Passphrase</label>
                     <input
                         v-model="form.passphrase"
-                        type="text"
+                        type="password"
                         name="name"
                         class="form-control"
                         placeholder="..."

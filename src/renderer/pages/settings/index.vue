@@ -6,7 +6,7 @@
   -->
 
 <template>
-    <div>
+    <div class="container">
         <h1 class="title no-border mb-3">
             <i class="fa fa-cog" /> Settings <span class="sub-title">Management</span>
         </h1>

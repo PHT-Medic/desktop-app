@@ -33,8 +33,8 @@ export default {
                     </button>
                 </div>
                 <div class="logo">
-                    <span>P</span>H<span>T</span>
-                    <span class="info-text">Desktop-App</span>
+                    <span>A</span>P<span>P</span>
+                    <span class="info-text">Personal Health Train</span>
                 </div>
             </div>
             <nav class="page-navbar navbar-expand-md">
@@ -42,10 +42,6 @@ export default {
                     id="page-navbar"
                     class="navbar-content navbar-collapse"
                 >
-                    <navigation-components
-                        class="navbar-nav"
-                        :tier="0"
-                    />
                     <ul
                         v-if="loggedIn && user"
                         class="navbar-nav nav-items navbar-gadgets"

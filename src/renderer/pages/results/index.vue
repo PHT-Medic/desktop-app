@@ -49,16 +49,14 @@ export default {
         },
     },
     watch: {
-        async loggedIN(val, oldVal) {
+        async loggedIn(val, oldVal) {
             if (val === oldVal) {
                 return;
             }
             if (
                 this.$refs.list
             ) {
-                if (val) {
-                    await this.$refs.list.load();
-                } else {
+                if (!val) {
                     await this.$refs.list.clear();
                 }
             }
@@ -67,7 +65,7 @@ export default {
 };
 </script>
 <template>
-    <div>
+    <div class="container">
         <h1 class="title no-border mb-2">
             <i class="fas fa-file-download" /> Result(s)
         </h1>

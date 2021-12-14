@@ -13,7 +13,6 @@ app.on('window-all-closed', () => {
 
 const isProd: boolean = process.env.NODE_ENV === 'production';
 
-
 if (!isProd) {
     watchFile(__filename, () => {
         app.exit(0);
@@ -45,7 +44,7 @@ let mainWindow : BrowserWindow;
     if (isProd) {
         await mainWindow.loadURL(`app://-`);
     } else {
-        const port = process.env.ELECTRON_MAIN_PORT || 8888;
+        const port = process.env.ELECTRON_MAIN_PORT || 9000;
         await mainWindow.loadURL(`http://localhost:${port}`);
     }
 

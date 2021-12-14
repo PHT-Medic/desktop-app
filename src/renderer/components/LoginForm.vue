@@ -14,6 +14,12 @@ import Pagination from '../components/Pagination';
 
 export default {
     components: { Pagination, MedicineWorker },
+    props: {
+        withAbort: {
+            type: Boolean,
+            default: true,
+        },
+    },
     data() {
         return {
             provider: {
@@ -234,6 +240,7 @@ export default {
                         </button>
 
                         <button
+                            v-if="withAbort"
                             type="submit"
                             class="btn btn-dark btn-sm"
                             @click.prevent="cancel"

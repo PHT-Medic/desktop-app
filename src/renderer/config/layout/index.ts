@@ -18,7 +18,7 @@ export const LayoutTopNavigation : NavigationComponentConfig[] = [
 
 export const LayoutSideDefaultNavigation : NavigationComponentConfig[] = [
     {
-        name: 'Info',
+        name: 'About',
         type: 'link',
         url: '/',
         icon: 'fas fa-info',

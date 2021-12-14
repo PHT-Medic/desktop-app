@@ -26,6 +26,7 @@
         "@types/node": "12.12.6"
     },
     "devDependencies": {
+        "@babel/preset-typescript": "^7.16.5",
         "@fortawesome/fontawesome-free": "5.15.4",
         "@nuxt/types": "^2.14.5",
         "@nuxt/typescript-build": "2.1.0",
@@ -33,7 +34,7 @@
         "@personalhealthtrain/ui-common": "^1.0.0-alpha.5",
         "@tada5hi/eslint-config-vue-typescript": "0.0.24",
         "@types/tar": "^6.1.1",
-        "@typescript-auth/core": "^1.0.4",
+        "@typescript-auth/core": "^1.0.5",
         "bootstrap": "^4.5.3",
         "bootstrap-vue": "^2.18.1",
         "browser-env": "3.3.0",
@@ -41,7 +42,7 @@
         "cross-env": "7.0.3",
         "deepmerge": "4.2.2",
         "electron": "^16.0.4",
-        "electron-adapter": "^0.0.10",
+        "electron-adapter": "^0.0.16",
         "electron-builder": "22.14.5",
         "eslint": "^8.4.1",
         "fernet": "^0.4.0",

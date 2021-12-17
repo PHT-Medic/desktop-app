@@ -23,8 +23,7 @@ let mainWindow : BrowserWindow;
 
 (async () => {
     if(isProd) {
-        const directory = __dirname.split(path.sep).pop();
-        registerRenderedFiles({directory: directory || '.electron-adapter'});
+        registerRenderedFiles({directory: 'entrypoint/dist'});
     }
 
     await app.whenReady();

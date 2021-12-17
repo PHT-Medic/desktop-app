@@ -15,7 +15,7 @@ module.exports = {
         buildResources: 'resources'
     },
     extraMetadata: {
-        main: ".electron-adapter/index.js"
+        main: "src/entrypoint/dist/index.js"
     },
     // default files: https://www.electron.build/configuration/contents
     files: {
@@ -23,7 +23,7 @@ module.exports = {
         filter: [
             'assets',
             'package.json',
-            '.electron-adapter/**/*'
+            'src/entrypoint/dist/**/*'
         ]
     },
     win: {

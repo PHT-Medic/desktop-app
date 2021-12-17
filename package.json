@@ -5,6 +5,7 @@
     "description": "This project contains the desktop-app of the PHT.",
     "main": ".electron-adapter/index.js",
     "scripts": {
+        "init": "electron-adapter init",
         "dev": "electron-adapter dev",
         "build": "electron-adapter build --config electron-builder.config.js",
         "lint": "eslint --ext .js,.vue,.ts ./src",
@@ -41,8 +42,8 @@
         "cross-env": "7.0.3",
         "deepmerge": "4.2.2",
         "electron": "^16.0.4",
-        "electron-adapter": "^0.0.16",
-        "electron-builder": "22.14.5",
+        "electron-adapter": "^0.0.20",
+        "electron-builder": "^22.14.5",
         "eslint": "^8.4.1",
         "fernet": "^0.4.0",
         "moment": "^2.29.1",

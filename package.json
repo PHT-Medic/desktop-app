@@ -34,7 +34,7 @@
         "@personalhealthtrain/ui-common": "^1.0.0-alpha.5",
         "@tada5hi/eslint-config-vue-typescript": "0.0.24",
         "@types/tar": "^6.1.1",
-        "@typescript-auth/core": "^1.0.5",
+        "@typescript-auth/core": "^1.1.0",
         "bootstrap": "^4.5.3",
         "bootstrap-vue": "^2.18.1",
         "browser-env": "3.3.0",

@@ -41,7 +41,7 @@
         "cookie": "^0.4.1",
         "cross-env": "7.0.3",
         "deepmerge": "4.2.2",
-        "electron": "^16.0.4",
+        "electron": "^16.0.7",
         "electron-adapter": "^0.0.20",
         "electron-builder": "^22.14.5",
         "eslint": "^8.4.1",

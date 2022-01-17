@@ -2037,20 +2037,21 @@
   resolved "https://registry.yarnpkg.com/@types/zen-observable/-/zen-observable-0.8.3.tgz#781d360c282436494b32fe7d9f7f8e64b3118aa3"
   integrity sha512-fbF6oTd4sGGy0xjHPKAt+eS2CrxJ3+6gQ3FGcBoIJR2TLAyCkCyI8JqZNy+FeON0AhVgNJoUumVoZQjBFUqHkw==
 
-"@typescript-auth/core@^1.0.1", "@typescript-auth/core@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@typescript-auth/core/-/core-1.0.5.tgz#f6349c9bc93f982db5709d5a9297fa7f76e119b2"
-  integrity sha512-IUrLplpHj6sFBtYoqtDFXMQNYhpaO5BBLmeuYQm2LWSc6uTHXXJyuDJv5jcTpTsp51KnicDZrXy4ld27jjMWMA==
+"@typescript-auth/core@^1.0.1", "@typescript-auth/core@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@typescript-auth/core/-/core-1.1.1.tgz#321e07ccc544d5f6e6c42d2c12f9b25806de596e"
+  integrity sha512-b8/q0rTWFbHimi2l/S25z9Fju6QezQzof6qWTDTDZuKKKgGvdXyJM0Km7iJvC03t/0dlFwr7yX7jHOnogzdk/A==
   dependencies:
     "@casl/ability" "^5.3.1"
+    "@typescript-error/core" "^1.1.1"
     axios "^0.24.0"
     change-case "^4.1.2"
     jsonwebtoken "^8.5.1"
 
-"@typescript-error/core@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@typescript-error/core/-/core-1.0.3.tgz#f0c1c3214412c49098481baf7aaeaef893d65acd"
-  integrity sha512-EJRzQ6H5rc47HE9AIintMW/I74owzGBHchbWERIs5mbC5NqHMUXHaCdCjkfm6tiaFDNhgIFjQoBXxqpO0CiVAA==
+"@typescript-error/core@^1.0.3", "@typescript-error/core@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@typescript-error/core/-/core-1.1.1.tgz#6323a43c115063016245383fe93621b8c0a57fde"
+  integrity sha512-P4s2j2ohWwmsciF3e8+EmWzR9HFK6X/A3ipSi3DMgDBmL+9iisWC1pptC5BMuo/LqP9tnfGBg7nXCnqZX+Rtow==
 
 "@typescript-eslint/eslint-plugin@^5.6.0":
   version "5.7.0"

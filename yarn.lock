@@ -9197,10 +9197,10 @@ package-json@^6.3.0:
     registry-url "^5.0.0"
     semver "^6.2.0"
 
-paillier-bigint@^3.2.5:
-  version "3.2.5"
-  resolved "https://registry.yarnpkg.com/paillier-bigint/-/paillier-bigint-3.2.5.tgz#ec272e07f8ff6b59f67f8ec8bed7de51c94ea71e"
-  integrity sha512-bvp7Jzl3QGpomVuf4JbQgrZJ9PLgJljiEKmnWQ3VCOUxHdGVjvXp7NvqYeCSnzRAtfWfRMbXdCblR/z65Nps/Q==
+paillier-bigint@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/paillier-bigint/-/paillier-bigint-3.3.0.tgz#25afb724fdce8359625d3eea93bf80cb6024065a"
+  integrity sha512-Aa8a75dODYOGxLYQhi1Y0Xsi0Vbl+5gzPvaVfxuCA/zT8CK/keXv5CA2Ddn5AV9VxmTkpIEdYs40hv1rkFcODg==
   dependencies:
     bigint-crypto-utils "^3.0.17"
 

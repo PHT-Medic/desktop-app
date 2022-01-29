@@ -6,7 +6,6 @@
   -->
 
 <script>
-import { getAPIProviders, getProviderAuthorizeUri } from '@personalhealthtrain/ui-common';
 import { mapActions, mapGetters } from 'vuex';
 import { maxLength, minLength, required } from 'vuelidate/lib/validators';
 import MedicineWorker from '../components/svg/MedicineWorker';
@@ -60,7 +59,7 @@ export default {
 
         providerItems() {
             return this.provider.items.map((provider) => {
-                provider.authorizeUrl = getProviderAuthorizeUri(provider.id);
+                provider.authorizeUrl = this.$authApi.oauth2Provider.getAuthorizeUri(this.$config.apiUrl, provider.id);
                 return provider;
             });
         },
@@ -77,7 +76,7 @@ export default {
             this.provider.busy = true;
 
             try {
-                const response = await getAPIProviders({
+                const response = await this.$authApi.oauth2Provider.getMany({
                     page: {
                         limit: this.provider.meta.limit,
                         offset: this.provider.meta.offset,

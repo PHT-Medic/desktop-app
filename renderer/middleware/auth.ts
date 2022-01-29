@@ -6,8 +6,8 @@
  */
 
 import { Context } from '@nuxt/types';
-import { buildAbilityMetaFromName } from '@typescript-auth/core';
-import AuthModule from '../modules/auth';
+import { buildAbilityMetaFromName } from '@typescript-auth/domains';
+import AuthModule from '../modules/auth/index';
 import { LayoutKey } from '../config/layout/contants';
 
 function checkAbilityOrPermission({ route, $auth } : Context) {
@@ -21,14 +21,14 @@ function checkAbilityOrPermission({ route, $auth } : Context) {
     for (let i = 0; i < layoutKeys.length; i++) {
         const layoutKey = layoutKeys[i];
 
-        if (!route.meta) {
+        if(!route.meta) {
             continue;
         }
 
         for (let j = 0; j < route.meta.length; j++) {
             const matchedRecordMeta = route.meta[j];
 
-            if (!matchedRecordMeta.hasOwnProperty(layoutKey)) {
+            if (!Object.prototype.hasOwnProperty.call(matchedRecordMeta, layoutKey)) {
                 continue;
             }
 
@@ -62,18 +62,23 @@ function checkAbilityOrPermission({ route, $auth } : Context) {
         parts.pop();
         throw new Error(parts.join('/'));
     }
+
+    return true;
 }
 
-export default async function ({
-    route, from, redirect, $auth, store,
-} : Context) : Promise<void> {
+export default async function middleware({
+                                             route, from, redirect, $auth, store,
+                                         } : Context) : Promise<void> {
     let redirectPath = '/';
 
     if (typeof from !== 'undefined') {
         redirectPath = from.fullPath;
     }
 
-    if (!route.path.includes('/logout')) {
+    if (
+        !route.path.startsWith('/logout') &&
+        !route.fullPath.startsWith('/logout')
+    ) {
         try {
             await (<AuthModule> $auth).resolveMe();
         } catch (e) {
@@ -88,12 +93,14 @@ export default async function ({
                     query: { redirect: route.fullPath },
                 });
             }
+
+            return;
         }
     }
 
     if (
-        Array.isArray(route.meta)
-        && route.meta.some((meta) => !!meta[LayoutKey.REQUIRED_LOGGED_IN])
+        Array.isArray(route.meta) &&
+        route.meta.some((meta) => !!meta[LayoutKey.REQUIRED_LOGGED_IN])
     ) {
         if (!store.getters['auth/loggedIn']) {
             await store.dispatch('auth/triggerLogout');
@@ -102,22 +109,24 @@ export default async function ({
                 path: '/login',
                 query: { redirect: route.fullPath },
             });
+
+            return;
         }
 
         try {
             checkAbilityOrPermission({ route, $auth } as Context);
         } catch (e) {
-            console.log('not permitted...');
-
             await redirect({
                 path: redirectPath,
             });
+
+            return;
         }
     }
 
     if (
-        Array.isArray(route.meta)
-        && route.meta.some((meta) => meta[LayoutKey.REQUIRED_LOGGED_OUT])
+        Array.isArray(route.meta) &&
+        route.meta.some((meta) => meta[LayoutKey.REQUIRED_LOGGED_OUT])
     ) {
         if (store.getters['auth/loggedIn']) {
             await redirect({ path: redirectPath });

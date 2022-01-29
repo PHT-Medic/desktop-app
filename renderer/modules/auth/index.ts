@@ -6,19 +6,18 @@
  */
 
 import { Context } from '@nuxt/types';
-import { APIType, useAPI } from '@personalhealthtrain/ui-common';
+import https from 'https';
 import {
     AbilityManager,
     AbilityMeta,
-    Oauth2Client,
-    Oauth2TokenResponse,
-    PermissionItem,
-    buildAbilityMetaFromName,
-} from '@typescript-auth/core';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import axios from 'axios';
-import { Store } from 'vuex';
-import { AuthStoreToken } from '../../store/auth';
+    HTTPOAuth2Client,
+    OAuth2TokenKind,
+    OAuth2TokenResponse,
+    OAuth2TokenSubKind,
+    PermissionItem, Robot, TokenVerificationPayload, User, buildAbilityMetaFromName,
+} from '@typescript-auth/domains';
+import { Config, createClient } from '@trapi/client';
+import { AuthBrowserStorageKey } from './constants';
 
 export type AuthModuleOptions = {
     tokenHost: string,
@@ -29,34 +28,53 @@ export type AuthModuleOptions = {
 class AuthModule {
     protected ctx: Context;
 
-    protected client: Oauth2Client;
+    protected client: HTTPOAuth2Client;
 
     protected refreshTokenJob: undefined | ReturnType<typeof setTimeout>;
 
     protected responseInterceptorId : number | undefined;
 
-    protected storeKeys : string[] = [
-        'token',
-        'provider',
-        'user',
-        'permissions',
-    ];
+    protected authResponseInterceptorId : number | undefined;
 
     protected abilityManager!: AbilityManager;
 
-    protected identifyPromise : Promise<Record<string, any>> | undefined;
+    protected identifyPromise : Promise<User | Robot | undefined> | undefined;
 
     // --------------------------------------------------------------------
 
     constructor(ctx: Context, options: AuthModuleOptions) {
         this.ctx = ctx;
 
-        this.client = new Oauth2Client({
+        const httpClient : Config = {
+            driver: {
+                httpsAgent: new https.Agent({
+                    rejectUnauthorized: false,
+                }),
+            },
+        };
+
+        if (
+            process.server &&
+            httpClient.driver
+        ) {
+            httpClient.driver.proxy = false;
+        }
+
+        this.client = new HTTPOAuth2Client({
             token_host: options.tokenHost,
             token_path: options.tokenPath,
             user_info_path: options.userInfoPath,
             client_id: 'user-interface',
-        });
+        }, httpClient);
+
+        this.client.httpClient.mountResponseInterceptor((r) => r, ((error) => {
+            if (typeof error?.response?.data?.message === 'string') {
+                error.message = error.response.data.message;
+                throw error;
+            }
+
+            throw new Error('A network error occurred.');
+        }));
 
         this.abilityManager = new AbilityManager([]);
 
@@ -75,15 +93,38 @@ class AuthModule {
     private initStore() {
         if (typeof this.ctx === 'undefined' || typeof this.ctx.store === 'undefined') return;
 
-        for (let i = 0; i < this.storeKeys.length; i++) {
-            const key = this.storeKeys[i];
-            const keyWellFormed = key.charAt(0).toLocaleUpperCase() + key.slice(1);
-            const commitName = `auth/set${keyWellFormed}`;
+        const values = Object.values(AuthBrowserStorageKey);
+        for (let i = 0; i < values.length; i++) {
+            const value = this.ctx.$authWarehouse.get(values[i]);
+            if (!value) {
+                continue;
+            }
 
-            const value = this.ctx.$authWarehouse.get(key);
-
-            if (typeof value !== 'undefined') {
-                (this.ctx.store as Store<any>).commit(commitName, value);
+            switch (values[i]) {
+                case AuthBrowserStorageKey.ACCESS_TOKEN:
+                    this.ctx.store.commit('auth/setToken', {
+                        kind: OAuth2TokenKind.ACCESS,
+                        token: value,
+                    });
+                    break;
+                case AuthBrowserStorageKey.ACCESS_TOKEN_EXPIRE_DATE:
+                    this.ctx.store.commit('auth/setTokenExpireDate', {
+                        kind: OAuth2TokenKind.ACCESS,
+                        date: new Date(value),
+                    });
+                    break;
+                case AuthBrowserStorageKey.REFRESH_TOKEN:
+                    this.ctx.store.commit('auth/setToken', {
+                        kind: OAuth2TokenKind.REFRESH,
+                        token: value,
+                    });
+                    break;
+                case AuthBrowserStorageKey.PERMISSIONS:
+                    this.ctx.store.commit('auth/setPermissions', value);
+                    break;
+                case AuthBrowserStorageKey.USER:
+                    this.ctx.store.commit('auth/setUser', value);
+                    break;
             }
         }
     }
@@ -91,7 +132,7 @@ class AuthModule {
     private subscribeStore() {
         if (typeof this.ctx === 'undefined') return;
 
-        (this.ctx.store as Store<any>).subscribe((mutation: any) => {
+        this.ctx.store.subscribe((mutation) => {
             switch (mutation.type) {
                 case 'auth/setPermissions':
                     this.setPermissions(mutation.payload);
@@ -100,28 +141,42 @@ class AuthModule {
                     this.setPermissions([]);
                     break;
                 case 'auth/setToken': {
-                    const token = <AuthStoreToken>mutation.payload;
+                    const { kind, token }: { kind: OAuth2TokenKind, token: string } = mutation.payload;
+                    if (kind === OAuth2TokenKind.ACCESS) {
+                        this.setRequestToken(token);
+                    }
+                    break;
+                }
+                case 'auth/setTokenExpireDate': {
+                    // eslint-disable-next-line no-case-declarations
+                    const { kind, date } : {kind: OAuth2TokenKind, date: Date} = mutation.payload;
+                    if (kind !== OAuth2TokenKind.ACCESS) {
+                        return;
+                    }
+
                     if (this.refreshTokenJob) {
                         clearTimeout(this.refreshTokenJob);
                     }
 
                     const callback = () => {
-                        if (typeof this.ctx !== 'undefined') {
-                            this.ctx.store.dispatch('auth/triggerTokenExpired')
-                                .then((r: any) => r)
-                                .catch(() => this.ctx.redirect('/logout'));
-                        }
+                        if (
+                            typeof this.ctx === 'undefined' ||
+                            this.ctx.route.path.startsWith('/logout') ||
+                            this.ctx.route.path.startsWith('/login')
+                        ) return;
+
+                        this.ctx.store.dispatch('auth/triggerRefreshToken')
+                            .then((r: any) => r)
+                            .catch(() => this.ctx.redirect({
+                                path: '/logout',
+                                query: { redirect: this.ctx.route.fullPath },
+                            }));
                     };
 
                     callback.bind(this);
 
-                    this.setRequestToken(token.access_token);
-
-                    if (typeof token.expire_date !== 'undefined') {
-                        const expireDateInTime = (new Date(token.expire_date)).getTime();
-                        const currentTime = (new Date()).getTime();
-
-                        const timeoutMilliSeconds = expireDateInTime - currentTime;
+                    if (date instanceof Date) {
+                        const timeoutMilliSeconds = date.getTime() - Date.now();
 
                         if (timeoutMilliSeconds < 0) {
                             callback();
@@ -131,49 +186,55 @@ class AuthModule {
                     }
                     break;
                 }
-                case 'auth/unsetToken':
+                case 'auth/unsetToken': {
                     if (this.refreshTokenJob) {
                         clearTimeout(this.refreshTokenJob);
                     }
                     break;
+                }
             }
         });
     }
 
     // --------------------------------------------------------------------
 
-    public async resolveMe() : Promise<Record<string, any> | undefined> {
+    public async resolveMe() : Promise<User | Robot | undefined> {
         if (typeof this.identifyPromise !== 'undefined') {
             return this.identifyPromise;
         }
 
-        const token : AuthStoreToken | undefined = this.ctx.store.getters['auth/token'];
+        const token : string | undefined = this.ctx.store.getters['auth/accessToken'];
         if (!token) return Promise.resolve(undefined);
 
-        const resolved = this.ctx.store.getters['auth/permissionsResolved'];
-        if (typeof resolved !== 'undefined' && resolved) {
-            const userInfo : Record<string, any> = {
-                permissions: this.ctx.store.getters['auth/permissions'],
-                ...this.ctx.store.getters['auth/user'],
-            };
-
-            return Promise.resolve(userInfo);
+        const permissionsResolved = this.ctx.store.getters['auth/resolved'];
+        if (permissionsResolved) {
+            return Promise.resolve(this.ctx.store.getters['auth/user']);
         }
 
-        this.identifyPromise = this.getUserInfo(token.access_token)
-            .then(this.handleUserInfoResponse.bind(this));
+        this.identifyPromise = this.verifyToken(token)
+            .then(async (token) => {
+                await this.ctx.store.commit('auth/setResolved', true);
+
+                if(!token.target) {
+                    return undefined;
+                }
+
+                await this.ctx.store.dispatch('auth/triggerSetPermissions', token.target.permissions);
+                await this.ctx.store.dispatch('auth/triggerSetUser', token.target.entity);
+
+                switch (token.target.kind) {
+                    case OAuth2TokenSubKind.USER:
+                        await this.ctx.store.dispatch('auth/triggerSetUser', token.target.entity);
+                        break;
+                    case OAuth2TokenSubKind.ROBOT:
+                        await this.ctx.store.dispatch('auth/triggerSetRobot', token.target.entity);
+                        break;
+                }
+
+                return token.target.entity;
+            });
 
         return this.identifyPromise;
-    }
-
-    private async handleUserInfoResponse(userInfo: Record<string, any>) : Promise<Record<string, any>> {
-        const { permissions, ...user } = userInfo;
-
-        await this.ctx.store.commit('auth/setPermissionsResolved', true);
-        await this.ctx.store.dispatch('auth/triggerSetUser', user);
-        await this.ctx.store.dispatch('auth/triggerSetPermissions', permissions);
-
-        return user;
     }
 
     // --------------------------------------------------------------------
@@ -191,51 +252,69 @@ class AuthModule {
         return this.hasAbility(ability);
     }
 
-    public setPermissions(permissions: PermissionItem<any>[]) {
+    public setPermissions(permissions: PermissionItem[]) {
+        if (!Array.isArray(permissions)) return;
+
         this.abilityManager.setPermissions(permissions);
     }
 
     // --------------------------------------------------------------------
 
     public setRequestToken(token: string) {
-        useAPI(APIType.DEFAULT).setAuthorizationHeader({
+        this.ctx.$api.setAuthorizationHeader({
             type: 'Bearer',
             token,
         });
 
-        this.responseInterceptorId = useAPI(APIType.DEFAULT)
-            .mountResponseInterceptor((data) => data, (error: any) => {
-                if (typeof this.ctx === 'undefined') return;
+        this.ctx.$authApi.setAuthorizationHeader({
+            type: 'Bearer',
+            token,
+        });
 
-                if (typeof error !== 'undefined' && error && typeof error.response !== 'undefined') {
-                    if (error.response.status === 401) {
-                        // Refresh the access accessToken
-                        try {
-                            this.ctx.store.dispatch('auth/triggerRefreshToken').then(() => axios({
-                                method: error.config.method,
-                                url: error.config.url,
-                                data: error.config.data,
-                            }));
-                        } catch (e) {
-                            // this.ctx.store.dispatch('triggerSetLoginRequired', true).then(r => r);
-                            this.ctx.redirect('/logout');
+        const interceptor = (error: any) => {
+            if (typeof this.ctx === 'undefined') return;
 
-                            throw error;
-                        }
+            if (typeof error !== 'undefined' && error && typeof error.response !== 'undefined') {
+                if (error.response.status === 401) {
+                    // Refresh the access accessToken
+                    try {
+                        this.ctx.store.dispatch('auth/triggerRefreshToken').then(() => createClient().request({
+                            method: error.config.method,
+                            url: error.config.url,
+                            data: error.config.data,
+                        }));
+                    } catch (e) {
+                        // this.ctx.store.dispatch('triggerSetLoginRequired', true).then(r => r);
+                        this.ctx.redirect('/logout');
+
+                        throw error;
                     }
-
-                    throw error;
                 }
-            });
+
+                throw error;
+            }
+        };
+
+        this.responseInterceptorId = this.ctx.$api
+            .mountResponseInterceptor((data) => data, interceptor);
+
+        this.authResponseInterceptorId = this.ctx.$authApi
+            .mountResponseInterceptor((data) => data, interceptor);
     }
 
     public unsetRequestToken = () => {
         if (this.responseInterceptorId) {
-            useAPI(APIType.DEFAULT).unmountRequestInterceptor(this.responseInterceptorId);
+            this.ctx.$api.unmountRequestInterceptor(this.responseInterceptorId);
             this.responseInterceptorId = undefined;
         }
 
-        useAPI(APIType.DEFAULT).unsetAuthorizationHeader();
+        if (this.authResponseInterceptorId) {
+            this.ctx.$authApi.unmountRequestInterceptor(this.authResponseInterceptorId);
+            this.authResponseInterceptorId = undefined;
+        }
+
+        this.ctx.$api.unsetAuthorizationHeader();
+        this.ctx.$authApi.unsetAuthorizationHeader();
     };
 
     // --------------------------------------------------------------------
@@ -246,7 +325,7 @@ class AuthModule {
      * @param username
      * @param password
      */
-    public async getTokenWithPassword(username: string, password: string) : Promise<Oauth2TokenResponse> {
+    public async getTokenWithPassword(username: string, password: string) : Promise<OAuth2TokenResponse> {
         const data = await this.client.getTokenWithPasswordGrant({
             username,
             password,
@@ -262,7 +341,7 @@ class AuthModule {
      *
      * @param token
      */
-    public async getTokenWithRefreshToken(token: string) : Promise<Oauth2TokenResponse> {
+    public async getTokenWithRefreshToken(token: string) : Promise<OAuth2TokenResponse> {
         const data = await this.client.getTokenWithRefreshToken({
             refresh_token: token,
         });
@@ -276,7 +355,7 @@ class AuthModule {
      *
      * @param token
      */
-    public async getUserInfo(token: string) : Promise<Record<string, any>> {
+    public async verifyToken(token: string) : Promise<TokenVerificationPayload> {
         return this.client.getUserInfo(token);
     }
 }

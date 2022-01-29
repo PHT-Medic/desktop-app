@@ -12673,10 +12673,10 @@ vue-hot-reload-api@^2.3.0:
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.4.tgz#532955cc1eb208a3d990b3a9f9a70574657e08f2"
   integrity sha512-BXq3jwIagosjgNVae6tkHzzIk6a8MHFtzAdwhnV5VlvPTFxDCvIttgSiHWjdGoTJvXtmRu5HacExfdarRcFhog==
 
-vue-layout-navigation@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/vue-layout-navigation/-/vue-layout-navigation-0.1.1.tgz#d31493242003a74862bce029c24b4d4726bfd0be"
-  integrity sha512-f+Qy7wgPyuybyorv1G4hLAkJw2MCc9IPXWiqB1UzGbYRi/kuBWQdruFyQXwshurUQTClVh+KpC6CeSWO7MeInw==
+vue-layout-navigation@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/vue-layout-navigation/-/vue-layout-navigation-0.1.2.tgz#a33768d9c1298ca58b06f36088fb1cbe70180ae8"
+  integrity sha512-qnHMYCmQVhMiLR91JolY3K2TwVpHxj317UY11+iMEF2Wv2Uacp6lHGDxS4mpzU3KRqryqOUAXpSGvdGa4mBWPg==
   dependencies:
     regenerator-runtime "^0.13.9"
 

@@ -2,7 +2,6 @@ import {app, BrowserWindow, ipcMain, dialog, clipboard, shell} from 'electron';
 import {registerRenderedFiles} from 'electron-adapter';
 
 import {watchFile} from "fs";
-import * as path from "path";
 import {buildContextMenu} from "./utils/context-menu";
 
 app.on('window-all-closed', () => {

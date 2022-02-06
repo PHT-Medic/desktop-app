@@ -3,7 +3,7 @@
         "@tada5hi/eslint-config-vue-typescript"
     ],
     "parserOptions": {
-        "project": "./src/renderer/tsconfig.json",
+        "project": "./renderer/tsconfig.json",
         "extraFileExtensions": [".vue"]
     },
     "rules": {
@@ -21,7 +21,7 @@
 
         "@typescript-eslint/no-var-requires": "off"
     },
-    "ignorePatterns": ["**/dist/*", "**/*.d.ts", "**/writable/**", "**/*.config.js/*", "src/main/**"],
+    "ignorePatterns": ["**/dist/*", "**/*.d.ts", "**/writable/**", "**/*.config.js/*", "src/**", "renderer/**"],
     "globals": {
         "NodeJS": true
     }

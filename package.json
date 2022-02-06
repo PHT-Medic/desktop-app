@@ -40,7 +40,7 @@
         "bootstrap-vue": "^2.18.1",
         "browser-env": "3.3.0",
         "browser-storage-adapter": "^0.0.3",
-        "cookie": "^0.4.1",
+        "cookie": "^0.4.2",
         "cross-env": "7.0.3",
         "deepmerge": "4.2.2",
         "electron": "^17.0.0",

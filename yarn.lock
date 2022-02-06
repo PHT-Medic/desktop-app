@@ -1715,14 +1715,14 @@
     mustache "^2.3.0"
     stack-trace "0.0.10"
 
-"@personalhealthtrain/ui-common@^1.1.0-alpha.1":
-  version "1.1.0-alpha.1"
-  resolved "https://registry.npmjs.org/@personalhealthtrain/ui-common/-/ui-common-1.1.0-alpha.1.tgz"
-  integrity sha512-yngQZEDU6MbncgGx/567XylzWSpdRaIo+MU26QAOD4KIkXFONh84M4ekQC1X9Rmqlopdfe36accxwAP2DHsnXA==
+"@personalhealthtrain/ui-common@^1.1.0-alpha.4":
+  version "1.1.0-alpha.4"
+  resolved "https://registry.yarnpkg.com/@personalhealthtrain/ui-common/-/ui-common-1.1.0-alpha.4.tgz#350477437e59443294462e37e4d456850605843a"
+  integrity sha512-QFJB5jSgYK/tEC0Y9P2xO+rsvgaS/koIUFN3BCc2HBHBInNoxWTghD0L7h6lvEAtT07Nlq8uaVe0c1Mm680ikg==
   dependencies:
     "@trapi/client" "^2.0.2"
     "@trapi/query" "^2.0.3"
-    "@typescript-auth/domains" "^0.0.18"
+    "@typescript-auth/domains" "^0.0.19"
     nanoid "^3.1.30"
 
 "@polka/url@^1.0.0-next.20":
@@ -2349,6 +2349,19 @@
   version "0.0.18"
   resolved "https://registry.npmjs.org/@typescript-auth/domains/-/domains-0.0.18.tgz"
   integrity sha512-nKcn/Oh44/kCXAjPcvpReH2QwiJFmkffb8pk+vlfdSQPLHrrK0kR+Y4ktrmlun9uo8D0jjTxbeq3PhV7r0sVpg==
+  dependencies:
+    "@casl/ability" "^5.4.3"
+    "@trapi/client" "^2.0.2"
+    "@trapi/query" "^2.0.3"
+    "@typescript-error/core" "^1.1.1"
+    "@typescript-error/http" "^1.1.2"
+    change-case "^4.1.2"
+    nanoid "^3.2.0"
+
+"@typescript-auth/domains@^0.0.19":
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/@typescript-auth/domains/-/domains-0.0.19.tgz#f2679190cfbf46efa63a2dc09be24db19c151bdd"
+  integrity sha512-QaqDucsZ1hnQXuItXDbVNr5gdp7X7LTKnCogNotXJkb//sXuyJGqvtPEG1c2jsmrRYFM4dN6ge4OGPl4mQTf6g==
   dependencies:
     "@casl/ability" "^5.4.3"
     "@trapi/client" "^2.0.2"

@@ -27,7 +27,7 @@
         "@types/node": "12.12.6"
     },
     "devDependencies": {
-        "@fortawesome/fontawesome-free": "5.15.4",
+        "@fortawesome/fontawesome-free": "6.0.0",
         "@nuxt/types": "^2.14.5",
         "@nuxt/typescript-build": "2.1.0",
         "@nuxtjs/google-fonts": "^1.2.0",

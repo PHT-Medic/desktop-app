@@ -1817,10 +1817,10 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
 
-"@trapi/client@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.npmjs.org/@trapi/client/-/client-2.0.2.tgz"
-  integrity sha512-AstfeFT2qYXHR+u/cf/UkE7DSD9Kq0WrHiNS3aRalDbljZ/FnjiUsuyhCOUoXlKrOvsUzWpJyXh40P4tNRXRbQ==
+"@trapi/client@^2.0.2", "@trapi/client@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@trapi/client/-/client-2.0.4.tgz#bd99b1475e12ef9d5795cdb9ab3575c454d0e8dc"
+  integrity sha512-nnO/9CdY0QJawnYEtioHwWNV4s32wRUOe/JPn2waA8zR7aQtyp419l+BMhPtX0z0Sjj2w5gNs1YKjoTvjSH+AQ==
   dependencies:
     "@typescript-error/core" "^1.1.1"
     axios "^0.25.0"
@@ -2363,12 +2363,7 @@
     change-case "^4.1.2"
     nanoid "^3.2.0"
 
-"@typescript-error/core@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.npmjs.org/@typescript-error/core/-/core-1.1.1.tgz"
-  integrity sha512-P4s2j2ohWwmsciF3e8+EmWzR9HFK6X/A3ipSi3DMgDBmL+9iisWC1pptC5BMuo/LqP9tnfGBg7nXCnqZX+Rtow==
-
-"@typescript-error/core@^1.1.2":
+"@typescript-error/core@^1.1.1", "@typescript-error/core@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@typescript-error/core/-/core-1.1.2.tgz#db3bea6144a884e34e50a4b14b7294fab8cd021f"
   integrity sha512-IEeDQrMKsAFIJ+xik8YMoZzQ54eKiAdAagXAVdeotvC8dtzw2QayooZe1FRd2L2KyEDxphRTs7lm9TezdLLJ8g==

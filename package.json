@@ -33,7 +33,7 @@
         "@nuxtjs/google-fonts": "^1.2.0",
         "@personalhealthtrain/ui-common": "^1.1.0-alpha.1",
         "@tada5hi/eslint-config-vue-typescript": "0.0.25",
-        "@trapi/client": "^2.0.2",
+        "@trapi/client": "^2.0.4",
         "@types/tar": "^6.1.1",
         "@typescript-auth/domains": "^0.0.18",
         "bootstrap": "^4.5.3",

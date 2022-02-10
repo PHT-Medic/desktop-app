@@ -35,7 +35,7 @@
         "@tada5hi/eslint-config-vue-typescript": "0.0.25",
         "@trapi/client": "^2.0.2",
         "@types/tar": "^6.1.1",
-        "@typescript-auth/domains": "^0.0.18",
+        "@typescript-auth/domains": "^0.0.22",
         "bootstrap": "^4.5.3",
         "bootstrap-vue": "^2.18.1",
         "browser-env": "3.3.0",

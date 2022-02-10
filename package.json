@@ -31,7 +31,7 @@
         "@nuxt/types": "^2.14.5",
         "@nuxt/typescript-build": "2.1.0",
         "@nuxtjs/google-fonts": "^1.2.0",
-        "@personalhealthtrain/ui-common": "^1.1.0-alpha.1",
+        "@personalhealthtrain/ui-common": "^1.1.0-alpha.13",
         "@tada5hi/eslint-config-vue-typescript": "0.0.25",
         "@trapi/client": "^2.0.2",
         "@types/tar": "^6.1.1",

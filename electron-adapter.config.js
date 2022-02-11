@@ -12,5 +12,5 @@ module.exports = {
 
     entrypointDirectory: 'src/entrypoint',
 
-    rendererDirectory: 'renderer'
+    rendererDirectory: 'src/renderer'
 }

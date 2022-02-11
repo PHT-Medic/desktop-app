@@ -1715,14 +1715,14 @@
     mustache "^2.3.0"
     stack-trace "0.0.10"
 
-"@personalhealthtrain/ui-common@^1.1.0-alpha.1":
-  version "1.1.0-alpha.1"
-  resolved "https://registry.npmjs.org/@personalhealthtrain/ui-common/-/ui-common-1.1.0-alpha.1.tgz"
-  integrity sha512-yngQZEDU6MbncgGx/567XylzWSpdRaIo+MU26QAOD4KIkXFONh84M4ekQC1X9Rmqlopdfe36accxwAP2DHsnXA==
+"@personalhealthtrain/ui-common@^1.1.0-alpha.4":
+  version "1.1.0-alpha.4"
+  resolved "https://registry.yarnpkg.com/@personalhealthtrain/ui-common/-/ui-common-1.1.0-alpha.4.tgz#350477437e59443294462e37e4d456850605843a"
+  integrity sha512-QFJB5jSgYK/tEC0Y9P2xO+rsvgaS/koIUFN3BCc2HBHBInNoxWTghD0L7h6lvEAtT07Nlq8uaVe0c1Mm680ikg==
   dependencies:
     "@trapi/client" "^2.0.2"
     "@trapi/query" "^2.0.3"
-    "@typescript-auth/domains" "^0.0.18"
+    "@typescript-auth/domains" "^0.0.19"
     nanoid "^3.1.30"
 
 "@polka/url@^1.0.0-next.20":
@@ -1820,10 +1820,23 @@
     "@typescript-error/core" "^1.1.1"
     axios "^0.25.0"
 
+"@trapi/client@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@trapi/client/-/client-2.0.4.tgz#bd99b1475e12ef9d5795cdb9ab3575c454d0e8dc"
+  integrity sha512-nnO/9CdY0QJawnYEtioHwWNV4s32wRUOe/JPn2waA8zR7aQtyp419l+BMhPtX0z0Sjj2w5gNs1YKjoTvjSH+AQ==
+  dependencies:
+    "@typescript-error/core" "^1.1.1"
+    axios "^0.25.0"
+
 "@trapi/query@^2.0.3":
   version "2.0.3"
   resolved "https://registry.npmjs.org/@trapi/query/-/query-2.0.3.tgz"
   integrity sha512-4N7pQyCPQfkd/LyKhowNVdgQMkhTdxPO9Yb4qrl0AGlPL3Duhu8vexZaQeBRSiPxQ/3giHM1OYRYHDk6hGtLGg==
+
+"@trapi/query@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@trapi/query/-/query-2.0.4.tgz#7a8702b94865fb1c554bbec21e4527ce956a17eb"
+  integrity sha512-ZpBGbF4RqQSWcUvuF4bTvcwbeDnk5jF5bIZorA5Lep9jNXwseE0BU03F8T6iLA5UiU/ET/JyoAter1IxCdbxqQ==
 
 "@types/anymatch@*":
   version "3.0.0"
@@ -2345,16 +2358,29 @@
   resolved "https://registry.npmjs.org/@types/zen-observable/-/zen-observable-0.8.3.tgz"
   integrity sha512-fbF6oTd4sGGy0xjHPKAt+eS2CrxJ3+6gQ3FGcBoIJR2TLAyCkCyI8JqZNy+FeON0AhVgNJoUumVoZQjBFUqHkw==
 
-"@typescript-auth/domains@^0.0.18":
-  version "0.0.18"
-  resolved "https://registry.npmjs.org/@typescript-auth/domains/-/domains-0.0.18.tgz"
-  integrity sha512-nKcn/Oh44/kCXAjPcvpReH2QwiJFmkffb8pk+vlfdSQPLHrrK0kR+Y4ktrmlun9uo8D0jjTxbeq3PhV7r0sVpg==
+"@typescript-auth/domains@^0.0.19":
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/@typescript-auth/domains/-/domains-0.0.19.tgz#f2679190cfbf46efa63a2dc09be24db19c151bdd"
+  integrity sha512-QaqDucsZ1hnQXuItXDbVNr5gdp7X7LTKnCogNotXJkb//sXuyJGqvtPEG1c2jsmrRYFM4dN6ge4OGPl4mQTf6g==
   dependencies:
     "@casl/ability" "^5.4.3"
     "@trapi/client" "^2.0.2"
     "@trapi/query" "^2.0.3"
     "@typescript-error/core" "^1.1.1"
     "@typescript-error/http" "^1.1.2"
+    change-case "^4.1.2"
+    nanoid "^3.2.0"
+
+"@typescript-auth/domains@^0.0.21":
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/@typescript-auth/domains/-/domains-0.0.21.tgz#4452c0b330e7967d55bc10281e4cd1b5ca6e40ae"
+  integrity sha512-TZLHpDjzuRYtceakJ3dzFuydwZHy5GxJwrLVv0x/Zq7PNTdacwfacxXRJFynlmY4UOIfgqApRyS8sz75UnSH2A==
+  dependencies:
+    "@casl/ability" "^5.4.3"
+    "@trapi/client" "^2.0.4"
+    "@trapi/query" "^2.0.4"
+    "@typescript-error/core" "^1.1.2"
+    "@typescript-error/http" "^1.1.3"
     change-case "^4.1.2"
     nanoid "^3.2.0"
 
@@ -2374,6 +2400,13 @@
   integrity sha512-9fMHniVhk7Te3e/URb2hv/AqttpYeQJ1hWPgBuo3Luo91sBArfFELKDGAKYw76Us9v0ng1DWNMFpJ4z2WcXkcg==
   dependencies:
     "@typescript-error/core" "^1.1.1"
+
+"@typescript-error/http@^1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@typescript-error/http/-/http-1.1.3.tgz#1a7938cf1815e7bf7b5a6b7cd4779992bd01311f"
+  integrity sha512-MWPsu2slk/8hLDF7I4i2tOanyf5svPGiV4AxSEhj7vK8Ur5bi/NvDx8KMm6Xa7ydj7lcS5jhCNSQBvzUrfJC4Q==
+  dependencies:
+    "@typescript-error/core" "^1.1.2"
 
 "@typescript-eslint/eslint-plugin@^5.10.2":
   version "5.10.2"

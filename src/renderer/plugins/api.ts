@@ -65,8 +65,8 @@ export default (ctx: Context, inject : Inject) => {
     resourceAPI.mountResponseInterceptor((r) => r, interceptor);
     authAPI.mountResponseInterceptor((r) => r, interceptor);
 
-    setClient('default', resourceAPI);
-    setClient('auth', authAPI);
+    setClient(resourceAPI);
+    setClient(authAPI, 'auth');
 
     inject('api', resourceAPI);
     inject('authApi', authAPI);

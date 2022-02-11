@@ -27,7 +27,7 @@
         "@types/node": "12.12.6"
     },
     "devDependencies": {
-        "@fortawesome/fontawesome-free": "5.15.4",
+        "@fortawesome/fontawesome-free": "6.0.0",
         "@nuxt/types": "^2.14.5",
         "@nuxt/typescript-build": "2.1.0",
         "@nuxtjs/google-fonts": "^1.2.0",
@@ -45,7 +45,7 @@
         "deepmerge": "4.2.2",
         "electron": "^17.0.0",
         "electron-adapter": "^0.1.1",
-        "electron-builder": "^22.14.5",
+        "electron-builder": "^22.14.13",
         "eslint": "^8.8.0",
         "fernet": "^0.4.0",
         "moment": "^2.29.1",

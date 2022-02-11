@@ -6,7 +6,7 @@
  */
 
 import tar, { FileStat } from 'tar';
-import { TarFile } from '../../domains/train-result/type';
+import { TarFile } from '../train-result/type';
 
 export async function decompressTarFile(filePath: string): Promise<TarFile[]> {
     return new Promise(((resolve, reject) => {

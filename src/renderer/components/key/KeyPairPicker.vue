@@ -10,9 +10,9 @@ import * as fs from 'fs';
 import { ipcRenderer } from 'electron';
 import * as paillierBigint from 'paillier-bigint';
 import { isHex } from '@personalhealthtrain/ui-common';
-import { KeyPairVariant } from '../../modules/encryption/type';
+import { KeyPairVariant } from '../../domains/encryption/type';
 import KeyDisplay from './KeyDisplay';
-import { decryptRSAPrivateKey, generateRSAKeyPair } from '../../modules/encryption/utils/rsa';
+import { decryptRSAPrivateKey, generateRSAKeyPair } from '../../domains/encryption/utils/rsa';
 
 export default {
     components: { KeyDisplay },

@@ -272,27 +272,25 @@ class AuthModule {
         });
 
         const interceptor = (error: any) => {
-            if (typeof this.ctx === 'undefined') return;
-
-            if (typeof error !== 'undefined' && error && typeof error.response !== 'undefined') {
-                if (error.response.status === 401) {
-                    // Refresh the access accessToken
-                    try {
-                        this.ctx.store.dispatch('auth/triggerRefreshToken').then(() => createClient().request({
+            if (
+                error &&
+                error.response &&
+                error.response.status === 401
+            ) {
+                // Refresh the access accessToken
+                try {
+                    return this.ctx.store.dispatch('auth/triggerRefreshToken')
+                        .then(() => createClient().request({
                             method: error.config.method,
                             url: error.config.url,
                             data: error.config.data,
                         }));
-                    } catch (e) {
-                        // this.ctx.store.dispatch('triggerSetLoginRequired', true).then(r => r);
-                        this.ctx.redirect('/logout');
-
-                        throw error;
-                    }
+                } catch (e) {
+                    this.ctx.redirect('/logout');
                 }
-
-                throw error;
             }
+
+            return Promise.reject(error);
         };
 
         this.responseInterceptorId = this.ctx.$api

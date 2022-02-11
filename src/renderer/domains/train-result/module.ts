@@ -11,8 +11,8 @@ import { TarFile, TrainResultConfig, TrainResultLoaderContext } from './type';
 import { readTrainResultConfig } from './config-read';
 import { TrainConfig } from '../../config/constants';
 import { TrainResultSourceOption } from './constants';
-import { decompressTarFile } from '../../modules/fs/decompress';
-import { decryptPaillierNumberInTarFiles } from '../../modules/encryption/utils/paillier';
+import { decompressTarFile } from '../fs/decompress';
+import { decryptPaillierNumberInTarFiles } from '../encryption/utils/paillier';
 
 export async function loadTrainResult(context: TrainResultLoaderContext) : Promise<{
     config: TrainResultConfig,

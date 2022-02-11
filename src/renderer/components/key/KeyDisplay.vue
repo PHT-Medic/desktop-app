@@ -7,7 +7,7 @@
 
 <script>
 import { ipcRenderer } from 'electron';
-import { KeyPairVariant, KeyVariant } from '../../modules/encryption/type';
+import { KeyPairVariant, KeyVariant } from '../../domains/encryption/type';
 
 export default {
     props: {

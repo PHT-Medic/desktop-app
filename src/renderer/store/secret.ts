@@ -8,7 +8,7 @@
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
 import { hasOwnProperty } from '@personalhealthtrain/ui-common';
 import { RootState } from './index';
-import { PaillierPrivateKey, PaillierPublicKey } from '../modules/encryption/type';
+import { PaillierPrivateKey, PaillierPublicKey } from '../domains/encryption/type';
 
 export interface LayoutState {
     defaultPath: string | undefined,

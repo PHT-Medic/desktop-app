@@ -8,7 +8,7 @@
 import * as fs from 'fs';
 import path from 'path';
 import { ipcRenderer } from 'electron';
-import { KeyPairVariant } from '../modules/encryption/type';
+import { KeyPairVariant } from '../domains/encryption/type';
 
 export default {
     props: {

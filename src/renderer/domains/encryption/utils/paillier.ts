@@ -6,7 +6,7 @@
  */
 
 import { PrivateKey } from 'paillier-bigint';
-import { TarFile } from '../../../domains/train-result/type';
+import { TarFile } from '../../train-result/type';
 
 function decryptContentRecursive(privateKey: PrivateKey, data: any) {
     switch (true) {

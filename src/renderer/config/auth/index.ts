@@ -198,6 +198,10 @@ class AuthModule {
 
     // --------------------------------------------------------------------
 
+    isLoggedIn() : boolean {
+        return this.ctx.store.getters['auth/loggedIn'];
+    }
+
     public async resolveMe() : Promise<User | Robot | undefined> {
         if (typeof this.identifyPromise !== 'undefined') {
             return this.identifyPromise;

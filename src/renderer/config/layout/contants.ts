@@ -5,6 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+import { Component } from '@vue-layout/navigation';
+
 export enum LayoutKey {
     NAVIGATION_ID = 'navigationId',
     REQUIRED_LOGGED_IN = 'requireLoggedIn',
@@ -18,3 +20,33 @@ export enum LayoutNavigationID {
     ADMIN = 'admin',
     DEFAULT = 'default',
 }
+
+export const LayoutTopNavigation : Component[] = [
+    {
+        id: LayoutNavigationID.DEFAULT,
+        name: 'Home',
+        icon: 'fa fa-home',
+    },
+];
+
+export const LayoutSideDefaultNavigation : Component[] = [
+    {
+        name: 'About',
+        type: 'link',
+        url: '/',
+        icon: 'fas fa-info',
+        rootLink: true,
+    },
+    {
+        name: 'Result(s)',
+        type: 'link',
+        url: '/results',
+        icon: 'fas fa-file-download',
+    },
+    {
+        name: 'Settings',
+        type: 'link',
+        url: '/settings',
+        icon: 'fas fa-cog',
+    },
+];

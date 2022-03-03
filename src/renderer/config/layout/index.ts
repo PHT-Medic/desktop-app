@@ -5,35 +5,5 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { NavigationComponentConfig } from 'vue-layout-navigation';
-import { LayoutKey, LayoutNavigationID } from './contants';
-
-export const LayoutTopNavigation : NavigationComponentConfig[] = [
-    {
-        id: LayoutNavigationID.DEFAULT,
-        name: 'Home',
-        icon: 'fa fa-home',
-    },
-];
-
-export const LayoutSideDefaultNavigation : NavigationComponentConfig[] = [
-    {
-        name: 'About',
-        type: 'link',
-        url: '/',
-        icon: 'fas fa-info',
-        rootLink: true,
-    },
-    {
-        name: 'Result(s)',
-        type: 'link',
-        url: '/results',
-        icon: 'fas fa-file-download',
-    },
-    {
-        name: 'Settings',
-        type: 'link',
-        url: '/settings',
-        icon: 'fas fa-cog',
-    },
-];
+export * from './contants';
+export * from './module';

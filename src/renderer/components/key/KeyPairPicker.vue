@@ -9,7 +9,7 @@ import path from 'path';
 import * as fs from 'fs';
 import { ipcRenderer } from 'electron';
 import * as paillierBigint from 'paillier-bigint';
-import { isHex } from '@personalhealthtrain/ui-common';
+import { isHex } from '@personalhealthtrain/central-common';
 import { KeyPairVariant } from '../../domains/encryption/type';
 import KeyDisplay from './KeyDisplay';
 import { decryptRSAPrivateKey, generateRSAKeyPair } from '../../domains/encryption/utils/rsa';

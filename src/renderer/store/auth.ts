@@ -205,7 +205,6 @@ export const actions : ActionTree<AuthState, RootState> = {
             dispatch('triggerSetToken', { kind: OAuth2TokenKind.REFRESH, token: token.refresh_token });
 
             await dispatch('triggerRefreshMe');
-            await dispatch('layout/initNavigation', undefined, { root: true });
         } catch (e) {
             await dispatch('triggerUnsetToken', OAuth2TokenKind.ACCESS);
             await dispatch('triggerUnsetToken', OAuth2TokenKind.REFRESH);
@@ -273,8 +272,6 @@ export const actions : ActionTree<AuthState, RootState> = {
         await dispatch('triggerUnsetPermissions');
 
         await dispatch('triggerSetLoginRequired', false);
-
-        await dispatch('layout/initNavigation', undefined, { root: true });
     },
 
     // --------------------------------------------------------------------

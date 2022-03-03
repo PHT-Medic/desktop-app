@@ -6,7 +6,7 @@
  */
 
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
-import { hasOwnProperty } from '@personalhealthtrain/ui-common';
+import { hasOwnProperty } from '@personalhealthtrain/central-common';
 import { RootState } from './index';
 import { PaillierPrivateKey, PaillierPublicKey } from '../domains/encryption/type';
 

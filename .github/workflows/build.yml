@@ -8,6 +8,9 @@ on:
 jobs:
     release:
         runs-on: ${{ matrix.os }}
+        permissions:
+            packages: write
+            contents: read
 
         strategy:
             matrix:
@@ -31,10 +34,9 @@ jobs:
                  key: ${{ runner.os }}-${{ hashFiles('**/package.json') }}
 
             - name: Build/release Electron app
-              uses: samuelmeuli/action-electron-builder@v1
+              uses: samuelmeuli/action-electron-builder@v1.6
               with:
                   github_token: ${{ secrets.github_token }}
-
+                  max-attempts: "3"
                   args: --config electron-builder.config.js
-
                   release: ${{ startsWith(github.ref, 'refs/tags/v') }}

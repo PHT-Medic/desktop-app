@@ -14,8 +14,8 @@ import {
     OAuth2TokenKind,
     OAuth2TokenResponse,
     OAuth2TokenSubKind,
-    PermissionItem, Robot, TokenVerificationPayload, User, buildAbilityMetaFromName,
-} from '@typescript-auth/domains';
+    PermissionMeta, Robot, TokenVerificationPayload, User, buildAbilityMetaFromName,
+} from '@authelion/common';
 import { Config, createClient } from '@trapi/client';
 import { AuthBrowserStorageKey } from './constants';
 
@@ -38,7 +38,7 @@ class AuthModule {
 
     protected abilityManager!: AbilityManager;
 
-    protected identifyPromise : Promise<User | Robot | undefined> | undefined;
+    protected identifyPromise : Promise<User | Robot | undefined> | undefined = undefined;
 
     // --------------------------------------------------------------------
 
@@ -165,8 +165,8 @@ class AuthModule {
                             this.ctx.route.path.startsWith('/login')
                         ) return;
 
-                        this.ctx.store.dispatch('auth/triggerRefreshToken')
-                            .then((r: any) => r)
+                        Promise.resolve()
+                            .then(() => this.ctx.store.dispatch('auth/triggerRefreshToken'))
                             .catch(() => this.ctx.redirect({
                                 path: '/logout',
                                 query: { redirect: this.ctx.route.fullPath },
@@ -217,12 +217,11 @@ class AuthModule {
 
         this.identifyPromise = this.verifyToken(token)
             .then(async (token) => {
-                await this.ctx.store.commit('auth/setResolved', true);
-
                 if(!token.target) {
-                    return undefined;
+                    return;
                 }
 
+                await this.ctx.store.commit('auth/setResolved', true);
                 await this.ctx.store.dispatch('auth/triggerSetPermissions', token.target.permissions);
                 await this.ctx.store.dispatch('auth/triggerSetUser', token.target.entity);
 
@@ -256,7 +255,7 @@ class AuthModule {
         return this.hasAbility(ability);
     }
 
-    public setPermissions(permissions: PermissionItem[]) {
+    public setPermissions(permissions: PermissionMeta[]) {
         if (!Array.isArray(permissions)) return;
 
         this.abilityManager.setPermissions(permissions);

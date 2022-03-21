@@ -8,15 +8,15 @@
 import { Context } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
 
-import { BrowserStorageAdapter } from 'browser-storage-adapter';
+import { Adapter } from 'browser-storage-adapter';
 
 declare module '@nuxt/types' {
     // nuxtContext.app.$myInjectedFunction inside asyncData, fetch, plugins, middleware, nuxtServerInit
 // nuxtContext.$myInjectedFunction
     // eslint-disable-next-line no-unused-vars
     interface Context {
-        $warehouse: BrowserStorageAdapter,
-        $authWarehouse: BrowserStorageAdapter
+        $warehouse: Adapter,
+        $authWarehouse: Adapter
     }
 }
 
@@ -25,8 +25,8 @@ declare module 'vuex/types/index' {
 
     // eslint-disable-next-line no-unused-vars
     interface Store<S> {
-        $warehouse: BrowserStorageAdapter,
-        $authWarehouse: BrowserStorageAdapter
+        $warehouse: Adapter,
+        $authWarehouse: Adapter
     }
 }
 
@@ -50,7 +50,7 @@ export default (ctx : Context, inject : Inject) => {
 
     const getServerCookies = () => ctx.req.headers.cookie || '';
 
-    const appWarehouse = new BrowserStorageAdapter({
+    const appWarehouse = new Adapter({
         driver: {
             cookie: {
                 path: '/',
@@ -68,7 +68,7 @@ export default (ctx : Context, inject : Inject) => {
 
     //--------------------------------------------------------------------
 
-    const authWarehouse = new BrowserStorageAdapter({
+    const authWarehouse = new Adapter({
         driver: {
             cookie: {
                 path: '/',

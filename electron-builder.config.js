@@ -39,8 +39,18 @@ module.exports = {
         target: 'deb',
     },
     mac: {
-        target: 'dmg',
+        target: [
+            {
+                "target": "default",
+                "arch": [
+                    "x64",
+                    "arm64"
+                ]
+            }
+        ],
         icon: `assets/icons/512x512.png`,
+        entitlements: 'entitlements.mac.plist',
+        entitlementsInherit: 'entitlements.mac.plist'
     },
     dmg: {
         contents: [
@@ -56,5 +66,6 @@ module.exports = {
                 type: 'file',
             },
         ],
+        sign: false
     },
 };

@@ -7,7 +7,7 @@ on:
 
 jobs:
     release:
-        permissions: write-all|read-all
+        permissions: write-all
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
@@ -39,7 +39,7 @@ jobs:
                     release: ${{ startsWith(github.ref, 'refs/tags/v') }}
     release-mac:
         runs-on: [ self-hosted, macOS ]
-        permissions: read-all|write-all
+        permissions: write-all
         steps:
             -   name: Check out Git repository
                 uses: actions/checkout@v3

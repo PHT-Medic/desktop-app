@@ -39,15 +39,10 @@ module.exports = {
         target: 'deb',
     },
     mac: {
-        target: [
-            {
-                "target": "default",
-                "arch": [
-                    "x64",
-                    "arm64"
-                ]
-            }
-        ],
+        target: {
+            target: "default",
+            arch: "universal"
+        },
         icon: `assets/icons/512x512.png`,
         entitlements: 'entitlements.mac.plist',
         entitlementsInherit: 'entitlements.mac.plist'

@@ -47,7 +47,7 @@
         "electron": "^17.1.2",
         "electron-adapter": "^0.1.1",
         "electron-builder": "^22.14.13",
-        "eslint": "^8.10.0",
+        "eslint": "^8.11.0",
         "fernet": "^0.4.0",
         "moment": "^2.29.1",
         "np": "^7.6.0",

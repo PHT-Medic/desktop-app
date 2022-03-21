@@ -34,7 +34,7 @@ jobs:
                  key: ${{ runner.os }}-${{ hashFiles('**/package.json') }}
 
             - name: Build/release Electron app
-              uses: samuelmeuli/action-electron-builder@v1.6
+              uses: samuelmeuli/action-electron-builder@v1
               with:
                   github_token: ${{ secrets.github_token }}
                   max-attempts: "3"

@@ -2353,6 +2353,19 @@
     change-case "^4.1.2"
     nanoid "^3.3.1"
 
+"@typescript-auth/domains@^0.0.29":
+  version "0.0.29"
+  resolved "https://registry.yarnpkg.com/@typescript-auth/domains/-/domains-0.0.29.tgz#2d0d30f046fd1392c36738ab3cf3649b4860c546"
+  integrity sha512-Oh6DsYexADNuwwNWtZ6/UKYexRpV54X4VsEG9Te0Qpy4IgM+Abc7mJaFdWEvpVZTCQpYZRiqjp5GmINq1sd5bg==
+  dependencies:
+    "@casl/ability" "^5.4.3"
+    "@trapi/client" "^2.0.5"
+    "@trapi/query" "^2.0.5"
+    "@typescript-error/core" "^1.1.2"
+    "@typescript-error/http" "^1.1.3"
+    change-case "^4.1.2"
+    nanoid "^3.3.1"
+
 "@typescript-error/core@^1.1.2":
   version "1.1.2"
   resolved "https://registry.npmjs.org/@typescript-error/core/-/core-1.1.2.tgz"

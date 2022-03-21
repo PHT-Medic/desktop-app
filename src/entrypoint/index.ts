@@ -22,7 +22,7 @@ let mainWindow : BrowserWindow;
 
 (async () => {
     if(isProd) {
-        registerRenderedFiles({directory: 'entrypoint/dist'});
+        registerRenderedFiles({directory: 'src/entrypoint/dist'});
     }
 
     await app.whenReady();
@@ -33,7 +33,7 @@ let mainWindow : BrowserWindow;
         autoHideMenuBar: true,
         title: 'PHT - LocalTool',
         webPreferences: {
-            devTools: !app.isPackaged,
+            devTools: true,
             nodeIntegration: true,
             contextIsolation: false,
         }

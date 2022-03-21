@@ -5100,10 +5100,10 @@ ejs@^3.1.6:
   dependencies:
     jake "^10.6.1"
 
-electron-adapter@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/electron-adapter/-/electron-adapter-0.1.2.tgz#fa82aa90f0f6ddcae8c813b68386b33d6b5dba4a"
-  integrity sha512-SGgnQUuLvenhURPLFHGgckBax/KcKz0wFvyfajxe0Topj1Uun4asXu6UCon1U6pMXn1je96vuQDBQD2Vgmf/6g==
+electron-adapter@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/electron-adapter/-/electron-adapter-0.1.3.tgz#e7d8f2bf2e790f6d8c7800462b069d94d3a0cef5"
+  integrity sha512-PP7QOuud363TaWEBsAAaPXhp42Mx7kqxSmPS1p0soh/SKdzKpGXUN8LWgTsUeTBdRWJ3ydWbtlGDA1HrExodNA==
   dependencies:
     "@babel/core" "^7.17.8"
     "@babel/preset-typescript" "^7.16.7"

@@ -31,7 +31,7 @@ let mainWindow : BrowserWindow;
         height: 768,
         width: 1024,
         autoHideMenuBar: true,
-        title: 'PHT - LocalTool',
+        title: 'PHT - DesktopApp',
         webPreferences: {
             devTools: true,
             nodeIntegration: true,

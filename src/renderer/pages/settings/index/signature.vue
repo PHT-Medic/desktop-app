@@ -61,7 +61,7 @@
     </div>
 </template>
 <script>
-import { createSign } from 'crypto';
+import { createSign, constants } from 'crypto';
 import { maxLength, minLength, required } from 'vuelidate/lib/validators';
 import AlertMessage from '../../../components/alert/AlertMessage';
 import { LayoutKey, LayoutNavigationID } from '../../../config/layout/contants';
@@ -99,6 +99,9 @@ export default {
 
                 const signature = sign.sign({
                     key: this.privateKey,
+                    padding: constants.RSA_PKCS1_PSS_PADDING,
+                    mgf1HashAlgorithm: 'SHA512',
+                    saltLength: constants.RSA_PSS_SALTLEN_DIGEST,
                 });
 
                 this.form.signature = signature.toString('hex');
@@ -108,6 +111,7 @@ export default {
                     data: 'The signature was successfully generated.',
                 };
             } catch (e) {
+                console.log(e);
                 this.message = {
                     isError: true,
                     data: 'The passphrase is not valid.',

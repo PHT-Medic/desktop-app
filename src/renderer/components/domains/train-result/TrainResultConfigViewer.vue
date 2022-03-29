@@ -5,17 +5,20 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 
-<script>
+<script lang="ts">
+import {PropType} from "vue";
+import {TrainConfig} from "@personalhealthtrain/central-common";
+
 export default {
     props: {
-        config: Object,
+        config: Object as PropType<TrainConfig>,
     },
 };
 </script>
 <template>
     <div class="train-result-config-viewer">
-        <strong>Train ID</strong> {{ config.train_id }} <br>
-        <strong>Master Image</strong> {{ config.master_image }} <br>
+        <strong>Train ID</strong> {{ config.id }} <br>
+        <strong>Master Image</strong> {{ config.source.address }} <br>
         <strong>Session ID</strong> {{ config.session_id }} <br>
     </div>
 </template>

@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-export enum TrainConfig {
+export enum TrainConfigPath {
     RESULT_CONFIG_FILE_NAME = 'train_config.json',
     RESULT_PATH = 'pht_results',
 }

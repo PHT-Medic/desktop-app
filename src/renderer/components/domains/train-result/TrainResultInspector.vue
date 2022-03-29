@@ -62,7 +62,7 @@ export default {
                 this.config &&
                 this.sourceOption === TrainResultSourceOption.FILE
             ) {
-                return path.join(this.source, '..', this.config.train_id);
+                return path.join(this.source, '..', this.config.id);
             }
             return undefined;
         },

@@ -6,24 +6,32 @@
  */
 
 import crypto from 'crypto';
-import { ReadTrainResultConfigContext, TrainResultConfig } from './type';
-import { TrainConfig } from '../../config/constants';
+import {TrainConfig} from "@personalhealthtrain/central-common";
+import { ReadTrainResultConfigContext } from './type';
+import { TrainConfigPath } from '../../config/constants';
 
-export async function readTrainResultConfig(context: ReadTrainResultConfigContext) {
-    const configIndex = context.files.findIndex((file) => file.path === TrainConfig.RESULT_CONFIG_FILE_NAME);
+export async function readTrainResultConfig(context: ReadTrainResultConfigContext) : Promise<{
+    config: TrainConfig,
+    key: string
+}> {
+    const configIndex = context.files.findIndex((file) => file.path === TrainConfigPath.RESULT_CONFIG_FILE_NAME);
     if (configIndex === -1) {
-        throw new Error(`The ${TrainConfig.RESULT_CONFIG_FILE_NAME} does not exist in the compressed tar file.`);
+        throw new Error(`The ${TrainConfigPath.RESULT_CONFIG_FILE_NAME} does not exist in the compressed tar file.`);
     }
 
-    let config : TrainResultConfig;
+    let config : TrainConfig;
 
     try {
         config = JSON.parse(context.files[configIndex].content);
     } catch (e) {
-        throw new Error(`The ${TrainConfig.RESULT_CONFIG_FILE_NAME} could not be parsed.`);
+        throw new Error(`The ${TrainConfigPath.RESULT_CONFIG_FILE_NAME} could not be parsed.`);
     }
 
-    const symBuff = Buffer.from(config.user_encrypted_sym_key, 'hex');
+    if(!config.creator.encrypted_key) {
+        throw new Error(`The encrypted key is not present.`);
+    }
+
+    const symBuff = Buffer.from(config.creator.encrypted_key, 'hex');
 
     try {
         const content = crypto.privateDecrypt({
@@ -33,10 +41,11 @@ export async function readTrainResultConfig(context: ReadTrainResultConfigContex
             oaepLabel: undefined,
         }, symBuff);
 
-        config.user_decrypted_sym_key = content.toString('utf-8');
+        return {
+            config,
+            key: content.toString('utf-8')
+        }
     } catch (e) {
         throw new Error('The symmetric key could not be decrypted using the private key.');
     }
-
-    return config;
 }

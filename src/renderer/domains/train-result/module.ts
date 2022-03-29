@@ -7,15 +7,16 @@
 
 import fernet from 'fernet';
 
-import { TarFile, TrainResultConfig, TrainResultLoaderContext } from './type';
+import { TarFile, TrainResultLoaderContext } from './type';
 import { readTrainResultConfig } from './config-read';
-import { TrainConfig } from '../../config/constants';
+import { TrainConfigPath } from '../../config/constants';
 import { TrainResultSourceOption } from './constants';
 import { decompressTarFile } from '../fs/decompress';
 import { decryptPaillierNumberInTarFiles } from '../encryption/utils/paillier';
+import {TrainConfig} from "@personalhealthtrain/central-common";
 
 export async function loadTrainResult(context: TrainResultLoaderContext) : Promise<{
-    config: TrainResultConfig,
+    config: TrainConfig,
     files: TarFile[]
 }> {
     let files : TarFile[] = [];
@@ -32,21 +33,21 @@ export async function loadTrainResult(context: TrainResultLoaderContext) : Promi
         throw new Error();
     }
 
-    const config = await readTrainResultConfig({
+    const {config, key} = await readTrainResultConfig({
         files,
         encryption: context.encryption.rsa,
     });
 
     let resultFiles : TarFile[] = files
-        .filter((file) => file.path.startsWith(TrainConfig.RESULT_PATH))
+        .filter((file) => file.path.startsWith(TrainConfigPath.RESULT_PATH))
         .map((file) => {
-            file.path = file.path.replace(`${TrainConfig.RESULT_PATH}/`, '');
+            file.path = file.path.replace(`${TrainConfigPath.RESULT_PATH}/`, '');
             return file;
         });
 
     for (let i = 0; i < resultFiles.length; i++) {
         try {
-            const secret = new fernet.Secret(config.user_decrypted_sym_key);
+            const secret = new fernet.Secret(key);
 
             const token = new fernet.Token({
                 secret,

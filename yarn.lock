@@ -1596,13 +1596,13 @@
   resolved "https://registry.npmjs.org/@tootallnate/once/-/once-2.0.0.tgz"
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
 
-"@trapi/client@^2.0.5":
-  version "2.0.5"
-  resolved "https://registry.npmjs.org/@trapi/client/-/client-2.0.5.tgz"
-  integrity sha512-YcmKLuFod/WEk1uewdJM8zv6pMcjjNltSBa8qZoJCHmzJK6ItjsCn3y42z7BixGlaO8d0B8vD8xbKVIo+L7z5w==
+"@trapi/client@^2.0.5", "@trapi/client@^2.0.6":
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/@trapi/client/-/client-2.0.6.tgz#44a9afcd9579e8d2296d15e7f24b0ab97724a1c8"
+  integrity sha512-18TrwtfIeS6OwuNv7omHVcu9r9IeXGa3xiwT+mF2MPZAbMv8MdTurw2fBN/huUInioPh8DpTVv3AAam5R61q7g==
   dependencies:
-    "@typescript-error/core" "^1.1.2"
-    axios "^0.26.0"
+    "@typescript-error/core" "^1.1.3"
+    axios "^0.26.1"
 
 "@trapi/harbor-client@^0.1.1":
   version "0.1.1"
@@ -3075,7 +3075,7 @@ aws4@^1.8.0:
   resolved "https://registry.npmjs.org/aws4/-/aws4-1.11.0.tgz"
   integrity sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==
 
-axios@^0.26.0:
+axios@^0.26.1:
   version "0.26.1"
   resolved "https://registry.npmjs.org/axios/-/axios-0.26.1.tgz"
   integrity sha512-fPwcX4EvnSHuInCMItEhAGnaSEXRBjtzh9fOtsE6E1G6p7vl7edEeZe11QHf18+6+9gR5PbKV/sGKNaD8YaMeA==

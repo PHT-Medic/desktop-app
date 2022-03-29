@@ -1604,12 +1604,22 @@
     "@typescript-error/core" "^1.1.2"
     axios "^0.26.0"
 
+"@trapi/harbor-client@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@trapi/harbor-client/-/harbor-client-0.1.1.tgz#db86ff90c5f76ef4d299fc504c931e49a89561cd"
+  integrity sha512-9Xc0qZUJXEC9Ja6Z3PO7jUD5YBaOXJBpKOl+Ot70+gzFskw7wGAR1O9QMcUZSAQdyAvCffjH152h/k87rI5xyw==
+
 "@trapi/query@^2.0.5":
   version "2.1.1"
   resolved "https://registry.npmjs.org/@trapi/query/-/query-2.1.1.tgz"
   integrity sha512-AjtLhMkxL040r/gFPxJMYqffNsbf4glEnUsYEJ9S4B66saRcjPIY1uNQDxiqvBUrlMpXcorvq3gKvFgoLB3T6A==
   dependencies:
     minimatch "^5.0.1"
+
+"@trapi/vault-client@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@trapi/vault-client/-/vault-client-0.0.1.tgz#41d388d142940fa6281b172674ee0a8bdd236b90"
+  integrity sha512-DRVeXZwac4yH9Sv46NVzch+WxyqB9RYmbQ1FANdNFd7tLIAzUjEN6zC7Br5LVhIFvivDqIH5AgutrwLhqaU8SA==
 
 "@types/anymatch@*":
   version "3.0.0"

@@ -5,27 +5,26 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import fernet from 'fernet';
-
+const fernet = require('fernet');
 import { TarFile, TrainResultLoaderContext } from './type';
-import { readTrainResultConfig } from './config-read';
+import { parseTrainConfig } from '../train-config/read';
 import { TrainConfigPath } from '../../config/constants';
-import { TrainResultSourceOption } from './constants';
+import { TrainResultSourceType } from './constants';
 import { decompressTarFile } from '../fs/decompress';
 import { decryptPaillierNumberInTarFiles } from '../encryption/utils/paillier';
 import {TrainConfig} from "@personalhealthtrain/central-common";
 
-export async function loadTrainResult(context: TrainResultLoaderContext) : Promise<{
+export async function readTrainResult(context: TrainResultLoaderContext) : Promise<{
     config: TrainConfig,
     files: TarFile[]
 }> {
     let files : TarFile[] = [];
 
-    switch (context.sourceOption) {
-        case TrainResultSourceOption.FILE:
+    switch (context.sourceType) {
+        case TrainResultSourceType.FILE:
             files = await decompressTarFile(context.source);
             break;
-        case TrainResultSourceOption.URL:
+        case TrainResultSourceType.URL:
             break;
     }
 
@@ -33,9 +32,9 @@ export async function loadTrainResult(context: TrainResultLoaderContext) : Promi
         throw new Error();
     }
 
-    const {config, key} = await readTrainResultConfig({
+    const {config, key} = await parseTrainConfig({
         files,
-        encryption: context.encryption.rsa,
+        privateKey: context.rsaPrivateKey,
     });
 
     let resultFiles : TarFile[] = files
@@ -56,14 +55,15 @@ export async function loadTrainResult(context: TrainResultLoaderContext) : Promi
             });
 
             resultFiles[i].content = token.decode();
+            resultFiles[i].decrypted = true;
         } catch (e) {
-            throw new Error('The result file could not be decrypted with the decrypted symmetric key.');
+            resultFiles[i].decrypted = false;
         }
     }
 
-    if (context.encryption.paillier) {
+    if (context.paillierPrivateKey) {
         resultFiles = decryptPaillierNumberInTarFiles(
-            context.encryption.paillier.privateKey,
+            context.paillierPrivateKey,
             resultFiles,
         );
     }

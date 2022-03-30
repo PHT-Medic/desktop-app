@@ -6,31 +6,25 @@
  */
 
 import { PrivateKey } from 'paillier-bigint';
-import { TrainResultSourceOption } from './constants';
+import { TrainResultSourceType } from './constants';
 
 export type TarFile = {
     path: string,
-    content: string
+    content: string,
+    decrypted?: boolean
 };
 
 // -------------------------------------
 
 export type TrainResultLoaderContext = {
     source: string,
-    sourceOption: TrainResultSourceOption,
-    encryption: {
-        rsa: {
-            privateKey: string
-        },
-        paillier?: {
-            privateKey: PrivateKey
-        }
-    }
+    sourceType: `${TrainResultSourceType}`,
+
+    rsaPrivateKey: string,
+    paillierPrivateKey?: PrivateKey
 };
 
 export type ReadTrainResultConfigContext = {
     files: TarFile[],
-    encryption: {
-        privateKey: string
-    }
+    privateKey: string
 };

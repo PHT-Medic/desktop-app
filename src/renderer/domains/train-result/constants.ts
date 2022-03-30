@@ -5,12 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-export enum TrainResultSourceOption {
+export enum TrainResultSourceType {
     FILE = 'file',
     URL = 'url',
 }
-
-export type TrainResultSourceOptionType = `${TrainResultSourceOption}`;
 
 export enum TrainResultInspectorStatusOption {
     STARTED = 'started',

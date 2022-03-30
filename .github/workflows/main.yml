@@ -37,4 +37,5 @@ jobs:
             - name: Build and install packages
               run: |
                 yarn install
-                yarn run build
+                yarn build
+                yarn test

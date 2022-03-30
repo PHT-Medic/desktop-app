@@ -4,20 +4,25 @@
   - For the full copyright and license information,
   - view the LICENSE file that was distributed with this source code.
   -->
-<script>
+<script lang="ts">
 import path from 'path';
 import * as fs from 'fs';
 import { ipcRenderer } from 'electron';
 import * as paillierBigint from 'paillier-bigint';
 import { isHex } from '@personalhealthtrain/central-common';
 import { KeyPairVariant } from '../../domains/encryption/type';
-import KeyDisplay from './KeyDisplay';
+import KeyDisplay from './KeyDisplay.vue';
 import { decryptRSAPrivateKey, generateRSAKeyPair } from '../../domains/encryption/utils/rsa';
+import Vue, {PropType} from 'vue';
 
-export default {
+type Properties = {
+    variant: KeyPairVariant
+}
+
+export default Vue.extend<any, any, any, Properties>({
     components: { KeyDisplay },
     props: {
-        variant: KeyPairVariant,
+        variant: Object as PropType<KeyPairVariant>,
     },
     data() {
         return {
@@ -135,7 +140,10 @@ export default {
             const privateKeyPath = path.join(this.directoryPath, this.privateKeyFileName);
             const publicKeyPath = path.join(this.directoryPath, this.publicKeyFileName);
 
-            const keyPair = {};
+            const keyPair : {
+                privateKey?: string,
+                publicKey?: string
+            } = {};
 
             try {
                 await fs.promises.access(privateKeyPath, fs.constants.F_OK);
@@ -169,7 +177,7 @@ export default {
                     break;
                 case KeyPairVariant.DEFAULT: {
                     try {
-                        keyPair.privateKey = await decryptRSAPrivateKey(keyPair.privateKey, this.form.passphrase);
+                        keyPair.privateKey = decryptRSAPrivateKey(keyPair.privateKey, this.form.passphrase);
                     } catch (e) {
                         this.$bvToast.toast('The encrypted private key could not be decrypted with the given passphrase.', {
                             variant: 'warning',
@@ -265,7 +273,7 @@ export default {
             });
         },
     },
-};
+});
 </script>
 <template>
     <div>

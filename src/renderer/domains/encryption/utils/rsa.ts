@@ -7,7 +7,7 @@
 
 import { createPrivateKey, generateKeyPairSync } from 'crypto';
 
-export async function decryptRSAPrivateKey(key: string | Buffer, passphrase: string) {
+export function decryptRSAPrivateKey(key: string | Buffer, passphrase: string) : string {
     const privateKey = createPrivateKey({
         type: 'pkcs8',
         format: 'pem',
@@ -15,13 +15,19 @@ export async function decryptRSAPrivateKey(key: string | Buffer, passphrase: str
         passphrase,
     });
 
-    return privateKey.export({
+    let content =  privateKey.export({
         type: 'pkcs8',
         format: 'pem',
     });
+
+    if(typeof content !== 'string') {
+        content = Buffer.from(content).toString('utf-8');
+    }
+
+    return content;
 }
 
-export async function generateRSAKeyPair(passphrase: string) {
+export function generateRSAKeyPair(passphrase: string) {
     return generateKeyPairSync('rsa', {
         modulusLength: 2048,
         publicKeyEncoding: {

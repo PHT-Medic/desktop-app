@@ -8,8 +8,8 @@
 <script>
 import path from 'path';
 import { PrivateKey, PublicKey } from 'paillier-bigint';
-import { loadTrainResult } from '../../../domains/train-result/module';
-import { TrainResultInspectorStatusOption, TrainResultSourceOption } from '../../../domains/train-result/constants';
+import { readTrainResult } from '../../../domains/train-result/module';
+import { TrainResultInspectorStatusOption, TrainResultSourceType } from '../../../domains/train-result/constants';
 import AlertMessage from '../../alert/AlertMessage';
 import TrainResultConfigViewer from './TrainResultConfigViewer';
 import TarFilesSaver from '../../TarFilesSaver';
@@ -20,12 +20,12 @@ export default {
         source: String,
         sourceOption: {
             type: String,
-            default: TrainResultSourceOption.FILE,
+            default: TrainResultSourceType.FILE,
         },
     },
     data() {
         return {
-            sourceOptions: TrainResultSourceOption,
+            sourceOptions: TrainResultSourceType,
 
             statusOptions: TrainResultInspectorStatusOption,
             status: null,
@@ -38,17 +38,17 @@ export default {
     },
     computed: {
         optionActionLabel() {
-            return this.sourceOption === TrainResultSourceOption.FILE ?
+            return this.sourceOption === TrainResultSourceType.FILE ?
                 'Load' :
                 'Download';
         },
         optionLabel() {
-            return this.sourceOption === TrainResultSourceOption.FILE ?
+            return this.sourceOption === TrainResultSourceType.FILE ?
                 'FilePath' :
                 'URL';
         },
         optionIcon() {
-            return this.sourceOption === TrainResultSourceOption.FILE ?
+            return this.sourceOption === TrainResultSourceType.FILE ?
                 'fa fa-file-upload' :
                 'fa fa-file-download';
         },
@@ -60,7 +60,7 @@ export default {
         destinationPath() {
             if (
                 this.config &&
-                this.sourceOption === TrainResultSourceOption.FILE
+                this.sourceOption === TrainResultSourceType.FILE
             ) {
                 return path.join(this.source, '..', this.config.id);
             }
@@ -91,17 +91,11 @@ export default {
                     );
                 }
 
-                const { config, files } = await loadTrainResult({
+                const { config, files } = await readTrainResult({
                     source: this.source,
-                    sourceOption: this.sourceOption,
-                    encryption: {
-                        rsa: {
-                            privateKey: this.privateKey,
-                        },
-                        paillier: {
-                            privateKey: paillierKey,
-                        },
-                    },
+                    sourceType: this.sourceOption,
+                    rsaPrivateKey: this.privateKey,
+                    paillierPrivateKey: paillierKey
                 });
 
                 this.config = config;

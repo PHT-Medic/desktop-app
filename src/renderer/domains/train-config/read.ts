@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2021.
+ * Copyright (c) 2021-2022.
  * Author Peter Placzek (tada5hi)
  * For the full copyright and license information,
  * view the LICENSE file that was distributed with this source code.
@@ -7,10 +7,10 @@
 
 import crypto from 'crypto';
 import {TrainConfig} from "@personalhealthtrain/central-common";
-import { ReadTrainResultConfigContext } from './type';
+import { ReadTrainResultConfigContext } from '../train-result/type';
 import { TrainConfigPath } from '../../config/constants';
 
-export async function readTrainResultConfig(context: ReadTrainResultConfigContext) : Promise<{
+export async function parseTrainConfig(context: ReadTrainResultConfigContext) : Promise<{
     config: TrainConfig,
     key: string
 }> {
@@ -35,7 +35,7 @@ export async function readTrainResultConfig(context: ReadTrainResultConfigContex
 
     try {
         const content = crypto.privateDecrypt({
-            key: context.encryption.privateKey,
+            key: context.privateKey,
             padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
             oaepHash: 'sha512',
             oaepLabel: undefined,

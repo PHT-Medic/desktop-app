@@ -11,7 +11,6 @@ export enum KeyPairVariant {
     DEFAULT = 'default',
     HOMOMORPHIC_ENCRYPTION = 'homomorphic-encryption',
 }
-export type KeyPairVariantType = `${KeyPairVariant}`;
 
 // ---------------------------------------------------
 
@@ -19,8 +18,6 @@ export enum KeyVariant {
     PRIVATE = 'private',
     PUBLIC = 'public',
 }
-
-export type KeyVariantType = `${KeyVariant}`;
 
 // ---------------------------------------------------
 

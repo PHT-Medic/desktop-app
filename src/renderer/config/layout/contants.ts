@@ -38,6 +38,12 @@ export const LayoutSideDefaultNavigation : Component[] = [
         rootLink: true,
     },
     {
+        name: 'Signature',
+        type: 'link',
+        url: '/sign',
+        icon: 'fas fa-file-signature',
+    },
+    {
         name: 'Result(s)',
         type: 'link',
         url: '/results',

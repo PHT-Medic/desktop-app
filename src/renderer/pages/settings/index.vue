@@ -75,11 +75,8 @@ export default {
                         name: 'Overview', icon: 'fas fa-bars', urlSuffix: '',
                     },
                     {
-                        name: 'Signature', icon: 'fas fa-file-alt', urlSuffix: '/signature',
-                    },
-                    {
-                        name: 'Encryption',
-                        icon: 'fa fa-lock',
+                        name: 'Keys',
+                        icon: 'fa fa-key',
                         urlSuffix: '/encryption',
                         items: [
                             {

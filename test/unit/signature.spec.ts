@@ -41,16 +41,11 @@ describe('src/renderer/domains/signature*.ts', () => {
 
         verify.update(Buffer.from(hex_hash, 'hex'));
 
-        let result = verify.verify(publicKeyObj, Buffer.from(signature, 'hex'));
+        let result = verify.verify({ publicKeyObj }, Buffer.from(signature, 'hex'));
         console.log(result);
         expect(result)
             .toBeTruthy();
 
-        // const result = crypto.verify('SHA512',
-        //     Buffer.from(hex_hash, 'hex'), Buffer.from(signature, 'hex'), publicKey);
-        // console.log(result);
-
-        // expect(result).toBeTruthy();
 
     });
 

@@ -5,7 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-const fernet = require('fernet');
+import {decryptSymmetric} from "../encryption/symmetric";
+
 import { TarFile, TrainResultLoaderContext } from './type';
 import { parseTrainConfig } from '../train-config/read';
 import { TrainConfigPath } from '../../config/constants';
@@ -46,15 +47,9 @@ export async function readTrainResult(context: TrainResultLoaderContext) : Promi
 
     for (let i = 0; i < resultFiles.length; i++) {
         try {
-            const secret = new fernet.Secret(key);
+            const data = decryptSymmetric(Buffer.from(key, 'utf-8'), resultFiles[i].content);
 
-            const token = new fernet.Token({
-                secret,
-                token: resultFiles[i].content.toString(),
-                ttl: 0,
-            });
-
-            resultFiles[i].content = token.decode();
+            resultFiles[i].content = Buffer.from(data);
             resultFiles[i].decrypted = true;
         } catch (e) {
             resultFiles[i].decrypted = false;

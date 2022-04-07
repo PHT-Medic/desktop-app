@@ -30,8 +30,6 @@ describe('src/renderer/domains/signature*.ts', () => {
         });
 
         let signature = signHash(hex_hash, privateKeyDecrypted);
-        console.log(hex_hash);
-        console.log(signature);
         expect(signature)
             .toBeDefined();
 
@@ -41,8 +39,7 @@ describe('src/renderer/domains/signature*.ts', () => {
 
         verify.update(Buffer.from(hex_hash, 'hex'));
 
-        let result = verify.verify({ publicKeyObj }, Buffer.from(signature, 'hex'));
-        console.log(result);
+        let result = verify.verify( publicKeyObj , Buffer.from(signature, 'hex'));
         expect(result)
             .toBeTruthy();
 

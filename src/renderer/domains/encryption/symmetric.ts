@@ -3,7 +3,7 @@ import crypto from 'crypto';
 export function decryptSymmetric(key: Buffer, data: string, ivLength = 16): string {
     const buffer = Buffer.from(data, 'hex');
     const iv = buffer.slice(0, ivLength);
-    const decipher = crypto.createDecipheriv('aes-192-cbc', key, iv);
+    const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
     decipher.write(buffer.slice(ivLength));
     decipher.end();
 
@@ -12,7 +12,7 @@ export function decryptSymmetric(key: Buffer, data: string, ivLength = 16): stri
 }
 
 export function encryptSymmetric(key: Buffer, iv: Buffer, data: string) {
-    const cipher = crypto.createCipheriv('aes-192-cbc', key, iv);
+    const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
     cipher.write(data);
     cipher.end();
 

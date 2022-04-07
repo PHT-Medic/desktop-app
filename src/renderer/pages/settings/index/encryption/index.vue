@@ -21,7 +21,7 @@ export default {
 <template>
     <div>
         <h6>
-            RSA Encryption
+            RSA Keys
         </h6>
         <key-pair-picker :variant="'default'" />
     </div>

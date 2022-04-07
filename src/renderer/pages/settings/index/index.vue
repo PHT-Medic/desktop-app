@@ -20,7 +20,7 @@ export default {
 <template>
     <div>
         <h6>
-            <i class="fa fa-file" /> Encryption
+            <i class="fa fa-file" /> Keys
         </h6>
 
         <div class="row">
@@ -51,7 +51,7 @@ export default {
                             <nuxt-link
 
                                 class="btn btn-xs btn-dark"
-                                :to="'/settings/signature'"
+                                :to="'/sign'"
                             >
                                 <i class="fas fa-file-alt" /> Signature
                             </nuxt-link>

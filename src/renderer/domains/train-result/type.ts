@@ -10,7 +10,7 @@ import { TrainResultSourceType } from './constants';
 
 export type TarFile = {
     path: string,
-    content: string,
+    content: Buffer,
     decrypted?: boolean
 };
 

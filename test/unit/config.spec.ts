@@ -43,8 +43,7 @@ describe('src/renderer/domains/train-config*.ts', () => {
         expect(files[0].decrypted).toEqual(false);
         expect(files[0].path).toEqual('model_0.joblib');
 
-        expect(files[1].decrypted).toEqual(true);
+        expect(files[1].decrypted).toEqual(false);
         expect(files[1].path).toEqual('station_acc.csv');
-        expect(files[1].content).toEqual("acc\n1.0 \n");
     })
 });

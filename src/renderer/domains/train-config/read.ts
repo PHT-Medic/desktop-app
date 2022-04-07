@@ -22,7 +22,7 @@ export async function parseTrainConfig(context: ReadTrainResultConfigContext) : 
     let config : TrainConfig;
 
     try {
-        config = JSON.parse(context.files[configIndex].content);
+        config = JSON.parse(context.files[configIndex].content.toString("utf-8"));
     } catch (e) {
         throw new Error(`The ${TrainConfigPath.RESULT_CONFIG_FILE_NAME} could not be parsed.`);
     }

@@ -25,7 +25,7 @@ export async function decompressTarFile(filePath: string): Promise<TarFile[]> {
                 entry.on('end', () => {
                     files.push({
                         path: entry.path.toString(),
-                        content: Buffer.concat(data).toString('utf-8')
+                        content: Buffer.concat(data)
                     });
                 });
             },

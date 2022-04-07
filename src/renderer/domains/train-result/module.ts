@@ -50,7 +50,7 @@ export async function readTrainResult(context: TrainResultLoaderContext) : Promi
 
             const token = new fernet.Token({
                 secret,
-                token: resultFiles[i].content,
+                token: resultFiles[i].content.toString(),
                 ttl: 0,
             });
 

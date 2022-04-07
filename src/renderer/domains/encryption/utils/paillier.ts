@@ -34,9 +34,9 @@ export function decryptPaillierNumberInTarFiles(
             continue;
         }
 
-        const parsed = JSON.parse(files[i].content);
+        const parsed = JSON.parse(files[i].content.toString());
 
-        files[i].content = JSON.stringify(decryptContentRecursive(privateKey, parsed));
+        files[i].content = Buffer.from(JSON.stringify(decryptContentRecursive(privateKey, parsed)));
     }
 
     return files;

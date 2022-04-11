@@ -47,7 +47,7 @@ export async function readTrainResult(context: TrainResultLoaderContext) : Promi
 
     for (let i = 0; i < resultFiles.length; i++) {
         try {
-            const data = decryptSymmetric(Buffer.from(key, 'utf-8'), resultFiles[i].content);
+            const data = decryptSymmetric(key, resultFiles[i].content);
 
             resultFiles[i].content = Buffer.from(data);
             resultFiles[i].decrypted = true;

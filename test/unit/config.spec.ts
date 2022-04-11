@@ -14,7 +14,7 @@ describe('src/renderer/domains/train-config*.ts', () => {
         const files = await decompressTarFile(resultFilePath);
 
         expect(files).toBeDefined();
-        expect(files.length).toEqual(3);
+        expect(files.length).toEqual(2);
 
         let privateKey = await fs.promises.readFile(privateKeyFilePath, { encoding: 'utf-8' });
         let privateKeyDecrypted = decryptRSAPrivateKey(privateKey, 'leuko');
@@ -25,7 +25,7 @@ describe('src/renderer/domains/train-config*.ts', () => {
         });
 
         expect(config).toBeDefined();
-        expect(key).toEqual('TwvuYEt7NXRRQXHFqzjHI5sxo3n6K-jfXAavVVAzLEE=');
+        expect(key).toBeDefined();
     });
 
     it('should load train result', async () => {
@@ -39,11 +39,10 @@ describe('src/renderer/domains/train-config*.ts', () => {
         });
 
         expect(config).toBeDefined();
-        expect(files.length).toEqual(2);
-        expect(files[0].decrypted).toEqual(false);
-        expect(files[0].path).toEqual('model_0.joblib');
+        expect(files.length).toEqual(1);
 
-        expect(files[1].decrypted).toEqual(false);
-        expect(files[1].path).toEqual('station_acc.csv');
+        expect(files[0].decrypted).toEqual(true);
+        expect(files[0].content.toString('utf-8')).toEqual('acc\n1.0 \n');
+        expect(files[0].path).toEqual('station_acc.csv');
     })
 });

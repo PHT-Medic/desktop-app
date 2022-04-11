@@ -12,7 +12,7 @@ import { TrainConfigPath } from '../../config/constants';
 
 export async function parseTrainConfig(context: ReadTrainResultConfigContext) : Promise<{
     config: TrainConfig,
-    key: string
+    key: Buffer
 }> {
     const configIndex = context.files.findIndex((file) => file.path === TrainConfigPath.RESULT_CONFIG_FILE_NAME);
     if (configIndex === -1) {
@@ -43,7 +43,7 @@ export async function parseTrainConfig(context: ReadTrainResultConfigContext) : 
 
         return {
             config,
-            key: content.toString('utf-8')
+            key: content
         }
     } catch (e) {
         throw new Error('The symmetric key could not be decrypted using the private key.');

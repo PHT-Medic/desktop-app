@@ -58,12 +58,29 @@ export default {
         },
 
         destinationPath() {
-            if (
+            let id;
+
+            if(
                 this.config &&
+                this.config.id
+            ) {
+                id = this.config.id;
+            }
+
+            if(
+                this.config &&
+                this.config['@id']
+            ) {
+                id = this.config['@id'];
+            }
+
+            if (
+                id &&
                 this.sourceOption === TrainResultSourceType.FILE
             ) {
-                return path.join(this.source, '..', this.config.id);
+                return path.join(this.source, '..', id);
             }
+
             return undefined;
         },
     },

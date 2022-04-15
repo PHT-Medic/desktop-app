@@ -14,10 +14,10 @@
   dependencies:
     "@jridgewell/trace-mapping" "^0.3.0"
 
-"@authelion/common@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@authelion/common/-/common-0.0.3.tgz#31209ec5429c0099367647c916cd514144b86231"
-  integrity sha512-6ZjwpP7kEDE30BIIw5VKL+Wxx/DWCMZGStTF74vFaWBYpjfCgB+EvFqwI60zn8d0aX85FoHgdDcOO5MekZ3lzw==
+"@authelion/common@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@authelion/common/-/common-0.0.4.tgz#fd2d001d0cdd11a432d73e4f2046d346d5160180"
+  integrity sha512-bAFsYD64J3pnoXFwnXF7jZalyUon95zHe4Mq2ljBGKPd8Rx+dq2+1Yb01qcBxsDIsIrw8icwiScWow89s3neww==
   dependencies:
     "@casl/ability" "^5.4.3"
     "@trapi/client" "^2.0.6"

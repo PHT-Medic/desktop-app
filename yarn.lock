@@ -2527,10 +2527,10 @@
   dependencies:
     "@ucast/core" "^1.4.1"
 
-"@vue-layout/navigation@^1.0.10":
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/@vue-layout/navigation/-/navigation-1.0.10.tgz#477af34a2639087f88e7c3b24daf53619a69fb7d"
-  integrity sha512-5f9UhlLnlH7+mkY68wn/amj1XTmTesFbCIc1XryW2V+69o0J0h7b55Ie3Vzmrrwp+JoJXE6Tpko+FdvLlSaYog==
+"@vue-layout/navigation@^1.0.11":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@vue-layout/navigation/-/navigation-1.0.11.tgz#0f9f2b6baaf98924e275b6ae5c33ebd9ab2d3fda"
+  integrity sha512-Er1BQxlN9t7zmY8ZXAywwSCu+nno9aEcQXF7RtoDEpVZWk+2rFcoQg+7veLHtsFFSq5E6Kl1vHQ+dCcemUagcA==
   dependencies:
     regenerator-runtime "^0.13.9"
 

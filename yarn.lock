@@ -7404,10 +7404,10 @@ ignore@^5.1.1, ignore@^5.1.8, ignore@^5.2.0:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.2.0.tgz#6d3bac8fa7fe0d45d9f9be7bac2fc279577e345a"
   integrity sha512-CmxgYGiEPCLhfLnpPp1MoRmifwEIOgjcHXxOBjv7mY96c+eWScsOP9c112ZyLdWHi0FxHjI+4uVhKYp/gcdRmQ==
 
-ilingo@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/ilingo/-/ilingo-2.0.0.tgz#cfbd7478d5715b4d97e5a29607b7ee9457c23b10"
-  integrity sha512-XSMT9kL6WbBoLwCkjNtNguwcuWJ2Dd0wwpKpxpiRuJLCP04prX1zYUBmaXPl8n3vSDCFjDnoNaKouxrn7C0Img==
+ilingo@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/ilingo/-/ilingo-2.0.1.tgz#d4f8afa1e64a2accbb4f72613ccac165871a7b81"
+  integrity sha512-NMHwwMBMO1mIDZJrRQUx5k40+/Gb7fZCaORuW6xRNsscvDZFybnO7DDy3BKjBxsqi+4jDyG1Y8lPhA8/Mmqt6A==
   dependencies:
     lodash "^4.17.21"
     regenerator-runtime "^0.13.9"

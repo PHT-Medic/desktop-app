@@ -47,7 +47,7 @@
         "cross-env": "7.0.3",
         "deepmerge": "4.2.2",
         "electron": "^18.0.4",
-        "electron-adapter": "^0.2.0",
+        "electron-adapter": "^1.0.0",
         "electron-builder": "^23.0.3",
         "eslint": "^8.13.0",
         "ilingo": "^2.0.2",

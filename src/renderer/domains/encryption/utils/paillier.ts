@@ -21,7 +21,10 @@ function decryptContentRecursive(privateKey: PrivateKey, data: unknown) {
         return data;
     }
 
-    if(typeof data === 'number') {
+    if(
+        typeof data === 'number' ||
+        typeof data === 'string'
+    ) {
         return privateKey.decrypt(BigInt(data));
     }
 

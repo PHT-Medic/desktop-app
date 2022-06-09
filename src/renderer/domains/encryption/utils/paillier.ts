@@ -15,7 +15,7 @@ function decryptContentRecursive(privateKey: PrivateKey, data: unknown) {
     ) {
         const keys = Object.keys(data);
         for (let i = 0; i < keys.length; i++) {
-            data[keys[i]] = decryptContentRecursive(privateKey, data[keys[i]]);
+            (data as Record<string, any>)[keys[i]] = decryptContentRecursive(privateKey, (data as Record<string, any>)[keys[i]]);
         }
 
         return data;

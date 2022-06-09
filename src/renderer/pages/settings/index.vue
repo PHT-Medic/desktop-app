@@ -75,18 +75,11 @@ export default {
                         name: 'Overview', icon: 'fas fa-bars', urlSuffix: '',
                     },
                     {
-                        name: 'Keys',
-                        icon: 'fa fa-key',
-                        urlSuffix: '/encryption',
-                        items: [
-                            {
-                                name: 'RSA', icon: 'fa fa-key', urlSuffix: '/',
-                            },
-                            {
-                                name: 'Homomorphic', icon: 'fa fa-key', urlSuffix: '/homomorphic',
-                            },
-                        ],
+                        name: 'RSA', icon: 'fa fa-key', urlSuffix: '/encryption',
                     },
+                    {
+                        name: 'Homomorphic', icon: 'fa fa-key', urlSuffix: '/encryption/homomorphic',
+                    }
                 ],
             },
         };

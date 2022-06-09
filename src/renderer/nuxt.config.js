@@ -45,6 +45,7 @@ module.exports = {
             Asap: true,
             Nunito: true,
         },
+        download: true,
     },
     modules: [
         'bootstrap-vue/nuxt',

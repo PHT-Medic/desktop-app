@@ -16,13 +16,13 @@ import { decryptRSAPrivateKey, generateRSAKeyPair } from '../../domains/encrypti
 import Vue, {PropType} from 'vue';
 
 type Properties = {
-    variant: KeyPairVariant
+    variant: `${KeyPairVariant}`
 }
 
 export default Vue.extend<any, any, any, Properties>({
     components: { KeyDisplay },
     props: {
-        variant: Object as PropType<KeyPairVariant>,
+        variant: String as PropType<KeyPairVariant>,
     },
     data() {
         return {

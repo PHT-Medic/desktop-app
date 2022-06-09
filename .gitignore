@@ -6,3 +6,4 @@ node_modules
 .idea
 yarn-error.log
 .electron-adapter
+.DS_Store

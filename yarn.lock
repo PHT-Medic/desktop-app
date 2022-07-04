@@ -2771,10 +2771,10 @@
   dependencies:
     "@ucast/core" "^1.4.1"
 
-"@vue-layout/navigation@^1.0.12":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@vue-layout/navigation/-/navigation-1.0.12.tgz#7449a2a04bf89b69199808bfbcd677212ce453ed"
-  integrity sha512-Kt9ArcUML9JbwlgR91bzf9CQhy9kwgzWzHae0f4pk+GK/kNE36ez8NpgKNDokkvmSyq09uu3Sx5brLCqkhWuHQ==
+"@vue-layout/navigation@^1.0.13":
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/@vue-layout/navigation/-/navigation-1.0.13.tgz#169023057d0027d294c5e301051f95f91bd30c32"
+  integrity sha512-Y6EWw+z7IwdX3822x+q8wwpPrsKWS6uz0qUveB/NOX0eAkbgmJ3oQJa61tkAAEFLT0iKiR3VCZ8Nd+lqxN8tdg==
   dependencies:
     regenerator-runtime "^0.13.9"
 
@@ -3387,10 +3387,10 @@ app-builder-bin@4.0.0:
   resolved "https://registry.yarnpkg.com/app-builder-bin/-/app-builder-bin-4.0.0.tgz#1df8e654bd1395e4a319d82545c98667d7eed2f0"
   integrity sha512-xwdG0FJPQMe0M0UA4Tz0zEB8rBJTRA5a476ZawAqiBkMv16GRK5xpXThOjMaEOFnZ6zabejjG4J3da0SXG63KA==
 
-app-builder-lib@23.1.0:
-  version "23.1.0"
-  resolved "https://registry.yarnpkg.com/app-builder-lib/-/app-builder-lib-23.1.0.tgz#39bab8eb445d06ad9168eb2513c7f267923df2ba"
-  integrity sha512-aZpKjBBLzyxtr4Cmbyi3dl8uRO8SI2PG2MYEKYRZL6pl7IsKP2hJkCYzlD6NjLJlRIAZcFPFjFbJliO74DFf7w==
+app-builder-lib@23.2.0:
+  version "23.2.0"
+  resolved "https://registry.yarnpkg.com/app-builder-lib/-/app-builder-lib-23.2.0.tgz#ff83af3681f31409444facf191063310ffe348af"
+  integrity sha512-QsMYbtJLAMMc3BJkpMotfuA6Gi2RYi+Nq3Y6afkWLK0qo80dB26OLB9/LVE6943US5tqplKaTyax+kO1Y5LOoA==
   dependencies:
     "7zip-bin" "~5.1.1"
     "@develar/schema-utils" "~2.6.5"
@@ -5601,12 +5601,12 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
-dmg-builder@23.1.0:
-  version "23.1.0"
-  resolved "https://registry.yarnpkg.com/dmg-builder/-/dmg-builder-23.1.0.tgz#94426db22b762e7ffc61f0da1f68d385059a20ed"
-  integrity sha512-CzhPk/k12nJ2KqTbePkIwHOLiaWneQu2cgXCT9Hb5FhwI1vxTPalLsg8OZ57wKCrkL8AEftqqSff8gB5yWY/xw==
+dmg-builder@23.2.0:
+  version "23.2.0"
+  resolved "https://registry.yarnpkg.com/dmg-builder/-/dmg-builder-23.2.0.tgz#05800a5fe32020dee50cae6cc81cec05eb124ebc"
+  integrity sha512-jVWbl4oBwsy8OYTvsiPNsE3iEqnJkeFWZtPrEt1NCa+zFpKF7yl8YD75+ctpSUa+dOrutcfMiPy9l1vowqFZVA==
   dependencies:
-    app-builder-lib "23.1.0"
+    app-builder-lib "23.2.0"
     builder-util "23.0.9"
     builder-util-runtime "9.0.2"
     fs-extra "^10.0.0"
@@ -5827,17 +5827,17 @@ electron-adapter@^1.0.3:
     webpack-merge "5.8.0"
     yargs "^17.5.1"
 
-electron-builder@^23.1.0:
-  version "23.1.0"
-  resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-23.1.0.tgz#fdd213387008e44ab7dcabe53b84dbd969c1a7cc"
-  integrity sha512-UEblaQY8N9m8/HriOwl7jgFJ4olpWDXwdDBqwUkQiRHVNRnCfrA0u8LV03li5ZYhma6zFWzfIZbHd+uk8y//lQ==
+electron-builder@^23.2.0:
+  version "23.2.0"
+  resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-23.2.0.tgz#e96578cdad5b555a28ca59b646ae1b6dd32ac6d7"
+  integrity sha512-/hKPwZE9Nqf1jJfhtbgwaVhPns6necBEiMNp+UqIuoCSQ8vV5PjOspCJu3rrrWiIScq03sI/bkF2mmc7QXX5+A==
   dependencies:
     "@types/yargs" "^17.0.1"
-    app-builder-lib "23.1.0"
+    app-builder-lib "23.2.0"
     builder-util "23.0.9"
     builder-util-runtime "9.0.2"
     chalk "^4.1.1"
-    dmg-builder "23.1.0"
+    dmg-builder "23.2.0"
     fs-extra "^10.0.0"
     is-ci "^3.0.0"
     lazy-val "^1.0.5"
@@ -5880,10 +5880,10 @@ electron-to-chromium@^1.4.84:
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.106.tgz#e7a3bfa9d745dd9b9e597616cb17283cc349781a"
   integrity sha512-ZYfpVLULm67K7CaaGP7DmjyeMY4naxsbTy+syVVxT6QHI1Ww8XbJjmr9fDckrhq44WzCrcC5kH3zGpdusxwwqg==
 
-electron@^19.0.4:
-  version "19.0.4"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-19.0.4.tgz#a88d5e542868c4abd7704228ec62c553605605a0"
-  integrity sha512-roRYr1VNAWIhjD9n8qZdmhROtrzsFpuZEXrjWAw+GqPbZlrUInmvFCviRDC2Lt+VBsTNRpTfPpfzXSlLL4reEw==
+electron@^19.0.7:
+  version "19.0.7"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-19.0.7.tgz#c7a7841646adc6457de70b93661cc400bfdf9d38"
+  integrity sha512-Wyg+oGkY8cWYmm8tVka6CZmhJxnyUx+Us2ALyWiY4w73+dO9XUNB/c7vQNIm1Uk/DLMn9vFzgvcS9YtOOMqpbg==
   dependencies:
     "@electron/get" "^1.14.1"
     "@types/node" "^16.11.26"

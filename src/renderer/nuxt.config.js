@@ -32,13 +32,12 @@ module.exports = {
         './plugins/app',
 
         './plugins/vuelidate',
-        './plugins/vueFormWizard',
         './plugins/vueTimeAgo',
-        './plugins/vue',
+        './plugins/vue'
     ],
     buildModules: [
         '@nuxt/typescript-build',
-        '@nuxtjs/google-fonts',
+        '@nuxtjs/google-fonts'
     ],
     googleFonts: {
         families: {

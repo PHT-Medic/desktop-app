@@ -10,26 +10,6 @@ import { Inject } from '@nuxt/types/app';
 
 import { Adapter } from 'browser-storage-adapter';
 
-declare module '@nuxt/types' {
-    // nuxtContext.app.$myInjectedFunction inside asyncData, fetch, plugins, middleware, nuxtServerInit
-// nuxtContext.$myInjectedFunction
-    // eslint-disable-next-line no-unused-vars
-    interface Context {
-        $warehouse: Adapter,
-        $authWarehouse: Adapter
-    }
-}
-
-declare module 'vuex/types/index' {
-    // this.$myInjectedFunction inside Vuex stores
-
-    // eslint-disable-next-line no-unused-vars
-    interface Store<S> {
-        $warehouse: Adapter,
-        $authWarehouse: Adapter
-    }
-}
-
 export default (ctx : Context, inject : Inject) => {
     const setServerCookie = (value: string) => {
         let cookies = ctx.res.getHeader('Set-Cookie') || [];

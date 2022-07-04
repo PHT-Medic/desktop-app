@@ -51,7 +51,6 @@ module.exports = {
     ],
     css: [
         '@fortawesome/fontawesome-free/css/all.css',
-        'vue-form-wizard/dist/vue-form-wizard.min.css',
         'bootstrap/dist/css/bootstrap.min.css',
         'bootstrap-vue/dist/bootstrap-vue.css',
         '@/assets/css/vue-layout-navigation.css',

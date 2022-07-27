@@ -48,7 +48,7 @@
         "deepmerge": "4.2.2",
         "electron": "^19.0.7",
         "electron-adapter": "^1.0.3",
-        "electron-builder": "^23.3.0",
+        "electron-builder": "^23.3.3",
         "eslint": "^8.19.0",
         "ilingo": "^2.0.2",
         "jest": "^27.5.1",

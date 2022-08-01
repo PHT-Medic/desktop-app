@@ -6,7 +6,6 @@
  */
 
 module.exports = {
-    productName: 'PHT: Desktop-App',
     appId: 'de.personalhealthtrain.app-desktop',
     // eslint-disable-next-line no-template-curly-in-string
     artifactName: 'pht-desktop-app-${version}.${ext}',

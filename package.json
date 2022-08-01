@@ -1,7 +1,7 @@
 {
     "name": "desktop-app",
     "private": true,
-    "version": "0.2.4",
+    "version": "0.2.5",
     "description": "This project contains the Desktop-App of the PHT.",
     "main": ".electron-adapter/index.js",
     "scripts": {

@@ -2780,10 +2780,10 @@
   dependencies:
     "@ucast/core" "^1.4.1"
 
-"@vue-layout/navigation@^1.0.13":
-  version "1.0.13"
-  resolved "https://registry.yarnpkg.com/@vue-layout/navigation/-/navigation-1.0.13.tgz#169023057d0027d294c5e301051f95f91bd30c32"
-  integrity sha512-Y6EWw+z7IwdX3822x+q8wwpPrsKWS6uz0qUveB/NOX0eAkbgmJ3oQJa61tkAAEFLT0iKiR3VCZ8Nd+lqxN8tdg==
+"@vue-layout/navigation@^1.0.14":
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/@vue-layout/navigation/-/navigation-1.0.14.tgz#da576e94e5718e4f48758ce7757cd23afd3bf4ed"
+  integrity sha512-qLyHgnP9AWf1qvZrElAQkDLoFZr4Qa+zMO9gZ4185UsBXAEf1mhj+7G2jpaGoh22z+kXzjEUM1EPuccxfCJ+6w==
   dependencies:
     regenerator-runtime "^0.13.9"
 

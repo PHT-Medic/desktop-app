@@ -37,7 +37,7 @@
         "@tada5hi/eslint-config-vue-typescript": "1.0.7",
         "@trapi/client": "^2.0.11",
         "@types/jest": "^27.4.1",
-        "@types/tar": "^6.1.2",
+        "@types/tar": "^6.1.3",
         "@vue-layout/navigation": "^1.0.16",
         "bootstrap": "^4.5.3",
         "bootstrap-vue": "^2.22.0",

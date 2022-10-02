@@ -5,19 +5,22 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import tar, { FileStat } from 'tar';
+import tar, { ReadEntry} from 'tar';
 import { TarFile } from '../train-result/type';
 
 export async function decompressTarFile(filePath: string): Promise<TarFile[]> {
-    return new Promise(((resolve, reject) => {
-        const files: TarFile[] = [];
+    const files: TarFile[] = [];
 
-        tar.t({
+    try {
+        await tar.t({
             file: filePath,
-            onentry(entry: FileStat) {
+            onentry(entry: ReadEntry) {
                 const data: Buffer[] = [];
 
-                if (entry.type.toString() !== 'File') {
+                if (
+                    typeof entry.type === 'undefined' ||
+                    entry.type.toString() !== 'File'
+                ) {
                     return;
                 }
 
@@ -29,10 +32,10 @@ export async function decompressTarFile(filePath: string): Promise<TarFile[]> {
                     });
                 });
             },
-        }, [], (err) => {
-            if (err) reject(err);
-
-            resolve(files);
         });
-    }));
+
+        return files;
+    } catch (e) {
+        return [];
+    }
 }

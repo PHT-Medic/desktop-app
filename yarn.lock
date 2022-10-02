@@ -3926,10 +3926,10 @@ browser-process-hrtime@^1.0.0:
   resolved "https://registry.yarnpkg.com/browser-process-hrtime/-/browser-process-hrtime-1.0.0.tgz#3c9b4b7d782c8121e56f10106d84c0d0ffc94626"
   integrity sha512-9o5UecI3GhkpM6DrXr69PblIuWxPKk9Y0jHBRhdocZ2y7YECBFCsHm79Pr3OyR2AvjhDkabFJaDJMYRazHgsow==
 
-browser-storage-adapter@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/browser-storage-adapter/-/browser-storage-adapter-1.0.1.tgz#bfdc3e965df378a5a885f498a1e568ce370a5090"
-  integrity sha512-YDh9X8O2VMl/NwiVW/QkI+25AAJGz/EioBL6PkvQbLhJHUY6tDOPsFY2x6Ny+WFEGyDIGubjV4u0TsnFW0P/0A==
+browser-storage-adapter@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/browser-storage-adapter/-/browser-storage-adapter-1.0.3.tgz#7fdccf7012855eb634d15a6e5a15827e0d642160"
+  integrity sha512-Ha8dpSv7XbZrkIsy7V7ZJRM2aWw7ebn59QuBTRpWOb6mIGUip4wyh1V/Ley1lr1QlJv4DxUDX1Iv8Wkc80Iokw==
   dependencies:
     cookie "^0.5.0"
 

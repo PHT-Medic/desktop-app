@@ -11,6 +11,7 @@ This repository contains the desktop app of the Personal Health Train.
 - [Usage](#usage)
   - [Development](#development)
   - [Build](#build)
+- [License](#license)
 
 ## Installation
 This application uses `yarn` as node dependency manager.
@@ -34,3 +35,9 @@ yarn run build
 # serve application with hot reloading 🔥
 yarn run dev
 ```
+
+## License
+
+Made with 💚
+
+Published under [MIT License](./LICENSE).

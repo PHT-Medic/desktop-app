@@ -1,7 +1,6 @@
 import {app, BrowserWindow, ipcMain, dialog, clipboard, shell} from 'electron';
-import {registerRenderedFiles} from 'electron-adapter';
+import {registerRenderedFiles} from './rendered-files';
 
-import {watchFile} from "fs";
 import {buildContextMenu} from "./utils/context-menu";
 
 app.on('window-all-closed', () => {
@@ -11,12 +10,6 @@ app.on('window-all-closed', () => {
 });
 
 const isProd: boolean = process.env.NODE_ENV === 'production';
-
-if (!isProd) {
-    watchFile(__filename, () => {
-        app.exit(0);
-    });
-}
 
 let mainWindow : BrowserWindow;
 
@@ -42,7 +35,7 @@ let mainWindow : BrowserWindow;
     if (isProd) {
         await mainWindow.loadURL(`app://-`);
     } else {
-        const port = process.env.ELECTRON_MAIN_PORT || 9000;
+        const port = process.env.PORT || 9000;
         await mainWindow.loadURL(`http://localhost:${port}`);
     }
 

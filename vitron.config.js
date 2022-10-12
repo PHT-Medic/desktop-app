@@ -6,11 +6,5 @@
  */
 
 module.exports = {
-    port: 9001,
-    framework: 'nuxt',
-    npmClient: 'yarn',
-
-    entrypointDirectory: 'src/entrypoint',
-
-    rendererDirectory: 'src/renderer'
+    port: 9000
 }

@@ -9,16 +9,19 @@ import Vue from 'vue';
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
 
 import {
-    OAuth2TokenKind, OAuth2TokenSubKind, PermissionMeta, Robot, User,
+    AbilityDescriptor, OAuth2TokenGrantResponse,
+    OAuth2TokenKind,
+    Robot,
+    User,
 } from '@authelion/common';
 import { RootState } from './index';
-import { AuthBrowserStorageKey } from '../config/auth/constants';
+import { AuthBrowserStorageKey } from '../config/auth';
 
 export interface AuthState {
     user: User | undefined,
     robot: Robot | undefined,
 
-    permissions: PermissionMeta[],
+    permissions: AbilityDescriptor[],
     resolved: boolean,
 
     accessToken: string | undefined,
@@ -112,6 +115,7 @@ export const actions : ActionTree<AuthState, RootState> = {
         switch (kind) {
             case OAuth2TokenKind.ACCESS:
                 this.$authWarehouse.remove(AuthBrowserStorageKey.ACCESS_TOKEN);
+                this.$authWarehouse.remove(AuthBrowserStorageKey.ACCESS_TOKEN_EXPIRE_DATE);
                 this.$auth.unsetRequestToken();
                 break;
             case OAuth2TokenKind.REFRESH:
@@ -169,31 +173,22 @@ export const actions : ActionTree<AuthState, RootState> = {
         const { accessToken } = state;
 
         if (accessToken) {
-            const { target } = await this.$auth.verifyToken(accessToken);
+            const entity = await this.$auth.client.userInfo.get(accessToken);
+            dispatch('triggerSetUser', entity);
 
-            if(!target) return;
-
-            switch (target.kind) {
-                case OAuth2TokenSubKind.USER:
-                    dispatch('triggerSetUser', target.entity);
-                    break;
-                case OAuth2TokenSubKind.ROBOT:
-                    dispatch('triggerSetRobot', target.entity);
-                    break;
-            }
-
-            dispatch('triggerSetPermissions', target.permissions);
+            const token = await this.$auth.client.token.introspect(accessToken);
+            dispatch('triggerSetPermissions', token.permissions);
         }
     },
     // --------------------------------------------------------------------
 
     /**
-     * Try to login the user with given credentials.
+     * Try to log in the user with given credentials.
      *
      * @return {Promise<boolean>}
      */
     async triggerLogin({ commit, dispatch }, { name, password }: {name: string, password: string}) {
-        commit('loginRequest');
+        commit('loginAttempt');
 
         try {
             const token = await this.$auth.getTokenWithPassword(name, password);
@@ -201,6 +196,7 @@ export const actions : ActionTree<AuthState, RootState> = {
             commit('loginSuccess');
 
             dispatch('triggerSetTokenExpireDate', { kind: OAuth2TokenKind.ACCESS, date: new Date(Date.now() + token.expires_in * 1000) });
+
             dispatch('triggerSetToken', { kind: OAuth2TokenKind.ACCESS, token: token.access_token });
             dispatch('triggerSetToken', { kind: OAuth2TokenKind.REFRESH, token: token.refresh_token });
 
@@ -215,44 +211,28 @@ export const actions : ActionTree<AuthState, RootState> = {
 
     // --------------------------------------------------------------------
 
-    triggerRefreshToken({ commit, state, dispatch }) {
-        if (
-            !state.refreshToken
-        ) {
-            throw new Error('It is not possible to receive a new access token');
+    triggerRefreshToken({ commit, state }) : Promise<OAuth2TokenGrantResponse> {
+        if (!state.refreshToken) {
+            return Promise.reject(new Error('It is not possible to receive a new access token'));
         }
 
         if (!state.tokenPromise) {
-            commit('loginRequest');
+            commit('loginAttempt');
 
-            try {
-                const p = this.$auth.getTokenWithRefreshToken(state.refreshToken);
-
-                commit('setTokenPromise', p);
-
-                p.then(
-                    (token) => {
-                        commit('setTokenPromise', null);
-                        commit('loginSuccess');
-
-                        dispatch('triggerSetTokenExpireDate', { kind: OAuth2TokenKind.ACCESS, date: new Date(Date.now() + token.expires_in * 1000) });
-                        dispatch('triggerSetToken', { kind: OAuth2TokenKind.ACCESS, token: token.access_token });
-                        dispatch('triggerSetToken', { kind: OAuth2TokenKind.REFRESH, token: token.refresh_token });
-
-                        dispatch('triggerRefreshMe');
-                    },
-                    () => {
-                        commit('setTokenPromise', null);
-                    },
-                );
-            } catch (e) {
+            const tokenPromise = this.$auth.getTokenWithRefreshToken(state.refreshToken);
+            tokenPromise.then((r) => {
+                commit('loginSuccess');
+                return r;
+            });
+            tokenPromise.catch((e) => {
+                commit('loginError', e);
                 commit('setTokenPromise', null);
-                if (e instanceof Error) {
-                    dispatch('triggerAuthError', e.message);
-                }
+                throw e;
+            });
 
-                throw new Error('An error occurred on the token refresh request.');
-            }
+            commit('setTokenPromise', tokenPromise);
+
+            return tokenPromise;
         }
 
         return state.tokenPromise;
@@ -261,7 +241,7 @@ export const actions : ActionTree<AuthState, RootState> = {
     // --------------------------------------------------------------------
 
     /**
-     * Try to logout the user.
+     * Try to log out the user.
      * @param commit
      */
     async triggerLogout({ dispatch }) {
@@ -306,7 +286,7 @@ export const actions : ActionTree<AuthState, RootState> = {
 
 export const mutations : MutationTree<AuthState> = {
     // Login mutations
-    loginRequest(state) {
+    loginAttempt(state) {
         state.inProgress = true;
 
         state.error = undefined;

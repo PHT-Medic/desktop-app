@@ -6,49 +6,46 @@
  */
 
 import { Context } from '@nuxt/types';
-import { buildAbilityMetaFromName } from '@authelion/common';
-import AuthModule from '../config/auth/index';
-import { LayoutKey } from '../config/layout/contants';
+import { buildNameFromAbilityID } from '@authelion/common';
+import { AuthModule } from '../config/auth';
+import { LayoutKey } from '../config/layout';
 
 function checkAbilityOrPermission({ route, $auth } : Context) {
     const layoutKeys : string[] = [
-        LayoutKey.REQUIRED_ABILITIES,
         LayoutKey.REQUIRED_PERMISSIONS,
     ];
 
     let isAllowed : undefined | boolean;
 
-    for (let i = 0; i < layoutKeys.length; i++) {
-        const layoutKey = layoutKeys[i];
+    if(route.meta) {
+        for (let i = 0; i < layoutKeys.length; i++) {
+            const layoutKey = layoutKeys[i];
 
-        if(!route.meta) {
-            continue;
-        }
+            for (let j = 0; j < route.meta.length; j++) {
+                const matchedRecordMeta = route.meta[j];
 
-        for (let j = 0; j < route.meta.length; j++) {
-            const matchedRecordMeta = route.meta[j];
+                if (!Object.prototype.hasOwnProperty.call(matchedRecordMeta, layoutKey)) {
+                    continue;
+                }
 
-            if (!Object.prototype.hasOwnProperty.call(matchedRecordMeta, layoutKey)) {
-                continue;
-            }
+                const value = matchedRecordMeta[layoutKey];
+                if (Array.isArray(value)) {
+                    isAllowed = value.some((val) => {
+                        if (layoutKey !== LayoutKey.REQUIRED_PERMISSIONS) {
+                            val = buildNameFromAbilityID(val);
+                        }
 
-            const value = matchedRecordMeta[layoutKey];
-            if (Array.isArray(value)) {
-                isAllowed = value.some((val) => {
-                    if (layoutKey === LayoutKey.REQUIRED_PERMISSIONS) {
-                        val = buildAbilityMetaFromName(val);
-                    }
+                        return $auth.has(val);
+                    });
+                }
 
-                    return $auth.can(val.action, val.subject);
-                });
-            }
+                if (typeof value === 'function') {
+                    isAllowed = !!value($auth);
+                }
 
-            if (typeof value === 'function') {
-                isAllowed = !!value($auth);
-            }
-
-            if (isAllowed) {
-                return true;
+                if (isAllowed) {
+                    return true;
+                }
             }
         }
     }
@@ -80,7 +77,7 @@ export default async function middleware({
         !route.fullPath.startsWith('/logout')
     ) {
         try {
-            await (<AuthModule> $auth).resolveMe();
+            await (<AuthModule> $auth).resolve();
         } catch (e) {
             if (store.getters['auth/loggedIn']) {
                 await redirect({
@@ -105,9 +102,15 @@ export default async function middleware({
         if (!store.getters['auth/loggedIn']) {
             await store.dispatch('auth/triggerLogout');
 
+            const query : Record<string, any> = {};
+
+            if (!route.fullPath.includes('logout')) {
+                query.redirect = route.fullPath;
+            }
+
             await redirect({
                 path: '/login',
-                query: { redirect: route.fullPath },
+                query,
             });
 
             return;

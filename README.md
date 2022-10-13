@@ -1,6 +1,8 @@
-[![main](https://github.com/PHT-Medic/desktop-app/actions/workflows/main.yml/badge.svg)](https://github.com/PHT-Medic/desktop-app/actions/workflows/main.yml)
-
 # Desktop App 🖥
+
+[![main](https://github.com/PHT-Medic/desktop-app/actions/workflows/main.yml/badge.svg)](https://github.com/PHT-Medic/desktop-app/actions/workflows/main.yml)
+[![Known Vulnerabilities](https://snyk.io/test/github/PHT-Medic/desktop-app/badge.svg)](https://snyk.io/test/github/PHT-Medic/desktop-app)
+
 This repository contains the desktop app of the Personal Health Train.
 
 ![](assets/ui.jpg)
@@ -14,10 +16,9 @@ This repository contains the desktop app of the Personal Health Train.
 - [License](#license)
 
 ## Installation
-This application uses `yarn` as node dependency manager.
 
 ``` bash
-yarn install
+npm run install
 ```
 ## Usage
 
@@ -25,7 +26,7 @@ yarn install
 
 ``` bash
 # build application for production
-yarn run build
+npm run build
 
 ```
 
@@ -33,7 +34,7 @@ yarn run build
 
 ``` bash
 # serve application with hot reloading 🔥
-yarn run dev
+npm run dev
 ```
 
 ## License

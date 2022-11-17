@@ -6,9 +6,10 @@
  */
 
 import { PrivateKey } from 'paillier-bigint';
+import {useJsonBigIntTransformer} from "../../json-bigint";
 import { TarFile } from '../../train-result/type';
 
-function decryptContentRecursive(privateKey: PrivateKey, data: unknown) {
+export function decryptContentRecursive(privateKey: PrivateKey, data: unknown) {
     if(
         typeof data === 'object' &&
         data !== null
@@ -21,11 +22,12 @@ function decryptContentRecursive(privateKey: PrivateKey, data: unknown) {
         return data;
     }
 
-    if(
-        typeof data === 'number' ||
-        typeof data === 'string'
-    ) {
+    if(typeof data === 'string') {
         return privateKey.decrypt(BigInt(data));
+    }
+
+    if(typeof data === 'bigint') {
+        return privateKey.decrypt(data);
     }
 
     return data;
@@ -35,8 +37,8 @@ export function decryptPaillierNumberInTarFiles(
     privateKey: PrivateKey,
     files: TarFile[],
 ) {
-    // @ts-ignore
-    BigInt.prototype.toJSON = function() { return this.toString() }
+
+    const transformer = useJsonBigIntTransformer();
 
     for (let i = 0; i < files.length; i++) {
         if (files[i].path.indexOf('.he.json') === -1) {
@@ -44,10 +46,10 @@ export function decryptPaillierNumberInTarFiles(
             continue;
         }
 
-        const parsed = JSON.parse(files[i].content.toString());
+        const parsed = transformer.parse(files[i].content.toString());
         const decrypted = decryptContentRecursive(privateKey, parsed);
 
-        files[i].content = Buffer.from(JSON.stringify(decrypted));
+        files[i].content = Buffer.from(transformer.stringify(decrypted));
     }
 
     return files;

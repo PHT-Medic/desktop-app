@@ -7,7 +7,7 @@
 
 import {
     Config, setClient,
-} from '@trapi/client';
+} from 'hapic';
 import { Context } from '@nuxt/types';
 import https from 'https';
 import { Inject } from '@nuxt/types/app';

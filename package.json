@@ -59,7 +59,7 @@
         "paillier-bigint": "^3.4.0",
         "tar": "^6.1.13",
         "ts-jest": "^27.1.4",
-        "vitron": "^1.0.18",
+        "vitron": "^1.0.19",
         "vue": "^2.7.14",
         "vue-gravatar": "^1.4.1",
         "vue-timeago": "^5.1.3",

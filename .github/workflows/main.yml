@@ -25,28 +25,16 @@ jobs:
                 node-version: [16.x]
 
         steps:
-            - uses: actions/checkout@v3
-
-            - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v3.6.0
-              with:
-                  node-version: ${{ matrix.node-version }}
-
-            - name: Use cache
-              uses: actions/cache@v3
-              with:
-                   path: |
-                        node_modules
-                        */*/node_modules
-                        key: ${{ runner.os }}-${{ hashFiles('**/package.json') }}
+            - name: Checkout
+              uses: actions/checkout@v3
 
             - name: Install
-              run: |
-                  npm ci
+              uses: ./.github/actions/install
+              with:
+                    node-version: 16.x
 
             - name: Build
-              run: |
-                  npm run build
+              uses: ./.github/actions/build
 
             - name: Test
               run: |

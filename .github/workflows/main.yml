@@ -39,9 +39,3 @@ jobs:
             - name: Test
               run: |
                   npm run test
-
-            - name: Release
-              id: semantic
-              env:
-                  GITHUB_TOKEN: ${{ secrets.PAT }}
-              run: npx semantic-release

@@ -45,12 +45,3 @@ jobs:
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: npx semantic-release
-
-            - name: Package
-              if: steps.semantic.outputs.new_release_published == 'true'
-              uses: samuelmeuli/action-electron-builder@v1
-              with:
-                   github_token: ${{ secrets.GITHUB_TOKEN }}
-                   max-attempts: "3"
-                   args: --config electron-builder.config.js
-                   release: true

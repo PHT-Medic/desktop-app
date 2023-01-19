@@ -21,7 +21,7 @@
     "license": "MIT",
     "homepage": "https://github.com/PHT-Medic/desktop-app/blob/master/README.md",
     "engines": {
-        "node": ">=12.13.0"
+        "node": ">=16.0.0"
     },
     "resolutions": {
         "@types/node": "12.12.6"
@@ -64,7 +64,6 @@
         "jest": "^27.5.1",
         "json-bigint": "^1.0.0",
         "moment": "^2.29.4",
-        "np": "^7.6.3",
         "nuxt": "2.15.8",
         "paillier-bigint": "^3.4.0",
         "semantic-release": "^19.0.5",

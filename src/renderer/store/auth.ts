@@ -9,11 +9,12 @@ import Vue from 'vue';
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
 
 import {
-    AbilityDescriptor, OAuth2TokenGrantResponse,
+    AbilityDescriptor,
+    OAuth2TokenGrantResponse,
     OAuth2TokenKind,
     Robot,
     User,
-} from '@authelion/common';
+} from '@authup/common';
 import { RootState } from './index';
 import { AuthBrowserStorageKey } from '../config/auth';
 

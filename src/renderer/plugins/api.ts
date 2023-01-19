@@ -11,7 +11,7 @@ import {
 import { Context } from '@nuxt/types';
 import https from 'https';
 import { Inject } from '@nuxt/types/app';
-import { HTTPClient as AuthHTTPClient } from '@authelion/common';
+import { HTTPClient as AuthHTTPClient } from '@authup/common';
 import { HTTPClient } from '@personalhealthtrain/central-common';
 
 export default (ctx: Context, inject : Inject) => {

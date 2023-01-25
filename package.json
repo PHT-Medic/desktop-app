@@ -27,7 +27,7 @@
         "@types/node": "12.12.6"
     },
     "devDependencies": {
-        "@authup/common": "^0.8.0",
+        "@authup/common": "^0.10.1",
         "@commitlint/cli": "^17.4.2",
         "@commitlint/config-angular": "^17.4.2",
         "@commitlint/config-conventional": "^17.4.2",

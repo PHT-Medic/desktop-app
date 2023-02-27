@@ -10,11 +10,11 @@ const path = require('node:path');
 module.exports = {
     publicRuntimeConfig() {
         return {
-            apiUrl: process.env.API_URL || 'https://pht.personalhealthtrain.de/api/',
+            apiUrl: process.env.API_URL || 'https://api.personalhealthtrain.de/',
         };
     },
     env: {
-        apiUrl: process.env.API_URL || 'https://personalhealthtrain.de/api/',
+        apiUrl: process.env.API_URL || 'https://api.personalhealthtrain.de/',
     },
     ssr: false,
     target: 'static',
@@ -38,6 +38,7 @@ module.exports = {
         './plugins/vue'
     ],
     buildModules: [
+        '@nuxt/postcss8',
         '@nuxt/typescript-build',
         '@nuxtjs/google-fonts'
     ],
@@ -110,6 +111,6 @@ module.exports = {
                 include: /node_modules/,
                 type: 'javascript/auto',
             });
-        },
+        }
     },
 };

@@ -63,9 +63,7 @@ function checkAbilityOrPermission({ route, $auth } : Context) {
     return true;
 }
 
-export default async function middleware({
-                                             route, from, redirect, $auth, store,
-                                         } : Context) : Promise<void> {
+export default async function middleware({route, from, redirect, $auth, store,} : Context) : Promise<void> {
     let redirectPath = '/';
 
     if (typeof from !== 'undefined') {
@@ -80,15 +78,9 @@ export default async function middleware({
             await (<AuthModule> $auth).resolve();
         } catch (e) {
             if (store.getters['auth/loggedIn']) {
-                await redirect({
-                    path: '/logout',
-                    query: { redirect: route.fullPath },
-                });
+                await redirect('/logout',{ redirect: route.fullPath });
             } else {
-                await redirect({
-                    path: '/login',
-                    query: { redirect: route.fullPath },
-                });
+                await redirect('/login',{ redirect: route.fullPath });
             }
 
             return;
@@ -108,10 +100,7 @@ export default async function middleware({
                 query.redirect = route.fullPath;
             }
 
-            await redirect({
-                path: '/login',
-                query,
-            });
+            await redirect('/login', query);
 
             return;
         }
@@ -119,9 +108,7 @@ export default async function middleware({
         try {
             checkAbilityOrPermission({ route, $auth } as Context);
         } catch (e) {
-            await redirect({
-                path: redirectPath,
-            });
+            await redirect(redirectPath);
 
             return;
         }
@@ -132,7 +119,7 @@ export default async function middleware({
         route.meta.some((meta) => meta[LayoutKey.REQUIRED_LOGGED_OUT])
     ) {
         if (store.getters['auth/loggedIn']) {
-            await redirect({ path: redirectPath });
+            await redirect(redirectPath);
         }
     }
 }

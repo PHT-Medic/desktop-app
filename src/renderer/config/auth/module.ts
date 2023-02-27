@@ -159,10 +159,7 @@ export class AuthModule {
 
                         this.ctx.store.dispatch('auth/triggerRefreshToken')
                             .catch(() => {
-                                this.ctx.redirect({
-                                    path: '/logout',
-                                    query: { redirect: this.ctx.route.fullPath },
-                                });
+                                this.ctx.redirect('/logout',  { redirect: this.ctx.route.fullPath });
                             });
                     };
 

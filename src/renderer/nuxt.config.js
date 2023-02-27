@@ -5,6 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
+const path = require('node:path');
+
 module.exports = {
     publicRuntimeConfig() {
         return {
@@ -96,6 +98,18 @@ module.exports = {
             if (config.resolve.alias.hasOwnProperty('@')) {
                 delete config.resolve.alias['@'];
             }
+
+            config.resolve.alias.axios = path.join(__dirname, '..', '..', 'node_modules', 'axios', 'dist', 'browser', 'axios.cjs');
+            config.resolve.alias.hapic = path.join(__dirname, '..', '..', 'node_modules', 'hapic', 'dist', 'index.cjs');
+            config.resolve.alias['@hapic/oauth2'] = path.join(__dirname, '..', '..', 'node_modules', '@hapic', 'oauth2', 'dist', 'index.cjs');
+            config.resolve.alias['@authup/common'] = path.join(__dirname, '..', '..', 'node_modules', '@authup', 'common', 'dist', 'index.cjs');
+            config.resolve.alias['@authup/vue2'] = path.join(__dirname, '..', '..', 'node_modules', '@authup', 'vue2', 'dist', 'index.cjs');
+
+            config.module.rules.push({
+                test: /\.mjs$/,
+                include: /node_modules/,
+                type: 'javascript/auto',
+            });
         },
     },
 };

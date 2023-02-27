@@ -48,7 +48,7 @@
         "cross-env": "7.0.3",
         "electron": "^22.0.3",
         "electron-builder": "^23.6.0",
-        "eslint": "^8.32.0",
+        "eslint": "^8.35.0",
         "hapic": "^1.2.0",
         "husky": "^8.0.3",
         "ilingo": "^2.2.1",

@@ -5,9 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Context } from '@nuxt/types';
+import type { Context } from '@nuxt/types';
 import { buildNameFromAbilityID } from '@authup/common';
-import { AuthModule } from '../config/auth';
+import type { AuthModule } from '../config/auth';
 import { LayoutKey } from '../config/layout';
 
 function checkAbilityOrPermission({ route, $auth } : Context) {
@@ -17,7 +17,7 @@ function checkAbilityOrPermission({ route, $auth } : Context) {
 
     let isAllowed : undefined | boolean;
 
-    if(route.meta) {
+    if (route.meta) {
         for (let i = 0; i < layoutKeys.length; i++) {
             const layoutKey = layoutKeys[i];
 
@@ -63,7 +63,9 @@ function checkAbilityOrPermission({ route, $auth } : Context) {
     return true;
 }
 
-export default async function middleware({route, from, redirect, $auth, store,} : Context) : Promise<void> {
+export default async function middleware({
+    route, from, redirect, $auth, store,
+} : Context) : Promise<void> {
     let redirectPath = '/';
 
     if (typeof from !== 'undefined') {
@@ -78,9 +80,9 @@ export default async function middleware({route, from, redirect, $auth, store,} 
             await (<AuthModule> $auth).resolve();
         } catch (e) {
             if (store.getters['auth/loggedIn']) {
-                await redirect('/logout',{ redirect: route.fullPath });
+                await redirect('/logout', { redirect: route.fullPath });
             } else {
-                await redirect('/login',{ redirect: route.fullPath });
+                await redirect('/login', { redirect: route.fullPath });
             }
 
             return;

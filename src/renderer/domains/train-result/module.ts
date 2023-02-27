@@ -5,15 +5,15 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {decryptSymmetric} from "../encryption/symmetric";
+import type { TrainConfig } from '@personalhealthtrain/central-common';
+import { decryptSymmetric } from '../encryption/symmetric';
 
-import { TarFile, TrainResultLoaderContext } from './type';
+import type { TarFile, TrainResultLoaderContext } from './type';
 import { parseTrainConfig } from '../train-config/read';
 import { TrainConfigPath } from '../../config/constants';
 import { TrainResultSourceType } from './constants';
 import { decompressTarFile } from '../fs/decompress';
 import { decryptPaillierNumberInTarFiles } from '../encryption/utils/paillier';
-import {TrainConfig} from "@personalhealthtrain/central-common";
 
 export async function readTrainResult(context: TrainResultLoaderContext) : Promise<{
     config: TrainConfig,
@@ -33,7 +33,7 @@ export async function readTrainResult(context: TrainResultLoaderContext) : Promi
         throw new Error();
     }
 
-    const {config, key} = await parseTrainConfig({
+    const { config, key } = await parseTrainConfig({
         files,
         privateKey: context.rsaPrivateKey,
     });
@@ -67,8 +67,4 @@ export async function readTrainResult(context: TrainResultLoaderContext) : Promi
         config,
         files: resultFiles,
     };
-}
-
-export async function saveExtractedTrainResult(filePath: string, files: TarFile[]) {
-    // ...
 }

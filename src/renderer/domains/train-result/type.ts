@@ -5,8 +5,8 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { PrivateKey } from 'paillier-bigint';
-import { TrainResultSourceType } from './constants';
+import type { PrivateKey } from 'paillier-bigint';
+import type { TrainResultSourceType } from './constants';
 
 export type TarFile = {
     path: string,

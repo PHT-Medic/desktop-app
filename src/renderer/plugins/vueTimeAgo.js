@@ -16,9 +16,9 @@ const $timeago = {
     locale: 'en',
 };
 
-Vue.prototype.$timeago = Vue.observable
-    ? Vue.observable($timeago)
-    : new Vue({
+Vue.prototype.$timeago = Vue.observable ?
+    Vue.observable($timeago) :
+    new Vue({
         data: $timeago,
     });
 

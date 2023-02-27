@@ -19,7 +19,6 @@ export type RegisterRenderedFilesContext = {
 
 export async function getRendererPath(input: string) : Promise<string> {
     try {
-
         const result = await fs.promises.stat(input);
 
         if (result.isFile()) {

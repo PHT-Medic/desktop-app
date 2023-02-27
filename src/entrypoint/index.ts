@@ -1,7 +1,9 @@
-import {app, BrowserWindow, ipcMain, dialog, clipboard, shell} from 'electron';
-import {registerRenderedFiles} from './rendered-files';
+import {
+    BrowserWindow, app, clipboard, dialog, ipcMain, shell,
+} from 'electron';
+import { registerRenderedFiles } from './rendered-files';
 
-import {buildContextMenu} from "./utils/context-menu";
+import { buildContextMenu } from './utils/context-menu';
 
 app.on('window-all-closed', () => {
     // On mac-os it is common for applications and their menu bar
@@ -14,8 +16,8 @@ const isProd: boolean = process.env.NODE_ENV === 'production';
 let mainWindow : BrowserWindow;
 
 (async () => {
-    if(isProd) {
-        registerRenderedFiles({directory: 'src/entrypoint/dist'});
+    if (isProd) {
+        registerRenderedFiles({ directory: 'src/entrypoint/dist' });
     }
 
     await app.whenReady();
@@ -29,11 +31,11 @@ let mainWindow : BrowserWindow;
             devTools: true,
             nodeIntegration: true,
             contextIsolation: false,
-        }
+        },
     });
 
     if (isProd) {
-        await mainWindow.loadURL(`app://-`);
+        await mainWindow.loadURL('app://-');
     } else {
         const port = process.env.PORT || 9000;
         await mainWindow.loadURL(`http://localhost:${port}`);
@@ -69,7 +71,7 @@ let mainWindow : BrowserWindow;
 
 app.on('ready', () => {
     buildContextMenu();
-})
+});
 app.on('window-all-closed', () => {
     app.quit();
 });

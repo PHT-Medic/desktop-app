@@ -5,8 +5,8 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 <script lang="ts">
+import type { CreateElement, VNode } from 'vue';
 import { KeyPairVariant } from '../../../../domains/encryption/type';
-import { CreateElement, VNode } from 'vue';
 import KeyPairPicker from '../../../../components/key/KeyPairPicker.vue';
 
 export default {
@@ -17,10 +17,10 @@ export default {
         return h('div', [
             h(KeyPairPicker, {
                 props: {
-                    variant: KeyPairVariant.DEFAULT
-                }
-            })
-        ])
-    }
+                    variant: KeyPairVariant.DEFAULT,
+                },
+            }),
+        ]);
+    },
 };
 </script>

@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { PublicKey } from 'paillier-bigint';
+import type { PublicKey } from 'paillier-bigint';
 
 export enum KeyPairVariant {
     DEFAULT = 'default',

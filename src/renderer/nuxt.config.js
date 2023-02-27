@@ -35,12 +35,12 @@ module.exports = {
 
         './plugins/vuelidate',
         './plugins/vueTimeAgo',
-        './plugins/vue'
+        './plugins/vue',
     ],
     buildModules: [
         '@nuxt/postcss8',
         '@nuxt/typescript-build',
-        '@nuxtjs/google-fonts'
+        '@nuxtjs/google-fonts',
     ],
     googleFonts: {
         families: {
@@ -111,6 +111,6 @@ module.exports = {
                 include: /node_modules/,
                 type: 'javascript/auto',
             });
-        }
+        },
     },
 };

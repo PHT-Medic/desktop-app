@@ -5,13 +5,13 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import JsonBig from "json-bigint";
-import { JsonBigIntTransformer } from "./type";
+import JsonBig from 'json-bigint';
+import type { JsonBigIntTransformer } from './type';
 
 let transformer : JsonBigIntTransformer | undefined;
 
 export function useJsonBigIntTransformer() : JsonBigIntTransformer {
-    if(typeof transformer !== 'undefined') {
+    if (typeof transformer !== 'undefined') {
         return transformer;
     }
 

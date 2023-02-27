@@ -14,7 +14,7 @@
     "exclude": [
         "node_modules"
     ],
-    "files": [
+    "include": [
         "src/**/*"
     ]
 }

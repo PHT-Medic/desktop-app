@@ -5,8 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {app, Menu, Tray, nativeImage} from 'electron';
-import * as path from "path";
+import {
+    Menu, Tray, app, nativeImage,
+} from 'electron';
+import * as path from 'path';
 
 let tray;
 
@@ -19,10 +21,10 @@ export function buildContextMenu() {
     const ctxMenu = Menu.buildFromTemplate([
         {
             label: 'Quit',
-            click: function (item) {
+            click(item) {
                 app.quit();
-            }
-        }
+            },
+        },
     ]);
 
     tray.setContextMenu(ctxMenu);

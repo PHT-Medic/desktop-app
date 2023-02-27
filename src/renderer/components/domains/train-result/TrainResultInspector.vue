@@ -60,14 +60,14 @@ export default {
         destinationPath() {
             let id;
 
-            if(
+            if (
                 this.config &&
                 this.config.id
             ) {
                 id = this.config.id;
             }
 
-            if(
+            if (
                 this.config &&
                 this.config['@id']
             ) {
@@ -112,7 +112,7 @@ export default {
                     source: this.source,
                     sourceType: this.sourceOption,
                     rsaPrivateKey: this.privateKey,
-                    paillierPrivateKey: paillierKey
+                    paillierPrivateKey: paillierKey,
                 });
 
                 this.config = config;

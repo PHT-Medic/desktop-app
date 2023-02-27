@@ -8,4 +8,4 @@
 export type JsonBigIntTransformer = {
     parse: (input: string) => any,
     stringify: (input: any) => string
-}
+};

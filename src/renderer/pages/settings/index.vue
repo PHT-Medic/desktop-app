@@ -79,7 +79,7 @@ export default {
                     },
                     {
                         name: 'Homomorphic', icon: 'fa fa-key', urlSuffix: '/encryption/homomorphic',
-                    }
+                    },
                 ],
             },
         };

@@ -5,12 +5,11 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import {
-    Config, setClient,
-} from 'hapic';
-import { Context } from '@nuxt/types';
+import type { Config } from 'hapic';
+import { setClient } from 'hapic';
+import type { Context } from '@nuxt/types';
 import https from 'https';
-import { Inject } from '@nuxt/types/app';
+import type { Inject } from '@nuxt/types/app';
 import { HTTPClient as AuthHTTPClient } from '@authup/common';
 import { HTTPClient } from '@personalhealthtrain/central-common';
 

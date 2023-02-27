@@ -7,7 +7,7 @@
 
 <script>
 import { ipcRenderer } from 'electron';
-import { signHash } from '../../domains/signature/sign.ts';
+import { signHash } from '../../domains/signature/sign';
 import AlertMessage from '../../components/alert/AlertMessage';
 import { LayoutKey, LayoutNavigationID } from '../../config/layout';
 
@@ -84,7 +84,7 @@ export default {
                 variant: 'success',
                 toaster: 'b-toaster-top-center',
             });
-        }
+        },
     },
 };
 </script>
@@ -109,11 +109,11 @@ export default {
                 class="btn btn-dark btn-xs"
                 :to="'/settings/encryption'"
             >
-                <i class="fa fa-cog"/> Settings
+                <i class="fa fa-cog" /> Settings
             </nuxt-link>
         </div>
 
-        <alert-message :message="message"/>
+        <alert-message :message="message" />
 
         <hr>
 
@@ -134,7 +134,7 @@ export default {
                 class="btn btn-dark btn-sm"
                 @click.prevent="sign"
             >
-                <i class="fa fa-marker"/> Sign
+                <i class="fa fa-marker" /> Sign
             </button>
 
             <hr>
@@ -142,7 +142,7 @@ export default {
             <div class="form-group">
                 <label>Signature (readonly)</label>
                 <label class="d-flex flex-row"><a
-                    v-if="this.form.signature"
+                    v-if="form.signature"
                     href="javascript:void(0)"
                     class="badge badge-dark ml-auto"
                     @click.prevent="copyToClipboard()"
@@ -158,4 +158,3 @@ export default {
         </div>
     </div>
 </template>
-

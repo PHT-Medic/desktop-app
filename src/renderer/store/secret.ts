@@ -5,10 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { ActionTree, GetterTree, MutationTree } from 'vuex';
+import type { ActionTree, GetterTree, MutationTree } from 'vuex';
 import { hasOwnProperty } from '@personalhealthtrain/central-common';
-import { RootState } from './index';
-import { PaillierPrivateKey, PaillierPublicKey } from '../domains/encryption/type';
+import type { RootState } from './index';
+import type { PaillierPrivateKey, PaillierPublicKey } from '../domains/encryption/type';
 
 export interface LayoutState {
     defaultPath: string | undefined,

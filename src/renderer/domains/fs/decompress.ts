@@ -5,8 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import tar, { ReadEntry} from 'tar';
-import { TarFile } from '../train-result/type';
+import type { ReadEntry } from 'tar';
+import tar from 'tar';
+import type { TarFile } from '../train-result/type';
 
 export async function decompressTarFile(filePath: string): Promise<TarFile[]> {
     const files: TarFile[] = [];
@@ -28,7 +29,7 @@ export async function decompressTarFile(filePath: string): Promise<TarFile[]> {
                 entry.on('end', () => {
                     files.push({
                         path: entry.path.toString(),
-                        content: Buffer.concat(data)
+                        content: Buffer.concat(data),
                     });
                 });
             },

@@ -5,12 +5,12 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { PrivateKey } from 'paillier-bigint';
-import {useJsonBigIntTransformer} from "../../json-bigint";
-import { TarFile } from '../../train-result/type';
+import type { PrivateKey } from 'paillier-bigint';
+import { useJsonBigIntTransformer } from '../../json-bigint';
+import type { TarFile } from '../../train-result/type';
 
 export function decryptContentRecursive(privateKey: PrivateKey, data: unknown) {
-    if(
+    if (
         typeof data === 'object' &&
         data !== null
     ) {
@@ -22,11 +22,11 @@ export function decryptContentRecursive(privateKey: PrivateKey, data: unknown) {
         return data;
     }
 
-    if(typeof data === 'string') {
+    if (typeof data === 'string') {
         return privateKey.decrypt(BigInt(data));
     }
 
-    if(typeof data === 'bigint') {
+    if (typeof data === 'bigint') {
         return privateKey.decrypt(data);
     }
 
@@ -37,7 +37,6 @@ export function decryptPaillierNumberInTarFiles(
     privateKey: PrivateKey,
     files: TarFile[],
 ) {
-
     const transformer = useJsonBigIntTransformer();
 
     for (let i = 0; i < files.length; i++) {

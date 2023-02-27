@@ -6,8 +6,8 @@
  */
 
 import crypto from 'crypto';
-import {TrainConfig} from "@personalhealthtrain/central-common";
-import { ReadTrainResultConfigContext } from '../train-result/type';
+import type { TrainConfig } from '@personalhealthtrain/central-common';
+import type { ReadTrainResultConfigContext } from '../train-result/type';
 import { TrainConfigPath } from '../../config/constants';
 
 export async function parseTrainConfig(context: ReadTrainResultConfigContext) : Promise<{
@@ -22,13 +22,13 @@ export async function parseTrainConfig(context: ReadTrainResultConfigContext) : 
     let config : TrainConfig;
 
     try {
-        config = JSON.parse(context.files[configIndex].content.toString("utf-8"));
+        config = JSON.parse(context.files[configIndex].content.toString('utf-8'));
     } catch (e) {
         throw new Error(`The ${TrainConfigPath.RESULT_CONFIG_FILE_NAME} could not be parsed.`);
     }
 
-    if(!config.creator.encrypted_key) {
-        throw new Error(`The encrypted key is not present.`);
+    if (!config.creator.encrypted_key) {
+        throw new Error('The encrypted key is not present.');
     }
 
     const symBuff = Buffer.from(config.creator.encrypted_key, 'hex');
@@ -43,8 +43,8 @@ export async function parseTrainConfig(context: ReadTrainResultConfigContext) : 
 
         return {
             config,
-            key: content
-        }
+            key: content,
+        };
     } catch (e) {
         throw new Error('The symmetric key could not be decrypted using the private key.');
     }

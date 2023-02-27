@@ -15,12 +15,12 @@ export function decryptRSAPrivateKey(key: string | Buffer, passphrase: string) :
         passphrase,
     });
 
-    let content =  privateKey.export({
+    let content = privateKey.export({
         type: 'pkcs8',
         format: 'pem',
     });
 
-    if(typeof content !== 'string') {
+    if (typeof content !== 'string') {
         content = Buffer.from(content).toString('utf-8');
     }
 

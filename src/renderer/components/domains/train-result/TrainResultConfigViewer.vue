@@ -6,8 +6,8 @@
   -->
 
 <script lang="ts">
-import {PropType} from "vue";
-import {TrainConfig} from "@personalhealthtrain/central-common";
+import type { PropType } from 'vue';
+import type { TrainConfig } from '@personalhealthtrain/central-common';
 
 export default {
     props: {

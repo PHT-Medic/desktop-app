@@ -5,10 +5,10 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { Context } from '@nuxt/types';
-import { Inject } from '@nuxt/types/app';
+import type { Context } from '@nuxt/types';
+import type { Inject } from '@nuxt/types/app';
 
-import {AuthModule} from '../config/auth';
+import { AuthModule } from '../config/auth';
 
 export default (ctx: Context, inject: Inject) => {
     const auth = new AuthModule(ctx, {

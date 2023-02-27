@@ -6,16 +6,18 @@
  */
 
 import Vue from 'vue';
-import { ActionTree, GetterTree, MutationTree } from 'vuex';
+import type { ActionTree, GetterTree, MutationTree } from 'vuex';
 
-import {
+import type {
     AbilityDescriptor,
     OAuth2TokenGrantResponse,
-    OAuth2TokenKind,
     Robot,
     User,
 } from '@authup/common';
-import { RootState } from './index';
+import {
+    OAuth2TokenKind,
+} from '@authup/common';
+import type { RootState } from './index';
 import { AuthBrowserStorageKey } from '../config/auth';
 
 export interface AuthState {

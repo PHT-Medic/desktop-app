@@ -7,7 +7,7 @@
 
 import Vue from 'vue';
 import NavigationComponents, { setProvider } from '@vue-layout/navigation';
-import { Context } from '@nuxt/types';
+import type { Context } from '@nuxt/types';
 import { NavigationProvider } from '../config/layout';
 
 Vue.use(NavigationComponents);
@@ -17,4 +17,3 @@ export default async (ctx: Context) => {
 
     setProvider(navigationProvider);
 };
-

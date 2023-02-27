@@ -10,14 +10,15 @@ import * as fs from 'fs';
 import { ipcRenderer } from 'electron';
 import * as paillierBigint from 'paillier-bigint';
 import { isHex } from '@personalhealthtrain/central-common';
+import type { PropType } from 'vue';
+import Vue from 'vue';
 import { KeyPairVariant } from '../../domains/encryption/type';
 import KeyDisplay from './KeyDisplay.vue';
 import { decryptRSAPrivateKey, generateRSAKeyPair } from '../../domains/encryption/utils/rsa';
-import Vue, {PropType} from 'vue';
 
 type Properties = {
     variant: `${KeyPairVariant}`
-}
+};
 
 export default Vue.extend<any, any, any, Properties>({
     components: { KeyDisplay },

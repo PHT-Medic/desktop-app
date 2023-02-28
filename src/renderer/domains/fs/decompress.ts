@@ -6,14 +6,14 @@
  */
 
 import type { ReadEntry } from 'tar';
-import tar from 'tar';
+import { t } from 'tar';
 import type { TarFile } from '../train-result/type';
 
 export async function decompressTarFile(filePath: string): Promise<TarFile[]> {
     const files: TarFile[] = [];
 
     try {
-        await tar.t({
+        await t({
             file: filePath,
             onentry(entry: ReadEntry) {
                 const data: Buffer[] = [];

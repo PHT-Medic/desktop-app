@@ -23,6 +23,8 @@ export default (ctx: Context, inject : Inject) => {
     }
 
     const config : Config = {
+        extra: {},
+        retry: false,
         driver: {
             baseURL: apiUrl,
             withCredentials: true,

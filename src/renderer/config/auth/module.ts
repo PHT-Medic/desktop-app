@@ -44,6 +44,8 @@ export class AuthModule {
         this.ctx = ctx;
 
         const config : Config = {
+            extra: {},
+            retry: false,
             driver: {
                 httpsAgent: new https.Agent({
                     rejectUnauthorized: false,

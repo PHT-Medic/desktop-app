@@ -33,7 +33,7 @@
         "@nuxtjs/google-fonts": "^3.0.0",
         "@personalhealthtrain/central-common": "^2.0.0",
         "@tada5hi/commitlint-config": "^1.0.0",
-        "@tada5hi/eslint-config-vue-typescript": "1.2.4",
+        "@tada5hi/eslint-config-vue-typescript": "1.2.9",
         "@types/jest": "^27.4.1",
         "@types/json-bigint": "^1.0.1",
         "@types/tar": "^6.1.4",

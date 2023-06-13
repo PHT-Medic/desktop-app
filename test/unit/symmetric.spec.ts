@@ -8,6 +8,8 @@ describe('src/renderer/domains/encryption/symmetric.ts', () => {
 
         const encrypted = encryptSymmetric(key, iv, text);
         const decrypted = decryptSymmetric(key, encrypted);
+        // print decrypted to see if it's the same as text
+        console.log(decrypted);
 
         expect(decrypted).toEqual(text);
     });
@@ -19,7 +21,7 @@ describe('src/renderer/domains/encryption/symmetric.ts', () => {
         const externalBuffer = Buffer.from("f3103e7266558e9a053a0442637a11bcbc42aaa78281f85923bc1b3f7e28ae2dd58935edc99fc225177d9dff10503615", "hex");
 
         const decrypted = decryptSymmetric(key, externalBuffer);
-
+        console.log(decrypted);
         expect(decrypted).toEqual(text);
     });
 });

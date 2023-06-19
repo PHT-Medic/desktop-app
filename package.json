@@ -10,7 +10,8 @@
         "lint": "eslint --ext .ts,.vue,.js ./src",
         "lint:fix": "npm run lint -- --fix",
         "postinstall": "electron-builder install-app-deps",
-        "test": "cross-env NODE_ENV=test jest --config ./test/jest.config.js"
+        "test": "cross-env NODE_ENV=test jest --config ./test/jest.config.js",
+        "publish": "np --no-publish"
     },
     "keywords": [],
     "author": {

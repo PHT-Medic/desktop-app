@@ -13,6 +13,7 @@ This repository contains the desktop app of the Personal Health Train.
 - [Usage](#usage)
   - [Development](#development)
   - [Build](#build)
+  - [Publishing](#publishing)
 - [License](#license)
 
 ## Installation
@@ -35,6 +36,13 @@ npm run build
 ``` bash
 # serve application with hot reloading 🔥
 npm run dev
+```
+
+### Publishing
+
+```bash
+# publish a new release
+npm run publish
 ```
 
 ## License

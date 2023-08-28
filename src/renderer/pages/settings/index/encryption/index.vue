@@ -5,22 +5,15 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 <script lang="ts">
-import type { CreateElement, VNode } from 'vue';
-import { KeyPairVariant } from '../../../../domains/encryption/type';
+import { defineNuxtComponent } from '#app';
 import KeyPairPicker from '../../../../components/key/KeyPairPicker.vue';
 
-export default {
+export default defineNuxtComponent({
     components: {
         KeyPairPicker,
     },
-    render(h: CreateElement): VNode {
-        return h('div', [
-            h(KeyPairPicker, {
-                props: {
-                    variant: KeyPairVariant.DEFAULT,
-                },
-            }),
-        ]);
-    },
-};
+});
 </script>
+<template>
+    <KeyPairPicker :variant="'default'" />
+</template>

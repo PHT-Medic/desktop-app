@@ -1,35 +1,39 @@
-<!--
-  Copyright (c) 2021-2021.
-  Author Peter Placzek (tada5hi)
-  For the full copyright and license information,
-  view the LICENSE file that was distributed with this source code.
-  -->
-<script>
-import { LayoutKey, LayoutNavigationID } from '../config/layout/contants';
+<script lang="ts">
 
-export default {
-    meta: {
-        [LayoutKey.REQUIRED_LOGGED_IN]: true,
-        [LayoutKey.NAVIGATION_ID]: LayoutNavigationID.DEFAULT,
+import { defineNuxtComponent, useRouter } from '#app';
+import { definePageMeta } from '#imports';
+import { LayoutKey, LayoutNavigationID } from '../config/layout';
+import { useAuthStore } from '../store/auth';
+
+export default defineNuxtComponent({
+    async setup() {
+        definePageMeta({
+            [LayoutKey.REQUIRED_LOGGED_IN]: true,
+            [LayoutKey.NAVIGATION_ID]: LayoutNavigationID.DEFAULT,
+        });
+
+        const router = useRouter();
+
+        const query = {
+            redirect: '',
+        };
+
+        const { redirect } = router.currentRoute.value.query;
+
+        if (
+            redirect &&
+            typeof redirect === 'string' &&
+            !redirect.includes('logout')
+        ) {
+            query.redirect = redirect;
+        }
+
+        const store = useAuthStore();
+        await store.logout();
+
+        await router.push({ path: '/login', query });
     },
-    created() {
-        this.doLogout();
-
-        // setTimeout(this.doLogout,0);
-    },
-    methods: {
-        async doLogout() {
-            await this.$store.dispatch('auth/triggerLogout');
-
-            const query = {};
-            if (this.$route.query && Object.prototype.hasOwnProperty.call(this.$route.query, 'redirect')) {
-                query.redirect = this.$route.query.redirect;
-            }
-
-            await this.$router.push({ path: '/', query });
-        },
-    },
-};
+});
 </script>
 <template>
     <div />

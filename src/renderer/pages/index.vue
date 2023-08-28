@@ -1,19 +1,23 @@
 <!--
-  - Copyright (c) 2021-2021.
+  - Copyright (c) 2021-2021.m
   - Author Peter Placzek (tada5hi)
   - For the full copyright and license information,
   - view the LICENSE file that was distributed with this source code.
   -->
 <script>
+import { defineComponent } from 'vue';
 import WorldSvg from '../components/svg/WorldSvg';
-import { LayoutKey, LayoutNavigationID } from '../config/layout/contants';
+import { LayoutKey, LayoutNavigationID } from '~/config/layout';
+import { definePageMeta } from '#imports';
 
-export default {
+export default defineComponent({
     components: { WorldSvg },
-    meta: {
-        [LayoutKey.NAVIGATION_ID]: LayoutNavigationID.DEFAULT,
+    async setup() {
+        definePageMeta({
+            [LayoutKey.NAVIGATION_ID]: LayoutNavigationID.DEFAULT,
+        });
     },
-};
+});
 </script>
 <template>
     <div class="container">

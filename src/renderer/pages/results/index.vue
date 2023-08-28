@@ -6,63 +6,32 @@
   -->
 
 <script>
-import { LayoutKey, LayoutNavigationID } from '../../config/layout/contants';
-import TrainResultSelector from '../../components/domains/train-result/TrainResultSelector';
-import TrainResultList from '../../components/domains/train-result/TrainResultList';
+import { storeToRefs } from 'pinia';
+import { LayoutKey, LayoutNavigationID } from '~/config/layout';
+import { defineNuxtComponent, definePageMeta } from '#imports';
+import { useSecretStore } from '~/store/secret';
+import { useAuthStore } from '~/store/auth';
+import TrainResultSelector from '~/components/domains/train-result/TrainResultSelector.vue';
 
-export default {
-    components: { TrainResultList, TrainResultSelector },
-    meta: {
-        [LayoutKey.NAVIGATION_ID]: LayoutNavigationID.DEFAULT,
-    },
-    data() {
+export default defineNuxtComponent({
+    components: { TrainResultSelector },
+    async setup() {
+        definePageMeta({
+            [LayoutKey.NAVIGATION_ID]: LayoutNavigationID.DEFAULT,
+        });
+
+        const secretStore = useSecretStore();
+        const secretRefs = storeToRefs(secretStore);
+
+        const authStore = useAuthStore();
+        const authRefs = storeToRefs(authStore);
+
         return {
-            sidebar: {
-                items: [
-                    {
-                        name: 'Upload', icon: 'fas fa-file-upload', urlSuffix: '/',
-                    },
-                    {
-                        name: 'Overview', icon: 'fas fa-bars', urlSuffix: '/list', requireLoggedIn: true,
-                    },
-                ],
-            },
+            loggedIn: authRefs.loggedIn,
+            privateKey: secretRefs.defaultPrivateKey,
         };
     },
-    computed: {
-        loggedIn() {
-            return this.$store.getters['auth/loggedIn'];
-        },
-        privateKey() {
-            return this.$store.getters['secret/defaultPrivateKey'];
-        },
-        query() {
-            return this.$store.getters['auth/loggedIn'] ?
-                {
-                    filter: {
-                        user_id: this.$store.getters['auth/userId'],
-                    },
-                    sort: {
-                        created_at: 'DESC',
-                    },
-                } : {};
-        },
-    },
-    watch: {
-        async loggedIn(val, oldVal) {
-            if (val === oldVal) {
-                return;
-            }
-            if (
-                this.$refs.list
-            ) {
-                if (!val) {
-                    await this.$refs.list.clear();
-                }
-            }
-        },
-    },
-};
+});
 </script>
 <template>
     <div class="container">
@@ -86,13 +55,6 @@ export default {
             </nuxt-link>
         </div>
 
-        <train-result-selector />
-
-        <div v-if="loggedIn">
-            <train-result-list
-                ref="list"
-                :query="query"
-            />
-        </div>
+        <TrainResultSelector />
     </div>
 </template>

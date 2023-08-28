@@ -5,15 +5,75 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import Vue from 'vue';
-import NavigationComponents, { setProvider } from '@vue-layout/navigation';
-import type { Context } from '@nuxt/types';
-import { NavigationProvider } from '../config/layout';
+import installAuthup from '@authup/client-vue';
+import type { APIClient } from '@authup/core';
+import type { PluginBaseOptions } from '@vue-layout/core';
+import type { NavigationStore } from '@vue-layout/navigation';
+import bootstrap from '@vue-layout/preset-bootstrap-v5';
+import fontAwesome from '@vue-layout/preset-font-awesome';
 
-Vue.use(NavigationComponents);
+import installCountdown from '@vue-layout/countdown';
+import installFormControl from '@vue-layout/form-controls';
+import installNavigation from '@vue-layout/navigation';
+import installPagination from '@vue-layout/pagination';
+import installTimeago from '@vue-layout/timeago';
 
-export default async (ctx: Context) => {
-    const navigationProvider = new NavigationProvider(ctx);
+import type { Pinia } from 'pinia';
+import { storeToRefs } from 'pinia';
+import { defineNuxtPlugin, useState } from '#app';
+import { buildNavigationProvider } from '~/config/layout';
+import { useAuthStore } from '../store/auth';
 
-    setProvider(navigationProvider);
-};
+export default defineNuxtPlugin((ctx) => {
+    const baseOptions : PluginBaseOptions = {
+        presets: {
+            bootstrap,
+            fontAwesome,
+        },
+        defaults: {
+            list: {
+                class: 'list',
+            },
+            listBody: {
+                class: 'list-body',
+            },
+            listItem: {
+                class: 'list-item',
+            },
+            pagination: {
+                class: 'pagination',
+                itemClass: 'page-item',
+            },
+        },
+    };
+
+    ctx.vueApp.use(installCountdown, baseOptions);
+    ctx.vueApp.use(installFormControl, baseOptions);
+
+    const navigationStore = useState<NavigationStore>(() => ({
+        items: [],
+        itemsActive: [],
+    }));
+
+    const store = useAuthStore(ctx.$pinia as Pinia);
+    const { loggedIn } = storeToRefs(store);
+
+    ctx.vueApp.use(installNavigation, {
+        ...baseOptions,
+        store: navigationStore,
+        provider: buildNavigationProvider({
+            isLoggedIn: () => loggedIn.value,
+            hasPermission: (name: string) => store.has(name),
+        }),
+    });
+
+    ctx.vueApp.use(installPagination, baseOptions);
+    ctx.vueApp.use(installTimeago);
+
+    // preset missing ...
+    ctx.vueApp.use(installAuthup, {
+        apiClient: ctx.$authupAPI as APIClient,
+        components: false,
+        ...baseOptions,
+    });
+});

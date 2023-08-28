@@ -5,80 +5,70 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 
-<script>
-import LoginForm from './LoginForm';
-import { LayoutKey } from '../config/layout/contants';
+<script lang="ts">
+import { BModal } from 'bootstrap-vue-next';
+import { storeToRefs } from 'pinia';
+import { computed, defineComponent, ref } from 'vue';
+import { navigateTo } from '#imports';
+import { useAuthStore } from '../store/auth';
 
-export default {
-    components: { LoginForm },
-    data() {
+export default defineComponent({
+    components: {
+        BModal,
+    },
+    setup() {
+        const modalNode = ref<boolean>(false);
+
+        const store = useAuthStore();
+        const storeRefs = storeToRefs(store);
+
+        const label = computed(() => (storeRefs.loggedIn.value ? 'Online' : 'Offline'));
+
+        const show = () => {
+            if (storeRefs.loggedIn.value) {
+                navigateTo('/logout');
+            } else {
+                modalNode.value = true;
+            }
+        };
+
+        const hide = () => {
+            modalNode.value = false;
+        };
+
         return {
-            busy: false,
-            modeState: null,
+            loggedIn: storeRefs.loggedIn,
+            show,
+            hide,
+            label,
+            modalNode,
         };
     },
-    computed: {
-        mode() {
-            return this.$store.getters['global/mode'];
-        },
-        loggedIn() {
-            return this.$store.getters['auth/loggedIn'];
-        },
-        label() {
-            return this.loggedIn ?
-                'Online' :
-                'Offline';
-        },
-    },
-    created() {
-        this.modeState = this.mode;
-    },
-    methods: {
-        async attemptToggle() {
-            if (this.busy) return;
-
-            if (this.loggedIn) {
-                if (this.$route.meta[LayoutKey.REQUIRED_LOGGED_IN]) {
-                    await this.$router.push('/logout');
-                } else {
-                    await this.$store.dispatch('auth/triggerLogout');
-                }
-            } else {
-                this.$refs.form.show();
-            }
-        },
-        async cancel() {
-            this.$refs.form.hide();
-        },
-    },
-};
+});
 </script>
 <template>
     <div
         class="global-mode"
         :class="{'global-mode-online': loggedIn, 'global-mode-offline': !loggedIn}"
-        @click.prevent="attemptToggle"
+        @click.prevent="show"
     >
         <div class="mode">
             <h4>{{ label }}</h4>
         </div>
 
-        <b-modal
-            ref="form"
-            :hide-header="true"
+        <BModal
+            v-model="modalNode"
             size="lg"
             button-size="sm"
-            title-html="<i class='fas fa-sign-in-alt'></i> Login"
             :no-close-on-backdrop="true"
             :no-close-on-esc="true"
             :hide-footer="true"
         >
-            <login-form
-                class="p-3"
-                @logged-in="cancel"
-                @cancel="cancel"
-            />
-        </b-modal>
+            <template #title>
+                <i class="fas fa-sign-in-alt" /> Login
+            </template>
+            <!-- todo login form -->
+        </BModal>
     </div>
 </template>
 <style>

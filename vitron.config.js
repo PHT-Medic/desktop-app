@@ -9,6 +9,6 @@ module.exports = {
     port: 9000,
     framework: {
         name: 'nuxt',
-        version: '2.16.1'
+        version: '3.0.0'
     }
 }

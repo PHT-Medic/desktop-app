@@ -5,50 +5,74 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 
-<script>
-import { ipcRenderer } from 'electron';
-import { KeyPairVariant, KeyVariant } from '../../domains/encryption/type';
+<script lang="ts">
+import { useToast } from 'bootstrap-vue-next';
+import type { PropType } from 'vue';
+import { computed, defineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
+import { KeyPairVariant } from '../../../main/core/crypto/type';
+import { IPCChannel, useIPCRenderer } from '../../core/electron';
+import { useSecretStore } from '~/store/secret';
 
-export default {
+function toHex(str: string) {
+    let result = '';
+    for (let i = 0; i < str.length; i++) {
+        result += str.charCodeAt(i).toString(16);
+    }
+    return result;
+}
+
+export default defineComponent({
     props: {
         keyPairVariant: String,
-        keyVariant: String,
+        keyVariant: String as PropType<'private' | 'public'>,
     },
-    computed: {
-        contentRaw() {
-            switch (this.keyVariant) {
-                case KeyVariant.PRIVATE:
-                    switch (this.keyPairVariant) {
-                        case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
-                            return this.$store.getters['secret/hePrivateKey'] ?
-                                JSON.stringify(this.$store.getters['secret/hePrivateKey']) :
-                                undefined;
-                        case KeyPairVariant.DEFAULT:
-                            return this.$store.getters['secret/defaultPrivateKey'];
+    setup(props) {
+        const toast = useToast();
+        const store = useSecretStore();
+        const storeRefs = storeToRefs(store);
+
+        const contentRaw = computed<string | number | Buffer | undefined>(() => {
+            switch (props.keyVariant) {
+                case 'private':
+                    switch (props.keyPairVariant) {
+                        case KeyPairVariant.HOMOMORPHIC_ENCRYPTION: {
+                            if (storeRefs.hePrivateKey.value) {
+                                return JSON.stringify(storeRefs.hePrivateKey.value);
+                            }
+
+                            return undefined;
+                        }
+                        case KeyPairVariant.DEFAULT: {
+                            return storeRefs.defaultPrivateKey.value;
+                        }
                     }
                     break;
-                case KeyVariant.PUBLIC:
-                    switch (this.keyPairVariant) {
-                        case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
-                            return this.$store.getters['secret/hePublicKey'] ?
-                                JSON.stringify(this.$store.getters['secret/hePublicKey']) :
-                                undefined;
-                        case KeyPairVariant.DEFAULT:
-                            return this.$store.getters['secret/defaultPublicKey'];
+                case 'public':
+                    switch (props.keyPairVariant) {
+                        case KeyPairVariant.HOMOMORPHIC_ENCRYPTION: {
+                            if (storeRefs.hePublicKey.value) {
+                                return JSON.stringify(storeRefs.hePublicKey.value);
+                            }
+
+                            return undefined;
+                        }
+                        case KeyPairVariant.DEFAULT: {
+                            return storeRefs.defaultPublicKey.value;
+                        }
                     }
                     break;
             }
 
             return undefined;
-        },
-        content() {
-            let content = this.contentRaw;
+        });
 
-            if (!content) return undefined;
-
-            if (Buffer.isBuffer(content)) {
-                content = content.toString();
+        const content = computed(() => {
+            if (!contentRaw.value) {
+                return undefined;
             }
+
+            let content = contentRaw.value;
 
             if (ArrayBuffer.isView(content)) {
                 content = content.toString();
@@ -58,30 +82,27 @@ export default {
                 content = content.toString();
             }
 
-            return Buffer.from(content, 'utf-8')
-                .toString('hex');
-        },
+            return toHex(content);
+        });
 
-        label() {
-            switch (this.keyVariant) {
-                case KeyVariant.PRIVATE:
+        const label = computed(() => {
+            switch (props.keyVariant) {
+                case 'private':
                     return 'PrivateKey';
-                case KeyVariant.PUBLIC:
+                case 'public':
                     return 'PublicKey';
             }
 
             return 'Key';
-        },
-    },
-    methods: {
-        copyToClipboard() {
-            let text = this.content;
+        });
+
+        const copyToClipboard = () => {
+            let text = content.value;
 
             if (!text) {
-                this.$bvToast.toast('There does not exist a valid key to copy.', {
-                    variant: 'danger',
-                    toaster: 'b-toaster-top-center',
-                });
+                if (toast) {
+                    toast.danger({ body: 'There does not exist a valid key to copy.' }, { pos: 'top-center#' });
+                }
 
                 return;
             }
@@ -89,23 +110,26 @@ export default {
             text = text.toString();
 
             if (text.length === 0) {
-                this.$bvToast.toast('The key to copy is empty.', {
-                    variant: 'warning',
-                    toaster: 'b-toaster-top-center',
-                });
-
+                if (toast) {
+                    toast.warning({ body: 'The key to copy is empty.' }, { pos: 'top-center' });
+                }
                 return;
             }
 
-            ipcRenderer.send('copy-to-clipboard', text);
+            useIPCRenderer().send(IPCChannel.COPY_TO_CLIPBOARD, text);
 
-            this.$bvToast.toast('Successfully copied key to clipboard', {
-                variant: 'success',
-                toaster: 'b-toaster-top-center',
-            });
-        },
+            if (toast) {
+                toast.success({ body: 'Successfully copied key to clipboard' }, { pos: 'top-center' });
+            }
+        };
+
+        return {
+            content,
+            label,
+            copyToClipboard,
+        };
     },
-};
+});
 </script>
 <template>
     <div>

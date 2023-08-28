@@ -4,135 +4,108 @@
   For the full copyright and license information,
   view the LICENSE file that was distributed with this source code.
   -->
-<script>
-import * as fs from 'fs';
-import path from 'path';
-import { ipcRenderer } from 'electron';
-import { KeyPairVariant } from '../domains/encryption/type';
+<script lang="ts">
+import { useToast } from 'bootstrap-vue-next';
+import { join } from 'pathe';
+import {
+    computed, defineComponent, ref, toRef,
+} from 'vue';
+import { IPCChannel, useIPCRenderer } from '../core/electron';
 
-export default {
+export default defineComponent({
     props: {
-        itemsProperty: {
+        items: {
             type: Array,
             default: () => [],
         },
-        destinationPathProperty: undefined,
-    },
-    data() {
-        return {
-            dirListener: null,
-
-            items: [],
-
-            destinationPath: '',
-            busy: false,
-        };
-    },
-    computed: {
-        isDestinationPathDefined() {
-            return typeof this.destinationPath !== 'undefined' &&
-                this.destinationPath.length !== 0;
+        destinationPath: {
+            type: String,
+            default: '',
         },
     },
-    created() {
-        this.dirListener = (event, arg) => {
-            if (arg.canceled || arg.filePaths.length === 0) return;
+    emits: ['deleted', 'saved'],
+    setup(props, { emit }) {
+        const itemsRef = toRef(props, 'items');
+        const destinationPathRef = toRef(props, 'destinationPath');
+        const busy = ref(false);
 
-            // eslint-disable-next-line prefer-destructuring
-            this.destinationPath = arg.filePaths[0];
+        const toast = useToast();
+
+        const isDestinationPathDefined = computed(() => typeof destinationPathRef.value !== 'undefined' &&
+              destinationPathRef.value.length !== 0);
+
+        const ipcRenderer = useIPCRenderer();
+        const selectDir = async () => {
+            const output = await ipcRenderer.invoke(IPCChannel.DIR_SELECT);
+
+            if (output.canceled || output.filePaths.length === 0) return;
+
+            [destinationPathRef.value] = output.filePaths;
         };
 
-        ipcRenderer.on('dir-selected', this.dirListener);
-        this.init();
-    },
-    beforeDestroy() {
-        ipcRenderer.removeListener('dir-selected', this.dirListener);
-    },
-    methods: {
-        init() {
-            this.items = this.itemsProperty;
-            if (this.destinationPathProperty) {
-                this.destinationPath = this.destinationPathProperty;
-            } else {
-                this.destinationPath = '';
-            }
-        },
-        drop(item) {
-            const index = this.items.findIndex((el) => el.path === item.path);
+        const drop = (item) => {
+            const index = itemsRef.value.findIndex((el) => el.path === item.path);
             if (index !== -1) {
-                this.items.splice(index, 1);
-                this.$emit('deleted', this.item);
+                itemsRef.value.splice(index, 1);
+                emit('deleted', item);
             }
-        },
+        };
+        const save = async () => {
+            if (busy.value) return;
 
-        selectDir() {
-            ipcRenderer.send('dir-select');
-        },
-
-        async createFilePathDirectories(filePath) {
-            const directoryPath = path.join(filePath, '..');
-
-            try {
-                await fs.promises.access(directoryPath);
-            } catch (e) {
-                await fs.promises.mkdir(directoryPath, { recursive: true });
-            }
-        },
-
-        async save() {
-            if (this.busy) return;
-
-            this.busy = true;
+            busy.value = true;
 
             try {
                 const savePromises = [];
 
-                try {
-                    await fs.promises.access(this.destinationPath);
-                } catch (e) {
-                    await fs.promises.mkdir(this.destinationPath);
-                }
+                await ipcRenderer.invoke(IPCChannel.FS_MKDIR, destinationPathRef.value);
 
-                for (let i = 0; i < this.items.length; i++) {
-                    const filePath = path.join(
-                        this.destinationPath,
-                        this.items[i].path.replace('/', path.sep),
+                for (let i = 0; i < itemsRef.value.length; i++) {
+                    const filePath = join(
+                        destinationPathRef.value,
+                        itemsRef.value[i].path,
                     );
 
-                    savePromises.push(this.createFilePathDirectories.call(this, filePath));
+                    const directoryPath = join(filePath, '..');
 
-                    savePromises.push(fs.promises.writeFile(
+                    savePromises.push(ipcRenderer.invoke(IPCChannel.FS_MKDIR, directoryPath));
+                    savePromises.push(ipcRenderer.invoke(
+                        IPCChannel.FS_WRITE_FILE,
                         filePath,
-                        this.items[i].content,
-                        {
-                            encoding: 'utf-8',
-                        },
+                        itemsRef.value[i].content,
                     ));
                 }
 
                 await Promise.all(savePromises);
 
-                this.$emit('saved');
+                emit('saved');
 
-                this.$bvToast.toast('The files were successfully saved.', {
-                    variant: 'success',
-                    toaster: 'b-toaster-top-center',
-                });
+                if (toast) {
+                    toast.success({ body: 'The files were successfully saved.' }, { pos: 'top-center' });
+                }
 
-                ipcRenderer.send('dir-open', this.destinationPath);
+                ipcRenderer.send(IPCChannel.DIR_OPEN, destinationPathRef.value);
             } catch (e) {
-                this.$emit('failed');
+                emit('failed');
 
-                this.$bvToast.toast('The files could not be saved.', {
-                    variant: 'warning',
-                    toaster: 'b-toaster-top-center',
-                });
+                if (toast) {
+                    toast.success({ body: 'The files could not be saved.' }, { pos: 'top-center' });
+                }
             }
 
-            this.busy = false;
-        },
+            busy.value = false;
+        };
+
+        return {
+            isDestinationPathDefined,
+            selectDir,
+            destinationPathRef,
+            itemsRef,
+            save,
+            drop,
+        };
     },
-};
+});
 </script>
 <template>
     <div>
@@ -153,7 +126,7 @@ export default {
                 </div>
 
                 <input
-                    v-model="destinationPath"
+                    v-model="destinationPathRef"
                     type="text"
                     name="name"
                     class="form-control"
@@ -172,10 +145,11 @@ export default {
 
         <div class="mb-2">
             <template
-                v-for="(item, key) in items"
+                v-for="(item, key) in itemsRef"
+                :key="key"
             >
                 <div
-                    :key="key"
+
                     class="card card-file d-flex flex-row align-items-center"
                 >
                     <div class="card-heading">
@@ -190,7 +164,7 @@ export default {
                             <small class="text-muted">{{ item.content.length * 2 }} Bytes</small>
                         </span>
                     </div>
-                    <div class="ml-auto">
+                    <div class="ms-auto">
                         <button
                             type="button"
                             class="btn-xs btn btn-dark"

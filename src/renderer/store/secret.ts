@@ -5,125 +5,84 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { ActionTree, GetterTree, MutationTree } from 'vuex';
-import { hasOwnProperty } from '@personalhealthtrain/central-common';
-import type { RootState } from './index';
-import type { PaillierPrivateKey, PaillierPublicKey } from '../domains/encryption/type';
+import { hasOwnProperty } from '@personalhealthtrain/core';
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
+import type { PaillierPrivateKey, PaillierPublicKey } from '../../main/core/crypto/type';
 
-export interface LayoutState {
-    defaultPath: string | undefined,
-    defaultPrivateKey: string | undefined,
-    defaultPublicKey: string | undefined,
-    defaultPassphrase: string | undefined,
+export const useSecretStore = defineStore(
+    'secret',
+    () => {
+        const defaultPath = ref<string | undefined>(undefined);
+        const defaultPassphrase = ref<string | undefined>(undefined);
+        const defaultPublicKey = ref<string | undefined>(undefined);
+        const defaultPrivateKey = ref<string | undefined>(undefined);
+        const hePath = ref<string | undefined>(undefined);
+        const hePrivateKey = ref<PaillierPrivateKey | undefined>(undefined);
+        const hePublicKey = ref<PaillierPublicKey | undefined>(undefined);
 
-    hePath: string | undefined,
-    hePrivateKey: PaillierPrivateKey | undefined,
-    hePublicKey: PaillierPublicKey | undefined
-}
-
-export const state = () : LayoutState => ({
-    defaultPath: undefined,
-    defaultPassphrase: undefined,
-    defaultPublicKey: undefined,
-    defaultPrivateKey: undefined,
-
-    hePath: undefined,
-    hePrivateKey: undefined,
-    hePublicKey: undefined,
-} as LayoutState);
-
-export const getters : GetterTree<LayoutState, RootState> = {
-    defaultPath: (state) => state.defaultPath,
-    defaultPassphrase: (state) => state.defaultPassphrase,
-    defaultPublicKey: (state) => state.defaultPublicKey,
-    defaultPrivateKey: (state) => state.defaultPrivateKey,
-
-    hePath: (state) => state.hePath,
-    hePublicKey: (state) : PaillierPublicKey | undefined => state.hePublicKey,
-    hePrivateKey: (state) : PaillierPrivateKey | undefined => state.hePrivateKey,
-};
-
-export const actions : ActionTree<LayoutState, RootState> = {
-    setDefaultPath({ commit }, path: string) {
-        commit('setDefaultPath', path);
-    },
-    setDefaultKeyPair({ commit }, keyPair: {
-        privateKey: string,
-        publicKey: string
-    }) {
-        commit('setDefaultKeyPair', keyPair);
-    },
-
-    setHePath({ commit }, path: string) {
-        commit('setHePath', path);
-    },
-    setHeKeyPair({ commit }, keyPair: {
-        privateKey: string,
-        publicKey: string
-    }) {
-        const publicKeyData = JSON.parse(keyPair.publicKey);
-        if (
-            !hasOwnProperty(publicKeyData, 'n') ||
-            !hasOwnProperty(publicKeyData, 'g')
-        ) {
-            throw new Error('Public key invalid.');
-        }
-
-        const publicKey : PaillierPublicKey = {
-            n: publicKeyData.n,
-            g: publicKeyData.g,
+        const setDefaultPath = (path: string) => {
+            defaultPath.value = path;
         };
 
-        const privateKeyData = JSON.parse(keyPair.privateKey);
-        if (
-            !hasOwnProperty(privateKeyData, 'lambda') ||
-            !hasOwnProperty(privateKeyData, 'mu')
-        ) {
-            throw new Error('Public key invalid.');
-        }
+        const setDefaultPassphrase = (input: string) => defaultPassphrase.value = input;
 
-        const privateKey : PaillierPrivateKey = {
-            lambda: privateKeyData.lambda,
-            mu: privateKeyData.mu,
+        const setDefaultKeyPair = (keyPair: {
+            privateKey: string,
+            publicKey: string
+        }) => {
+            defaultPrivateKey.value = keyPair.privateKey;
+            defaultPublicKey.value = keyPair.publicKey;
         };
 
-        commit('setHeKeyPair', {
-            privateKey,
-            publicKey,
-        });
-    },
-};
+        const setHePath = (path: string) => {
+            hePath.value = path;
+        };
 
-export const mutations : MutationTree<LayoutState> = {
-    setDefaultPath(state, path: string) {
-        state.defaultPath = path;
-    },
-    setDefaultPassphrase(state, passphrase: string) {
-        state.defaultPassphrase = passphrase;
-    },
-    setDefaultKeyPair(state, keyPair: { privateKey: string, publicKey: string }) {
-        state.defaultPrivateKey = keyPair.privateKey;
-        state.defaultPublicKey = keyPair.publicKey;
-    },
+        const setHeKeyPair = (keyPair: { privateKey: string, publicKey: string }) => {
+            const publicKeyData = JSON.parse(keyPair.publicKey);
+            if (
+                !hasOwnProperty(publicKeyData, 'n') ||
+                !hasOwnProperty(publicKeyData, 'g')
+            ) {
+                throw new Error('Public key invalid.');
+            }
 
-    setHePath(state, path: string) {
-        state.hePath = path;
-    },
-    setHeKeyPair(state, keyPair: {
-        privateKey: PaillierPrivateKey,
-        publicKey: PaillierPublicKey
-    }) {
-        state.hePrivateKey = keyPair.privateKey;
-        state.hePublicKey = keyPair.publicKey;
-    },
-};
+            const publicKey : PaillierPublicKey = {
+                n: publicKeyData.n,
+                g: publicKeyData.g,
+            };
 
-// --------------------------------------------------------------------
+            const privateKeyData = JSON.parse(keyPair.privateKey);
 
-export default {
-    namespaced: true,
-    state,
-    getters,
-    actions,
-    mutations,
-};
+            if (
+                !hasOwnProperty(privateKeyData, 'lambda') ||
+                !hasOwnProperty(privateKeyData, 'mu')
+            ) {
+                throw new Error('Public key invalid.');
+            }
+
+            hePrivateKey.value = {
+                lambda: privateKeyData.lambda,
+                mu: privateKeyData.mu,
+            };
+            hePublicKey.value = publicKey;
+        };
+
+        return {
+            defaultPath,
+            defaultPassphrase,
+            defaultPublicKey,
+            defaultPrivateKey,
+            hePath,
+            hePrivateKey,
+            hePublicKey,
+
+            setHeKeyPair,
+            setHePath,
+            setDefaultKeyPair,
+            setDefaultPath,
+            setDefaultPassphrase,
+        };
+    },
+);

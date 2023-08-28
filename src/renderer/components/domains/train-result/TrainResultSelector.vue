@@ -5,65 +5,48 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 
-<script>
-import { ipcRenderer } from 'electron';
-import path from 'path';
+<script lang="ts">
+import { defineComponent, ref } from 'vue';
+import { BModal } from 'bootstrap-vue-next';
+import { storeToRefs } from 'pinia';
+import { IPCChannel, useIPCRenderer } from '../../../core/electron';
 import TrainResultInspector from './TrainResultInspector';
+import { useSecretStore } from '~/store/secret';
 
-export default {
-    components: { TrainResultInspector },
-    data() {
+export default defineComponent({
+    components: { BModal, TrainResultInspector },
+    setup() {
+        const tarFile = ref('');
+
+        const store = useSecretStore();
+        const storeRefs = storeToRefs(store);
+        const privateKey = storeRefs.defaultPrivateKey;
+
+        const modalNode = ref<boolean>(null);
+
+        const selectFile = async () => {
+            const output = await useIPCRenderer().invoke(IPCChannel.RESULT_FILE_SELECT);
+
+            if (output.canceled || output.filePaths.length === 0) return;
+
+            [tarFile.value] = output.filePaths;
+
+            modalNode.value = true;
+        };
+
+        const hide = () => {
+            modalNode.value = false;
+        };
+
         return {
-            tarFile: '',
-            result: '',
-
-            hash: '',
-            passphrase: '',
+            privateKey,
+            selectFile,
+            modalNode,
+            tarFile,
+            hide,
         };
     },
-    computed: {
-        isTarFileDefined() {
-            return !!this.tarFile && this.tarFile.length > 0;
-        },
-
-        privateKey() {
-            return this.$store.getters['secret/defaultPrivateKey'];
-        },
-
-        isPassphraseDefined() {
-            return !!this.passphrase && this.passphrase.length > 0;
-        },
-
-        fileNames() {
-            return this.files.map((file) => path.basename(file));
-        },
-    },
-    created() {
-        ipcRenderer.on('result-file-selected', async (event, arg) => {
-            if (arg.canceled || arg.filePaths.length === 0) return;
-
-            // eslint-disable-next-line prefer-destructuring
-            this.tarFile = arg.filePaths[0];
-
-            if (this.$refs.inspector) {
-                this.$refs.inspector.show();
-            }
-        });
-    },
-    methods: {
-        async selectFile() {
-            ipcRenderer.send('result-file-select');
-        },
-        async inspect() {
-            if (!this.isTarFileDefined || !this.privateKey) return;
-
-            this.$refs.inspector.show();
-        },
-        async hideModal() {
-            this.$refs.inspector.hide();
-        },
-    },
-};
+});
 </script>
 <template>
     <div>
@@ -80,20 +63,22 @@ export default {
             </div>
         </div>
 
-        <b-modal
-            ref="inspector"
+        <BModal
+            v-model="modalNode"
             size="lg"
             button-size="sm"
-            title-html="<i class='fa fa-search'></i> Inspector"
             :no-close-on-backdrop="true"
             :no-close-on-esc="true"
             :hide-footer="true"
         >
-            <train-result-inspector
+            <template #title>
+                <i class="fa fa-search" /> Inspector
+            </template>
+            <TrainResultInspector
                 :source="tarFile"
                 :source-option="'file'"
-                @finished="hideModal"
+                @finished="hide"
             />
-        </b-modal>
+        </BModal>
     </div>
 </template>

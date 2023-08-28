@@ -5,8 +5,18 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-.form-control {
+.form-group {
+    margin-bottom: 0.5rem;
+}
+
+.form-control,
+.form-select {
     font-size: inherit;
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
 }
 
 .custom-control {
@@ -28,10 +38,15 @@
 }
 
 .alert-sm {
-  padding: .4rem .7rem;
+    padding: .4rem .7rem;
+}
+
+.nav-link {
+    color: inherit;
 }
 
 .nav-pills .nav-link.active,
+.nav-pills .nav-link.router-link-exact-active,
 .nav-pills .show>.nav-link {
     color: #fff;
     background-color: rgba(29, 33, 36, 0.5);
@@ -66,6 +81,14 @@ a:focus{
     font-size: 12px;
     line-height: 1.5;
     border-radius: 3px;
+}
+
+.btn-md,
+.btn-group-md > .btn {
+    --bs-btn-padding-y: 0.25rem;
+    --bs-btn-padding-x: 0.5rem;
+    --bs-btn-font-size: 1rem;
+    --bs-btn-border-radius: var(--bs-border-radius-sm);
 }
 
 .dropdown-xs>.btn,
@@ -123,15 +146,36 @@ a:focus{
     padding: .5rem;
 }
 
-.modal-content {
-    background: #fafafa;
+
+.vue-form-wizard .wizard-icon-circle .wizard-icon-container {
+    border-radius: 50%;
 }
 
-.dropdown-item.active,
-.dropdown-item:active {
-    background-color: #8c8e8f;
+.custom-file {
+    border-radius: 0.25rem;
 }
 
-.nav-item .dropdown-item {
-    font-size: 0.8rem;
+.dropdown-item {
+    font-size: 13px;
 }
+
+.pagination > li > .page-link {
+    color: #333;
+    background-color: #eee;
+    border: 1px solid #eee;
+    cursor:pointer;
+    font-size: inherit;
+    padding: 0.15rem 0.5rem;
+}
+
+.pagination > .active > .page-link,
+.pagination > .active > .page-link:focus,
+.pagination > .active > .page-link:hover,
+.pagination > li > .page-link:focus,
+.pagination > li > .page-link:hover,
+.pagination > li > .page-link.active {
+    background-color: #30373e;
+    color: #FFF;
+    border: 1px solid #30373e;
+}
+

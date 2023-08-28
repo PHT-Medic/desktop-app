@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { Component } from '@vue-layout/navigation';
+import type { NavigationElement } from '@vue-layout/navigation';
 
 export enum LayoutKey {
     NAVIGATION_ID = 'navigationId',
@@ -21,7 +21,7 @@ export enum LayoutNavigationID {
     DEFAULT = 'default',
 }
 
-export const LayoutTopNavigation : Component[] = [
+export const LayoutTopNavigation : NavigationElement[] = [
     {
         id: LayoutNavigationID.DEFAULT,
         name: 'Home',
@@ -29,7 +29,7 @@ export const LayoutTopNavigation : Component[] = [
     },
 ];
 
-export const LayoutSideDefaultNavigation : Component[] = [
+export const LayoutSideDefaultNavigation : NavigationElement[] = [
     {
         name: 'About',
         type: 'link',

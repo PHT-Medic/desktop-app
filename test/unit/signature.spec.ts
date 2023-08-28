@@ -1,8 +1,8 @@
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
-import { decryptRSAPrivateKey, generateRSAKeyPair } from '../../src/renderer/domains/encryption/utils/rsa';
-import { signHash } from '../../src/renderer/domains/signature/sign';
+import { sign } from '../../src/main/core';
+import {decryptRSAPrivateKey} from "../../src/main/core";
 
 describe('src/renderer/domains/signature*.ts', () => {
     const privateKeyFilePath = path.join(__dirname, '..', 'data', 'private.pem');
@@ -29,7 +29,7 @@ describe('src/renderer/domains/signature*.ts', () => {
             type: 'spki'
         });
 
-        let signature = signHash(hex_hash, privateKeyDecrypted);
+        let signature = sign(hex_hash, privateKeyDecrypted);
         expect(signature)
             .toBeDefined();
 

@@ -6,18 +6,20 @@
   -->
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import type { PropType } from 'vue';
-import type { TrainConfig } from '@personalhealthtrain/central-common';
+import type { TrainConfig } from '@personalhealthtrain/core';
 
-export default {
+export default defineComponent({
     props: {
         config: Object as PropType<TrainConfig>,
     },
-};
+});
 </script>
 <template>
     <div class="train-result-config-viewer">
-        <strong>Train ID</strong> {{ config.id }} <br>
+        <strong>Proposal ID</strong> {{ config.proposal_id }} <br>
+        <strong>Train ID</strong> {{ config['@id'] || config.id }} <br>
         <strong>Master Image</strong> {{ config.source.address }} <br>
         <strong>Session ID</strong> {{ config.session_id }} <br>
     </div>

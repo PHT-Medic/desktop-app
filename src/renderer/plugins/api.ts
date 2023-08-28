@@ -5,56 +5,119 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { Config } from 'hapic';
-import { setClient } from 'hapic';
-import type { Context } from '@nuxt/types';
-import https from 'https';
-import type { Inject } from '@nuxt/types/app';
-import { HTTPClient as AuthHTTPClient } from '@authup/common';
-import { HTTPClient } from '@personalhealthtrain/central-common';
+import type {
+    ClientResponseErrorTokenHookOptions,
+} from '@authup/core';
+import {
+    APIClient as AuthAPIClient,
+    ClientResponseErrorTokenHook,
+} from '@authup/core';
+import { APIClient } from '@personalhealthtrain/core';
+import type { Pinia } from 'pinia';
+import { storeToRefs } from 'pinia';
+import { useAuthStore } from '../store/auth';
+import { useRuntimeConfig } from '#imports';
 
-export default (ctx: Context, inject : Inject) => {
-    let apiUrl : string | undefined;
-
-    apiUrl = process.env.API_URL;
-
-    if (typeof ctx.$config.apiUrl === 'string') {
-        apiUrl = ctx.$config.apiUrl;
+declare module '#app' {
+    interface NuxtApp {
+        $api: APIClient;
+        $authupAPI: AuthAPIClient;
     }
+}
 
-    const config : Config = {
-        extra: {},
-        retry: false,
-        driver: {
-            baseURL: apiUrl,
-            withCredentials: true,
-            httpsAgent: new https.Agent({
-                rejectUnauthorized: false,
-                ...(process.server ? {
-                    proxy: false,
-                } : {}),
-            }),
+declare module '@vue/runtime-core' {
+    interface ComponentCustomProperties {
+        $api: APIClient;
+        $authupAPI: AuthAPIClient;
+    }
+}
+export default defineNuxtPlugin((ctx) => {
+    const runtimeConfig = useRuntimeConfig();
+
+    let { apiUrl } = runtimeConfig.public;
+
+    const resourceAPI = new APIClient({ baseURL: apiUrl });
+    ctx.provide('api', resourceAPI);
+
+    // -----------------------------------------------------------------------------------
+
+    apiUrl = runtimeConfig.public.authupApiUrl;
+
+    const authupAPI = new AuthAPIClient({ baseURL: apiUrl });
+
+    ctx.provide('authupAPI', authupAPI);
+
+    // -----------------------------------------------------------------------------------
+
+    const store = useAuthStore(ctx.$pinia as Pinia);
+
+    const tokenHookOptions : ClientResponseErrorTokenHookOptions = {
+        baseURL: runtimeConfig.public.apiUrl,
+        tokenCreator: () => {
+            const { refreshToken } = storeToRefs(store);
+
+            if (!refreshToken.value) {
+                throw new Error('No refresh token available.');
+            }
+
+            return authupAPI.token.createWithRefreshToken({
+                refresh_token: refreshToken.value,
+            });
+        },
+        tokenCreated: (response) => {
+            store.setAccessTokenExpireDate(undefined);
+
+            setTimeout(() => {
+                store.handleTokenGrantResponse(response);
+            }, 0);
+        },
+        tokenFailed: () => {
+            store.logout();
         },
     };
 
-    const resourceAPI = new HTTPClient(config);
-    const authAPI = new AuthHTTPClient(config);
+    const authupTokenHook = new ClientResponseErrorTokenHook(
+        authupAPI,
+        tokenHookOptions,
+    );
 
-    const interceptor = (error) => {
-        if (typeof error?.response?.data?.message === 'string') {
-            error.message = error.response.data.message;
-            throw error;
+    const resourceTokenHook = new ClientResponseErrorTokenHook(
+        resourceAPI,
+        {
+            ...tokenHookOptions,
+            timer: false,
+            tokenCreated(response) {
+                authupTokenHook.setTimer(response);
+
+                if (tokenHookOptions.tokenCreated) {
+                    tokenHookOptions.tokenCreated(response);
+                }
+            },
+        },
+    );
+
+    store.$subscribe((mutation, state) => {
+        if (mutation.storeId !== 'auth') return;
+
+        if (state.accessToken) {
+            resourceAPI.setAuthorizationHeader({
+                type: 'Bearer',
+                token: state.accessToken,
+            });
+
+            authupAPI.setAuthorizationHeader({
+                type: 'Bearer',
+                token: state.accessToken,
+            });
+
+            resourceTokenHook.mount();
+            authupTokenHook.mount();
+        } else {
+            resourceAPI.unsetAuthorizationHeader();
+            authupAPI.unsetAuthorizationHeader();
+
+            resourceTokenHook.unmount();
+            authupTokenHook.unmount();
         }
-
-        throw new Error('A network error occurred.');
-    };
-
-    resourceAPI.mountResponseInterceptor((r) => r, interceptor);
-    authAPI.mountResponseInterceptor((r) => r, interceptor);
-
-    setClient(resourceAPI);
-    setClient(authAPI, 'auth');
-
-    inject('api', resourceAPI);
-    inject('authApi', authAPI);
-};
+    });
+});

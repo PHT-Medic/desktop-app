@@ -5,64 +5,39 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 
-<script>
-import { ipcRenderer } from 'electron';
-import { signHash } from '../../domains/signature/sign';
+<script lang="ts">
+import { useToast } from 'bootstrap-vue-next';
+import { defineComponent, reactive, ref } from 'vue';
+import { IPCChannel, useIPCRenderer } from '../../core/electron';
 import AlertMessage from '../../components/alert/AlertMessage';
 import { LayoutKey, LayoutNavigationID } from '../../config/layout';
+import { definePageMeta } from '#imports';
+import { useSecretStore } from '~/store/secret';
 
-export default {
-    meta: {
-        [LayoutKey.NAVIGATION_ID]: LayoutNavigationID.DEFAULT,
-    },
+export default defineComponent({
     components: { AlertMessage },
-    data() {
-        return {
-            form: {
-                hash: '',
-                signature: '',
-            },
+    setup() {
+        definePageMeta({
+            [LayoutKey.NAVIGATION_ID]: LayoutNavigationID.DEFAULT,
+        });
 
-            message: null,
-        };
-    },
-    computed: {
-        isHashValid() {
-            return !!this.form.hash && this.form.hash.length !== 0;
-        },
-        privateKey() {
-            return this.$store.getters['secret/defaultPrivateKey'];
-        },
-    },
-    methods: {
-        async sign() {
-            if (!this.isHashValid || !this.privateKey) return;
+        const toast = useToast();
+        const store = useSecretStore();
 
-            try {
-                this.form.signature = signHash(this.form.hash, this.privateKey);
+        const form = reactive({
+            hash: '',
+            signature: '',
+        });
 
-                this.message = {
-                    isError: false,
-                    data: 'The signature was successfully generated.',
-                };
+        const message = ref(null);
 
-                this.copyToClipboard();
-            } catch (e) {
-                this.message = {
-                    isError: true,
-                    // todo more detailed error messages
-                    data: 'The passphrase is not valid.',
-                };
-            }
-        },
-        copyToClipboard() {
-            let text = this.form.signature;
+        const copyToClipboard = () => {
+            let text = form.signature;
 
             if (!text) {
-                this.$bvToast.toast('No signature to copy.', {
-                    variant: 'danger',
-                    toaster: 'b-toaster-top-center',
-                });
+                if (toast) {
+                    toast.danger({ body: 'No signature to copy' }, { pos: 'top-center' });
+                }
 
                 return;
             }
@@ -70,23 +45,48 @@ export default {
             text = text.toString();
 
             if (text.length === 0) {
-                this.$bvToast.toast('The signature to copy is empty.', {
-                    variant: 'warning',
-                    toaster: 'b-toaster-top-center',
-                });
+                if (toast) {
+                    toast.warning({ body: 'No signature to copy is empty' }, { pos: 'top-center' });
+                }
 
                 return;
             }
 
-            ipcRenderer.send('copy-to-clipboard', text);
+            useIPCRenderer()
+                .send(IPCChannel.COPY_TO_CLIPBOARD, text);
 
-            this.$bvToast.toast('Successfully copied signature to clipboard', {
-                variant: 'success',
-                toaster: 'b-toaster-top-center',
-            });
-        },
+            if (toast) {
+                toast.success({ body: 'Successfully copied signature to clipboard' }, { pos: 'top-center' });
+            }
+        };
+
+        const sign = async () => {
+            if (!form.hash || !store.defaultPrivateKey) return;
+
+            try {
+                form.signature = await useIPCRenderer()
+                    .invoke(IPCChannel.CRYPTO_SIGN, form.hash, store.defaultPrivateKey);
+                if (toast) {
+                    toast.success({ body: 'The signature was successfully generated.' }, { pos: 'top-center' });
+                }
+
+                copyToClipboard();
+            } catch (e) {
+                if (toast) {
+                    toast.danger({ body: 'The passphrase is not valid' }, { pos: 'top-center' });
+                }
+            }
+        };
+
+        return {
+            privateKey: store.defaultPrivateKey,
+            message,
+            form,
+            sign,
+            copyToClipboard,
+        };
     },
-};
+});
 </script>
 <template>
     <div>

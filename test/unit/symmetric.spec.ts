@@ -1,4 +1,4 @@
-import {decryptSymmetric, encryptSymmetric} from '../../src/renderer/domains/encryption/symmetric';
+import {decryptSymmetric, encryptSymmetric} from "../../src/main/core";
 
 describe('src/renderer/domains/encryption/symmetric.ts', () => {
     it('should encrypt & decrypt symmetric data', () => {

@@ -11,10 +11,7 @@ module.exports = {
     artifactName: 'pht-desktop-app-${version}.${ext}',
     directories: {
         output: 'dist',
-        buildResources: 'resources'
-    },
-    extraMetadata: {
-        main: "src/entrypoint/dist/index.js"
+        buildResources: 'assets'
     },
     // default files: https://www.electron.build/configuration/contents
     files: {
@@ -22,7 +19,7 @@ module.exports = {
         filter: [
             'assets',
             'package.json',
-            'src/entrypoint/dist/**/*'
+            '.vitron/**/*'
         ]
     },
     win: {

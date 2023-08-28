@@ -6,14 +6,24 @@
   -->
 
 <script>
+import { storeToRefs } from 'pinia';
+import { useSecretStore } from '~/store/secret';
+import { definePageMeta } from '#imports';
+import { LayoutKey, LayoutNavigationID } from '~/config/layout';
+
 export default {
-    computed: {
-        rsaPrivateKey() {
-            return this.$store.getters['secret/defaultPrivateKey'];
-        },
-        homomorphicPrivateKey() {
-            return this.$store.getters['secret/hePrivateKey'];
-        },
+    setup() {
+        definePageMeta({
+            [LayoutKey.NAVIGATION_ID]: LayoutNavigationID.DEFAULT,
+        });
+
+        const store = useSecretStore();
+        const { defaultPrivateKey, hePrivateKey } = storeToRefs(store);
+
+        return {
+            defaultPrivateKey,
+            hePrivateKey,
+        };
     },
 };
 </script>
@@ -27,7 +37,7 @@ export default {
             <div class="col">
                 <div
                     class="alert alert-sm"
-                    :class="{'alert-warning': !rsaPrivateKey, 'alert-success': rsaPrivateKey}"
+                    :class="{'alert-warning': !defaultPrivateKey, 'alert-success': defaultPrivateKey}"
                 >
                     <strong>RSA</strong>
 
@@ -38,29 +48,32 @@ export default {
 
                     <div class="d-flex flex-row justify-content-around">
                         <div>
-                            <nuxt-link
+                            <NuxtLink
                                 class="btn btn-xs btn-dark"
                                 :to="'/settings/encryption'"
                             >
                                 <i class="fa fa-key" /> KeyPair
-                            </nuxt-link>
+                            </NuxtLink>
                         </div>
                         <div
-                            v-if="rsaPrivateKey"
+                            v-if="defaultPrivateKey"
                         >
-                            <nuxt-link
+                            <NuxtLink
 
                                 class="btn btn-xs btn-dark"
                                 :to="'/sign'"
                             >
                                 <i class="fas fa-file-alt" /> Signature
-                            </nuxt-link>
+                            </NuxtLink>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col">
-                <div class="alert alert-warning alert-sm">
+                <div
+                    class="alert alert-sm"
+                    :class="{'alert-warning': !hePrivateKey, 'alert-success': hePrivateKey}"
+                >
                     <strong>Homomorphic</strong>
 
                     <p>
@@ -70,12 +83,12 @@ export default {
 
                     <div class="d-flex flex-row justify-content-around">
                         <div>
-                            <nuxt-link
+                            <NuxtLink
                                 class="btn btn-xs btn-dark"
                                 :to="'/settings/encryption/homomorphic'"
                             >
                                 <i class="fa fa-key" /> KeyPair
-                            </nuxt-link>
+                            </NuxtLink>
                         </div>
                     </div>
                 </div>

@@ -7,8 +7,7 @@
 
 import JsonBig from 'json-bigint';
 import {PrivateKey, PublicKey} from "paillier-bigint";
-import {decryptContentRecursive} from "../../src/renderer/domains/encryption/utils/paillier";
-import {useJsonBigIntTransformer} from "../../src/renderer/domains/json-bigint";
+import {decryptContentRecursive} from "../../src/main/core";
 
 describe('src/domains/encryption/utils/paillier.ts', function () {
     it('should encrypt and decrypt', () => {

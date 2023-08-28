@@ -1,10 +1,9 @@
-import {decompressTarFile} from "../../src/renderer/domains/fs/decompress";
+import {decompressTarFile, decryptRSAPrivateKey} from "../../src/main/core";
 import * as path from "path";
-import {parseTrainConfig} from "../../src/renderer/domains/train-config/read";
+import {parseTrainConfig} from "../../src/main/domains/train-config";
 import fs from "fs";
-import {decryptRSAPrivateKey} from "../../src/renderer/domains/encryption/utils/rsa";
-import {readTrainResult} from "../../src/renderer/domains/train-result/module";
-import {TrainResultSourceType} from "../../src/renderer/domains/train-result/constants";
+import {readTrainResult} from "../../src/main/domains/train-result";
+import {TrainResultSourceType} from "../../src/main/domains/train-result";
 
 describe('src/renderer/domains/train-config*.ts', () => {
     const resultFilePath = path.join(__dirname, '..', 'data', 'result.tar');

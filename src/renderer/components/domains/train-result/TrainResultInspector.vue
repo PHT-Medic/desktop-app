@@ -5,16 +5,25 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 
-<script>
-import path from 'path';
+<script lang="ts">
+import type { TrainFile } from '@personalhealthtrain/client-vue';
+import type { TrainConfig } from '@personalhealthtrain/core';
+import { join } from 'pathe';
+import type { ResguardResult } from 'resguard';
+import {
+    computed, defineComponent, nextTick, ref,
+} from 'vue';
 import { PrivateKey, PublicKey } from 'paillier-bigint';
-import { readTrainResult } from '../../../domains/train-result/module';
-import { TrainResultInspectorStatusOption, TrainResultSourceType } from '../../../domains/train-result/constants';
+import { storeToRefs } from 'pinia';
+import { TrainResultInspectorStatusOption, TrainResultSourceType } from '../../../../main/domains/train-result/constants';
+import type { TrainResultOutput } from '../../../../main/domains/train-result/type';
+import { IPCChannel, useIPCRenderer } from '../../../core/electron';
 import AlertMessage from '../../alert/AlertMessage';
 import TrainResultConfigViewer from './TrainResultConfigViewer';
 import TarFilesSaver from '../../TarFilesSaver';
+import { useSecretStore } from '~/store/secret';
 
-export default {
+export default defineComponent({
     components: { TarFilesSaver, TrainResultConfigViewer, AlertMessage },
     props: {
         source: String,
@@ -23,82 +32,65 @@ export default {
             default: TrainResultSourceType.FILE,
         },
     },
-    data() {
-        return {
-            sourceOptions: TrainResultSourceType,
+    setup(props) {
+        const sourceOptions = TrainResultSourceType;
+        const status = ref(null);
+        const message = ref(null);
+        const config = ref<null | TrainConfig>(null);
+        const files = ref<TrainFile[]>([]);
+        const filesSaver = ref<typeof TarFilesSaver | null>(null);
 
-            statusOptions: TrainResultInspectorStatusOption,
-            status: null,
+        const store = useSecretStore();
+        const storeRefs = storeToRefs(store);
 
-            message: null,
+        const optionLabel = computed(() => (props.sourceOption === TrainResultSourceType.FILE ?
+            'FilePath' :
+            'URL'));
 
-            config: null,
-            files: [],
-        };
-    },
-    computed: {
-        optionActionLabel() {
-            return this.sourceOption === TrainResultSourceType.FILE ?
-                'Load' :
-                'Download';
-        },
-        optionLabel() {
-            return this.sourceOption === TrainResultSourceType.FILE ?
-                'FilePath' :
-                'URL';
-        },
-        optionIcon() {
-            return this.sourceOption === TrainResultSourceType.FILE ?
-                'fa fa-file-upload' :
-                'fa fa-file-download';
-        },
+        const optionIcon = computed(() => (props.sourceOption === TrainResultSourceType.FILE ?
+            'fa fa-file-upload' :
+            'fa fa-file-download'));
 
-        privateKey() {
-            return this.$store.getters['secret/defaultPrivateKey'];
-        },
+        const privateKey = storeRefs.defaultPrivateKey;
 
-        destinationPath() {
+        const destinationPath = computed(() => {
             let id;
 
             if (
-                this.config &&
-                this.config.id
+                config.value &&
+            config.value.id
             ) {
-                id = this.config.id;
+                id = config.value.id;
             }
 
             if (
-                this.config &&
-                this.config['@id']
+                config.value &&
+            config.value['@id']
             ) {
-                id = this.config['@id'];
+                id = config.value['@id'];
             }
 
-            if (
-                id &&
-                this.sourceOption === TrainResultSourceType.FILE
-            ) {
-                return path.join(this.source, '..', id);
+            if (id && props.sourceOption === TrainResultSourceType.FILE) {
+                return join(props.source, '..', id);
             }
 
             return undefined;
-        },
-    },
-    methods: {
-        async run() {
-            if (!this.privateKey && !this.isTarFileDefined) return;
+        });
 
-            this.status = TrainResultInspectorStatusOption.DECRYPTING;
+        const run = async () => {
+            if (!privateKey.value) return;
+
+            status.value = TrainResultInspectorStatusOption.DECRYPTING;
 
             try {
                 let paillierKey;
 
                 if (
-                    this.$store.getters['secret/hePrivateKey'] &&
-                    this.$store.getters['secret/hePublicKey']
+                    storeRefs.hePrivateKey.value &&
+                    storeRefs.hePublicKey.value
                 ) {
-                    const publicData = this.$store.getters['secret/hePublicKey'];
-                    const privateData = this.$store.getters['secret/hePrivateKey'];
+                    const publicData = storeRefs.hePublicKey.value;
+                    const privateData = storeRefs.hePrivateKey.value;
 
                     const publicKey = new PublicKey(BigInt(publicData.n), BigInt(publicData.g));
                     paillierKey = new PrivateKey(
@@ -108,36 +100,51 @@ export default {
                     );
                 }
 
-                const { config, files } = await readTrainResult({
-                    source: this.source,
-                    sourceType: this.sourceOption,
-                    rsaPrivateKey: this.privateKey,
+                const { error, data } = await useIPCRenderer().invoke(IPCChannel.RESULT_READ, {
+                    source: props.source,
+                    sourceType: props.sourceOption,
+                    rsaPrivateKey: privateKey.value,
                     paillierPrivateKey: paillierKey,
-                });
+                }) as ResguardResult<TrainResultOutput>;
 
-                this.config = config;
-                this.files = files;
+                if (error) {
+                    message.value = {
+                        data: error.message,
+                        isError: true,
+                    };
+                }
 
-                this.status = TrainResultInspectorStatusOption.DECRYPTED;
+                config.value = data.config;
+                files.value = data.files;
 
-                this.$nextTick(() => {
-                    if (this.$refs.filesSaver) {
-                        this.$refs.filesSaver.init();
+                status.value = TrainResultInspectorStatusOption.DECRYPTED;
+
+                nextTick(() => {
+                    if (filesSaver.value) {
+                        filesSaver.value.init();
                     }
                 });
 
-                this.message = null;
+                message.value = null;
             } catch (e) {
-                this.message = {
-                    data: e.message,
-                    isError: true,
-                };
-
-                this.status = TrainResultInspectorStatusOption.FAILED;
+                status.value = TrainResultInspectorStatusOption.FAILED;
             }
-        },
+        };
+
+        return {
+            sourceOptions,
+            optionIcon,
+            optionLabel,
+            privateKey,
+            run,
+            config,
+            message,
+            filesSaver,
+            files,
+            destinationPath,
+        };
     },
-};
+});
 </script>
 <template>
     <div>
@@ -200,9 +207,9 @@ export default {
             </h6>
 
             <tar-files-saver
-                ref="filesSaver"
-                :items-property="files"
-                :destination-path-property="destinationPath"
+                :ref="filesSaver"
+                :items="files"
+                :destination-path="destinationPath"
             />
         </div>
     </div>

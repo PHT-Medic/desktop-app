@@ -7,3 +7,5 @@ node_modules
 yarn-error.log
 .electron-adapter
 .DS_Store
+.vitron
+.output

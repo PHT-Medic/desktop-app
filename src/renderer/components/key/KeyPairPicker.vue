@@ -5,274 +5,248 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 <script lang="ts">
-import path from 'path';
-import * as fs from 'fs';
-import { ipcRenderer } from 'electron';
-import * as paillierBigint from 'paillier-bigint';
-import { isHex } from '@personalhealthtrain/central-common';
+import { join } from 'pathe';
+import { useToast } from 'bootstrap-vue-next';
+import { isHex } from '@personalhealthtrain/core';
+import { storeToRefs } from 'pinia';
 import type { PropType } from 'vue';
-import Vue from 'vue';
-import { KeyPairVariant } from '../../domains/encryption/type';
+import {
+    computed, defineComponent, reactive,
+} from 'vue';
+import { KeyPairVariant } from '../../../main/core/crypto/type';
+import { IPCChannel, useIPCRenderer } from '../../core/electron';
+import { useSecretStore } from '../../store/secret';
 import KeyDisplay from './KeyDisplay.vue';
-import { decryptRSAPrivateKey, generateRSAKeyPair } from '../../domains/encryption/utils/rsa';
 
-type Properties = {
-    variant: `${KeyPairVariant}`
-};
-
-export default Vue.extend<any, any, any, Properties>({
+export default defineComponent({
     components: { KeyDisplay },
     props: {
         variant: String as PropType<KeyPairVariant>,
     },
-    data() {
-        return {
-            dirListener: null,
-            form: {
-                passphrase: '',
-                privateKeyFileName: '',
-                publicKeyFileName: '',
-            },
-        };
-    },
-    computed: {
-        isPassphraseDefined() {
-            return !!this.form.passphrase && this.form.passphrase.length !== 0;
-        },
-        isPassphraseRequired() {
-            return this.variant === KeyPairVariant.DEFAULT;
-        },
+    setup(props) {
+        const toast = useToast();
+        const store = useSecretStore();
+        const storeRefs = storeToRefs(store);
 
-        directoryPath() {
-            switch (this.variant) {
+        const form = reactive({
+            passphrase: '',
+            privateKeyFileName: '',
+            publicKeyFileName: '',
+        });
+
+        const isPassphraseDefined = computed(() => !!form.passphrase && form.passphrase.length !== 0);
+
+        const isPassphraseRequired = computed(() => props.variant === KeyPairVariant.DEFAULT);
+
+        const directoryPath = computed(() => {
+            switch (props.variant) {
                 case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
-                    return this.$store.getters['secret/hePath'];
+                    return storeRefs.hePath.value;
                 case KeyPairVariant.DEFAULT:
-                    return this.$store.getters['secret/defaultPath'];
+                    return storeRefs.defaultPath.value;
             }
 
             return '';
-        },
-        isDirectoryPathDefined() {
-            return typeof this.directoryPath !== 'undefined';
-        },
+        });
 
-        publicKey() {
-            switch (this.variant) {
+        const isDirectoryPathDefined = computed(() => typeof directoryPath.value !== 'undefined');
+
+        const publicKey = computed(() => {
+            switch (props.variant) {
                 case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
-                    return this.$store.getters['secret/hePublicKey'];
+                    return storeRefs.hePublicKey.value;
                 default:
-                    return this.$store.getters['secret/defaultPublicKey'];
+                    return storeRefs.defaultPublicKey.value;
             }
-        },
-        publicKeyFileName() {
-            if (!this.form.publicKeyFileName || this.form.publicKeyFileName.length === 0) {
-                return this.publicKeyDefaultFileName;
-            }
+        });
 
-            return this.form.publicKeyFileName;
-        },
-        publicKeyDefaultFileName() {
-            switch (this.variant) {
+        const publicKeyDefaultFileName = computed(() => {
+            switch (props.variant) {
                 case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
                     return 'public-he.key';
                 default:
                     return 'public.pem';
             }
-        },
+        });
 
-        privateKey() {
-            switch (this.variant) {
+        const publicKeyFileName = computed(() => {
+            if (!form.publicKeyFileName || form.publicKeyFileName.length === 0) {
+                return publicKeyDefaultFileName.value;
+            }
+
+            return form.publicKeyFileName;
+        });
+
+        const privateKey = computed(() => {
+            switch (props.variant) {
                 case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
-                    return this.$store.getters['secret/hePrivateKey'];
+                    return storeRefs.hePrivateKey.value;
                 default:
-                    return this.$store.getters['secret/defaultPrivateKey'];
+                    return storeRefs.defaultPrivateKey.value;
             }
-        },
-        privateKeyFileName() {
-            if (!this.form.privateKeyFileName || this.form.privateKeyFileName.length === 0) {
-                return this.privateKeyDefaultFileName;
-            }
+        });
 
-            return this.form.privateKeyFileName;
-        },
-        privateKeyDefaultFileName() {
-            switch (this.variant) {
+        const privateKeyDefaultFileName = computed(() => {
+            switch (props.variant) {
                 case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
                     return 'private-he.key';
                 default:
                     return 'private.pem';
             }
-        },
-    },
-    created() {
-        this.form.privateKeyFileName = this.privateKeyFileName;
-        this.form.publicKeyFileName = this.publicKeyFileName;
+        });
 
-        if (this.$store.getters['secret/defaultPassphrase']) {
-            this.form.passphrase = this.$store.getters['secret/defaultPassphrase'];
-        }
+        const privateKeyFileName = computed(() => {
+            if (!form.privateKeyFileName || form.privateKeyFileName.length === 0) {
+                return privateKeyDefaultFileName.value;
+            }
 
-        this.dirListener = (event, arg) => {
-            if (arg.canceled || arg.filePaths.length === 0) return;
+            return form.privateKeyFileName;
+        });
 
-            switch (this.variant) {
+        form.privateKeyFileName = privateKeyFileName.value;
+        form.publicKeyFileName = publicKeyFileName.value;
+        form.passphrase = storeRefs.defaultPassphrase.value;
+
+        const selectDir = async () => {
+            const output = await useIPCRenderer().invoke(IPCChannel.DIR_SELECT);
+
+            if (output.canceled || output.filePaths.length === 0) return;
+
+            switch (props.variant) {
                 case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
-                    this.$store.dispatch('secret/setHePath', arg.filePaths[0]);
+                    store.setHePath(output.filePaths[0]);
                     break;
                 default:
-                    this.$store.dispatch('secret/setDefaultPath', arg.filePaths[0]);
+                    store.setDefaultPath(output.filePaths[0]);
                     break;
             }
         };
 
-        ipcRenderer.on('dir-selected', this.dirListener);
-    },
-    beforeDestroy() {
-        ipcRenderer.removeListener('dir-selected', this.dirListener);
-    },
-    methods: {
-        selectDir() {
-            ipcRenderer.send('dir-select');
-        },
-        async load() {
-            if (!this.isDirectoryPathDefined) return;
+        const generate = async () => {
+            if (!isDirectoryPathDefined.value) return;
 
-            const privateKeyPath = path.join(this.directoryPath, this.privateKeyFileName);
-            const publicKeyPath = path.join(this.directoryPath, this.publicKeyFileName);
+            let keyPair = {};
+
+            const ipcRenderer = useIPCRenderer();
+
+            try {
+                switch (props.variant) {
+                    case KeyPairVariant.HOMOMORPHIC_ENCRYPTION: {
+                        keyPair = await ipcRenderer.invoke(IPCChannel.CRYPTO_HE_GENERATE);
+                        break;
+                    }
+                    case KeyPairVariant.DEFAULT:
+                        keyPair = await ipcRenderer.invoke(IPCChannel.CRYPTO_RSA_GENERATE, form.passphrase);
+                        break;
+                }
+            } catch (e) {
+                if (toast) {
+                    toast.warning({ body: 'The key pair could not be generated.' }, { pos: 'top-center' });
+                }
+
+                return;
+            }
+
+            try {
+                await ipcRenderer.invoke(IPCChannel.FS_WRITE_FILE, join(directoryPath.value, privateKeyFileName.value), keyPair.privateKey);
+                await ipcRenderer.invoke(IPCChannel.FS_WRITE_FILE, join(directoryPath.value, publicKeyFileName.value), keyPair.publicKey);
+            } catch (e) {
+                if (toast) {
+                    toast.warning({ body: 'The key pair could not be written to the specified directory.' }, { pos: 'top-center' });
+                }
+
+                return;
+            }
+
+            switch (props.variant) {
+                case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
+                    store.setHeKeyPair(keyPair);
+                    break;
+                case KeyPairVariant.DEFAULT:
+                    store.setDefaultPassphrase(form.passphrase);
+                    store.setDefaultKeyPair(keyPair);
+                    break;
+            }
+
+            if (toast) {
+                toast.success({ body: 'The key pair was successfully generated.' }, { pos: 'top-center' });
+            }
+        };
+
+        const load = async () => {
+            if (!isDirectoryPathDefined.value) return;
+
+            const privateKeyPath = join(directoryPath.value, privateKeyFileName.value);
+            const publicKeyPath = join(directoryPath.value, publicKeyFileName.value);
 
             const keyPair : {
                 privateKey?: string,
                 publicKey?: string
             } = {};
 
-            try {
-                await fs.promises.access(privateKeyPath, fs.constants.F_OK);
-                keyPair.privateKey = await fs.promises.readFile(privateKeyPath, { encoding: 'utf-8' });
-            } catch (e) {
-                this.$bvToast.toast('The private key could not be found or be read.', {
-                    variant: 'warning',
-                    toaster: 'b-toaster-top-center',
-                });
+            const ipcRenderer = useIPCRenderer();
+            keyPair.privateKey = await ipcRenderer.invoke(IPCChannel.FS_READ_FILE, privateKeyPath);
+            if (!keyPair.privateKey) {
+                if (toast) {
+                    toast.warning({ body: 'The private key could not be found or be read.' }, { pos: 'top-center' });
+                }
 
                 return;
-                // do nothing
             }
 
-            try {
-                await fs.promises.access(publicKeyPath, fs.constants.F_OK);
-                keyPair.publicKey = await fs.promises.readFile(publicKeyPath, { encoding: 'utf-8' });
-            } catch (e) {
-                this.$bvToast.toast('The public key could not be found or be read.', {
-                    variant: 'warning',
-                    toaster: 'b-toaster-top-center',
-                });
+            keyPair.publicKey = await ipcRenderer.invoke(IPCChannel.FS_READ_FILE, publicKeyPath);
+            if (!keyPair.publicKey) {
+                if (toast) {
+                    toast.warning({ body: 'The public key could not be found or be read.' }, { pos: 'top-center' });
+                }
 
                 return;
-                // do nothing
             }
 
-            switch (this.variant) {
+            switch (props.variant) {
                 case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
-                    await this.$store.dispatch('secret/setHeKeyPair', keyPair);
+                    store.setHeKeyPair(keyPair);
                     break;
                 case KeyPairVariant.DEFAULT: {
-                    try {
-                        keyPair.privateKey = decryptRSAPrivateKey(keyPair.privateKey, this.form.passphrase);
-                    } catch (e) {
-                        this.$bvToast.toast('The encrypted private key could not be decrypted with the given passphrase.', {
-                            variant: 'warning',
-                            toaster: 'b-toaster-top-center',
-                        });
+                    keyPair.privateKey = await ipcRenderer.invoke(IPCChannel.CRYPTO_RSA_KEY_DECRYPT, keyPair.privateKey, form.passphrase);
+                    if (!keyPair.privateKey) {
+                        if (toast) {
+                            toast.warning({ body: 'The encrypted private key could not be decrypted with the given passphrase.' }, { pos: 'top-center' });
+                        }
 
                         return;
                     }
 
-                    this.$store.commit('secret/setDefaultPassphrase', this.form.passphrase);
+                    store.setDefaultPassphrase(form.passphrase);
 
                     keyPair.publicKey = isHex(keyPair.publicKey) ?
                         Buffer.from(keyPair.publicKey, 'hex').toString('utf-8') :
                         keyPair.publicKey;
 
-                    await this.$store.dispatch('secret/setDefaultKeyPair', keyPair);
+                    store.setDefaultKeyPair(keyPair);
                     break;
                 }
             }
 
-            this.$bvToast.toast('The key pair was successfully loaded.', {
-                variant: 'success',
-                toaster: 'b-toaster-top-center',
-            });
-        },
-        async generate() {
-            if (!this.isDirectoryPathDefined) return;
-
-            let keyPair = {
-                privateKey: '',
-                publicKey: '',
-            };
-
-            try {
-                switch (this.variant) {
-                    case KeyPairVariant.HOMOMORPHIC_ENCRYPTION: {
-                        const { publicKey, privateKey } = await paillierBigint.generateRandomKeys(128);
-
-                        keyPair.publicKey = JSON.stringify({
-                            n: publicKey.n.toString(),
-                            g: publicKey.g.toString(),
-                        });
-
-                        keyPair.privateKey = JSON.stringify({
-                            mu: privateKey.mu.toString(),
-                            lambda: privateKey.lambda.toString(),
-                        });
-                        break;
-                    }
-                    case KeyPairVariant.DEFAULT:
-                        keyPair = await generateRSAKeyPair(this.form.passphrase);
-                        break;
-                }
-            } catch (e) {
-                this.$bvToast.toast('The key pair could not be generated.', {
-                    variant: 'warning',
-                    toaster: 'b-toaster-top-center',
-                });
-
-                return;
+            if (toast) {
+                toast.success({ body: 'The key pair was successfully loaded.' }, { pos: 'top-center' });
             }
+        };
 
-            try {
-                fs.writeFileSync(path.join(this.directoryPath, this.privateKeyFileName), keyPair.privateKey, {
-                    encoding: 'utf-8',
-                });
-
-                fs.writeFileSync(path.join(this.directoryPath, this.publicKeyFileName), keyPair.publicKey, {
-                    encoding: 'utf-8',
-                });
-            } catch (e) {
-                this.$bvToast.toast('The key pair could not be written to the specified directory.', {
-                    variant: 'warning',
-                    toaster: 'b-toaster-top-center',
-                });
-
-                return;
-            }
-
-            switch (this.variant) {
-                case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
-                    await this.$store.dispatch('secret/setHeKeyPair', keyPair);
-                    break;
-                case KeyPairVariant.DEFAULT:
-                    this.$store.commit('secret/setDefaultPassphrase', this.form.passphrase);
-                    await this.$store.dispatch('secret/setDefaultKeyPair', keyPair);
-                    break;
-            }
-
-            this.$bvToast.toast('The key pair was successfully generated.', {
-                variant: 'success',
-                toaster: 'b-toaster-top-center',
-            });
-        },
+        return {
+            selectDir,
+            directoryPath,
+            isDirectoryPathDefined,
+            isPassphraseRequired,
+            isPassphraseDefined,
+            form,
+            privateKeyDefaultFileName,
+            publicKeyDefaultFileName,
+            load,
+            privateKey,
+            publicKey,
+            generate,
+        };
     },
 });
 </script>

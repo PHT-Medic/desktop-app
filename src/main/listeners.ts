@@ -12,11 +12,10 @@ import {
 import fs from 'node:fs';
 import path from 'node:path';
 import { resguard } from 'resguard';
+import { generateRandomKeys } from 'paillier-bigint';
 import { IPCChannel } from './constants';
 import { decryptRSAPrivateKey, generateRSAKeyPair, sign } from './core';
 import { readTrainResult } from './domains/train-result';
-
-const paillier = require('paillier-bigint/dist/index.node');
 
 export function registerListeners(mainWindow: BrowserWindow) {
     ipcMain.handle(
@@ -29,7 +28,7 @@ export function registerListeners(mainWindow: BrowserWindow) {
             const {
                 publicKey,
                 privateKey,
-            } = await paillier.generateRandomKeys(128);
+            } = await generateRandomKeys(128);
 
             return {
                 publicKey: JSON.stringify({

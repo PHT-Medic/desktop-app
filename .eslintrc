@@ -20,7 +20,8 @@
             "peerDependencies": false
         }],
 
-        "@typescript-eslint/no-var-requires": "off"
+        "@typescript-eslint/no-var-requires": "off",
+        "vue/no-v-for-template-key": "off"
     },
     "ignorePatterns": ["**/dist/*", "**/*.d.ts", "**/writable/**"],
     "globals": {

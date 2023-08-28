@@ -13,7 +13,7 @@ import type { PropType } from 'vue';
 import {
     computed, defineComponent, reactive,
 } from 'vue';
-import { KeyPairVariant } from '../../../main/core/crypto/type';
+import { KeyPairVariant } from '../../../main/core';
 import { IPCChannel, useIPCRenderer } from '../../core/electron';
 import { useSecretStore } from '../../store/secret';
 import KeyDisplay from './KeyDisplay.vue';
@@ -21,7 +21,7 @@ import KeyDisplay from './KeyDisplay.vue';
 export default defineComponent({
     components: { KeyDisplay },
     props: {
-        variant: String as PropType<KeyPairVariant>,
+        variant: String as PropType<`${KeyPairVariant}`>,
     },
     setup(props) {
         const toast = useToast();
@@ -105,7 +105,7 @@ export default defineComponent({
 
         form.privateKeyFileName = privateKeyFileName.value;
         form.publicKeyFileName = publicKeyFileName.value;
-        form.passphrase = storeRefs.defaultPassphrase.value;
+        form.passphrase = storeRefs.defaultPassphrase.value || '';
 
         const selectDir = async () => {
             const output = await useIPCRenderer().invoke(IPCChannel.DIR_SELECT);
@@ -123,7 +123,7 @@ export default defineComponent({
         };
 
         const generate = async () => {
-            if (!isDirectoryPathDefined.value) return;
+            if (!directoryPath.value) return;
 
             let keyPair = {};
 

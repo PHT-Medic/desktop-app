@@ -8,8 +8,8 @@
 <script lang="ts">
 import { useToast } from 'bootstrap-vue-next';
 import { defineComponent, reactive, ref } from 'vue';
+import AlertMessage from "../../components/alert/AlertMessage.vue";
 import { IPCChannel, useIPCRenderer } from '../../core/electron';
-import AlertMessage from '../../components/alert/AlertMessage';
 import { LayoutKey, LayoutNavigationID } from '../../config/layout';
 import { definePageMeta } from '#imports';
 import { useSecretStore } from '~/store/secret';

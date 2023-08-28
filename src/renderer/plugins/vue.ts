@@ -5,8 +5,9 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import type { Options, SocketManager } from '@personalhealthtrain/client-vue';
+import type { AuthupAPIClient, Options, SocketManager } from '@personalhealthtrain/client-vue';
 import { install } from '@personalhealthtrain/client-vue';
+import type { APIClient } from '@personalhealthtrain/core';
 import type { Pinia } from 'pinia';
 import { ref } from 'vue';
 import { defineNuxtPlugin } from '#app';
@@ -26,8 +27,8 @@ export default defineNuxtPlugin((ctx) => {
     });
 
     const options : Options = {
-        apiClient: ctx.$api,
-        authupApiClient: ctx.$authupAPI,
+        apiClient: ctx.$api as APIClient,
+        authupApiClient: ctx.$authupAPI as AuthupAPIClient,
         authupStore,
         socketManager,
     };

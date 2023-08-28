@@ -13,7 +13,7 @@ import type { PropType } from 'vue';
 import {
     computed, defineComponent, reactive,
 } from 'vue';
-import { KeyPairVariant } from '../../../main/core';
+import { KeyPairVariant } from './constants';
 import { IPCChannel, useIPCRenderer } from '../../core/electron';
 import { useSecretStore } from '../../store/secret';
 import KeyDisplay from './KeyDisplay.vue';

@@ -8,7 +8,7 @@
 <script lang="ts">
 import { useToast } from 'bootstrap-vue-next';
 import { defineComponent, reactive, ref } from 'vue';
-import AlertMessage from "../../components/alert/AlertMessage.vue";
+import AlertMessage from '../../components/alert/AlertMessage.vue';
 import { IPCChannel, useIPCRenderer } from '../../core/electron';
 import { LayoutKey, LayoutNavigationID } from '../../config/layout';
 import { definePageMeta } from '#imports';

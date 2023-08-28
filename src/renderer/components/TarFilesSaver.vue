@@ -149,7 +149,6 @@ export default defineComponent({
                 :key="key"
             >
                 <div
-
                     class="card card-file d-flex flex-row align-items-center"
                 >
                     <div class="card-heading">

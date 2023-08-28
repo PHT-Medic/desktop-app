@@ -7,11 +7,6 @@
 
 import type { PublicKey } from 'paillier-bigint';
 
-export enum KeyPairVariant {
-    DEFAULT = 'default',
-    HOMOMORPHIC_ENCRYPTION = 'homomorphic-encryption',
-}
-
 // ---------------------------------------------------
 
 export type PaillierPrivateKey = {

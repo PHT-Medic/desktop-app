@@ -7,6 +7,6 @@
 
 import { buildNavigation } from '@vue-layout/navigation';
 
-export default defineNuxtRouteMiddleware(async (to, from) => {
+export default defineNuxtRouteMiddleware(async (to) => {
     await buildNavigation({ url: to.fullPath });
 });

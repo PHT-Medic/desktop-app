@@ -25,7 +25,9 @@ export const useSecretStore = defineStore(
             defaultPath.value = path;
         };
 
-        const setDefaultPassphrase = (input: string) => defaultPassphrase.value = input;
+        const setDefaultPassphrase = (input: string) => {
+            defaultPassphrase.value = input;
+        };
 
         const setDefaultKeyPair = (keyPair: {
             privateKey: string,

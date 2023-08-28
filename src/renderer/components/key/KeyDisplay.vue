@@ -10,9 +10,9 @@ import { useToast } from 'bootstrap-vue-next';
 import type { PropType } from 'vue';
 import { computed, defineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
-import { KeyPairVariant } from '../../../main/core/crypto/type';
 import { IPCChannel, useIPCRenderer } from '../../core/electron';
 import { useSecretStore } from '~/store/secret';
+import { KeyPairVariant } from './constants';
 
 function toHex(str: string) {
     let result = '';
@@ -101,7 +101,7 @@ export default defineComponent({
 
             if (!text) {
                 if (toast) {
-                    toast.danger({ body: 'There does not exist a valid key to copy.' }, { pos: 'top-center#' });
+                    toast.danger({ body: 'There does not exist a valid key to copy.' }, { pos: 'top-center' });
                 }
 
                 return;

@@ -21,7 +21,7 @@ export function buildContextMenu() {
     const ctxMenu = Menu.buildFromTemplate([
         {
             label: 'Quit',
-            click(item) {
+            click() {
                 app.quit();
             },
         },

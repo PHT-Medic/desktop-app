@@ -25,7 +25,7 @@ export function registerListeners(mainWindow: BrowserWindow) {
     );
     ipcMain.handle(
         IPCChannel.CRYPTO_HE_GENERATE,
-        async (e) => {
+        async () => {
             const {
                 publicKey,
                 privateKey,

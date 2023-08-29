@@ -2,7 +2,7 @@
     "name": "desktop-app",
     "private": true,
     "main": ".vitron/main/index.js",
-    "version": "2.0.3",
+    "version": "2.1.0",
     "description": "This project contains the Desktop-App of the PHT.",
     "scripts": {
         "init": "vitron init",

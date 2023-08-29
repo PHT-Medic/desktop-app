@@ -8,12 +8,12 @@
 import {
     Menu, Tray, app, nativeImage,
 } from 'electron';
-import * as path from 'path';
+import path from 'node:path';
 
 let tray;
 
 export function buildContextMenu() {
-    const imagePath : string = path.join(__dirname, '..', 'assets', 'icons', '512x512.png');
+    const imagePath : string = path.join(__dirname, '..', '..', 'assets', 'icons', '512x512.png');
     const image = nativeImage.createFromPath(imagePath);
     tray = new Tray(image);
     tray.setTitle('PHT: Desktop-App');

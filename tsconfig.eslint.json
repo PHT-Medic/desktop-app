@@ -4,6 +4,6 @@
         "src/**/*.ts",
         "src/**/*.js",
         "src/**/*.vue",
-        "test/**/*.spec.ts"
+        "test/**/*.ts"
     ]
 }

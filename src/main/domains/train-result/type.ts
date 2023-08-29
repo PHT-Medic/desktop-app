@@ -25,11 +25,6 @@ export type TrainResultLoaderContext = {
     paillierPrivateKey?: PrivateKey
 };
 
-export type ReadTrainResultConfigContext = {
-    files: TarFile[],
-    privateKey: string
-};
-
 export type TrainResultOutput = {
     config: TrainConfig,
     files: TarFile[]

@@ -5,26 +5,21 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 import type { TrainConfig } from '@personalhealthtrain/core';
-import type { ReadTrainResultConfigContext } from '../train-result/type';
-import { TrainConfigPath } from './constants';
+import type { TrainConfigParseContext, TrainConfigParseOutput } from './type';
 
-export async function parseTrainConfig(context: ReadTrainResultConfigContext) : Promise<{
-    config: TrainConfig,
-    key: Buffer
-}> {
-    const configIndex = context.files.findIndex((file) => file.path === TrainConfigPath.RESULT_CONFIG_FILE_NAME);
-    if (configIndex === -1) {
-        throw new Error(`The ${TrainConfigPath.RESULT_CONFIG_FILE_NAME} does not exist in the compressed tar file.`);
-    }
-
+export async function parseTrainConfig(context: TrainConfigParseContext) : Promise<TrainConfigParseOutput> {
     let config : TrainConfig;
 
     try {
-        config = JSON.parse(context.files[configIndex].content.toString('utf-8'));
+        if (Buffer.isBuffer(context.content)) {
+            config = JSON.parse(context.content.toString('utf-8'));
+        } else {
+            config = JSON.parse(context.content);
+        }
     } catch (e) {
-        throw new Error(`The ${TrainConfigPath.RESULT_CONFIG_FILE_NAME} could not be parsed.`);
+        throw new Error('The train config could not be parsed.');
     }
 
     if (!config.creator.encrypted_key) {

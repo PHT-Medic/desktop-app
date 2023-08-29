@@ -1,31 +1,12 @@
-import {decompressTarFile, decryptRSAPrivateKey} from "../../src/main/core";
-import * as path from "path";
-import {parseTrainConfig} from "../../src/main/domains/train-config";
-import fs from "fs";
+import { decryptRSAPrivateKey} from "../../src/main/core";
+import path from "node:path";
+import fs from "node:fs";
 import {readTrainResult} from "../../src/main/domains/train-result";
 import {TrainResultSourceType} from "../../src/main/domains/train-result";
 
 describe('src/renderer/domains/train-config*.ts', () => {
     const resultFilePath = path.join(__dirname, '..', 'data', 'result.tar');
     const privateKeyFilePath = path.join(__dirname, '..', 'data', 'private.pem');
-
-    it('should read train-config of tar file', async () => {
-        const files = await decompressTarFile(resultFilePath);
-
-        expect(files).toBeDefined();
-        expect(files.length).toEqual(2);
-
-        let privateKey = await fs.promises.readFile(privateKeyFilePath, { encoding: 'utf-8' });
-        let privateKeyDecrypted = decryptRSAPrivateKey(privateKey, 'leuko');
-
-        const {config, key} = await parseTrainConfig({
-            files,
-            privateKey: privateKeyDecrypted
-        });
-
-        expect(config).toBeDefined();
-        expect(key).toBeDefined();
-    });
 
     it('should load train result', async () => {
         let privateKey = await fs.promises.readFile(privateKeyFilePath, { encoding: 'utf-8' });

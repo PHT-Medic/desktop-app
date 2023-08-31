@@ -6,6 +6,7 @@
  */
 
 import { Adapter } from 'browser-storage-adapter';
+import { storeToRefs } from 'pinia';
 import type { Pinia } from 'pinia';
 import { defineNuxtPlugin, useCookie } from '#app';
 import { AuthBrowserStorageKey } from '../config/auth';
@@ -26,6 +27,7 @@ declare module '@vue/runtime-core' {
 export default defineNuxtPlugin((ctx) => {
     const warehouse = new Adapter({
         driver: {
+            localStorage: true,
             cookie: {
                 path: '/',
             },
@@ -43,85 +45,96 @@ export default defineNuxtPlugin((ctx) => {
 
     ctx.provide('warehouse', warehouse);
 
-    const authStore = useAuthStore(ctx.$pinia as Pinia);
-    if (process.server) {
-        const keys: string[] = Object.values(AuthBrowserStorageKey);
-        for (let i = 0; i < keys.length; i++) {
-            const value = warehouse.get(keys[i]);
-            if (!value) {
-                continue;
-            }
+    const store = useAuthStore(ctx.$pinia as Pinia);
+    const keys: string[] = Object.values(AuthBrowserStorageKey);
+    for (let i = 0; i < keys.length; i++) {
+        const value = warehouse.get(keys[i]);
+        if (!value) {
+            continue;
+        }
 
-            switch (keys[i]) {
-                case AuthBrowserStorageKey.ACCESS_TOKEN:
-                    if (!authStore.accessToken) {
-                        authStore.setAccessToken(value);
-                    }
-                    break;
-                case AuthBrowserStorageKey.ACCESS_TOKEN_EXPIRE_DATE:
-                    if (!authStore.accessTokenExpireDate) {
-                        authStore.setAccessTokenExpireDate(value);
-                    }
-                    break;
-                case AuthBrowserStorageKey.REFRESH_TOKEN:
-                    if (!authStore.refreshToken) {
-                        authStore.setRefreshToken(value);
-                    }
-                    break;
-                case AuthBrowserStorageKey.USER:
-                    if (!authStore.user) {
-                        authStore.setUser(value);
-                    }
-                    break;
-                case AuthBrowserStorageKey.REALM:
-                    if (!authStore.realm) {
-                        authStore.setRealm(value);
-                    }
-                    break;
-                case AuthBrowserStorageKey.REALM_MANAGEMENT:
-                    if (!authStore.realmManagement) {
-                        authStore.setRealmManagement(value);
-                    }
-                    break;
-            }
+        switch (keys[i]) {
+            case AuthBrowserStorageKey.ACCESS_TOKEN:
+                if (!store.accessToken) {
+                    store.setAccessToken(value);
+                }
+                break;
+            case AuthBrowserStorageKey.ACCESS_TOKEN_EXPIRE_DATE:
+                if (!store.accessTokenExpireDate) {
+                    store.setAccessTokenExpireDate(value);
+                }
+                break;
+            case AuthBrowserStorageKey.REFRESH_TOKEN:
+                if (!store.refreshToken) {
+                    store.setRefreshToken(value);
+                }
+                break;
+            case AuthBrowserStorageKey.USER:
+                if (!store.user) {
+                    store.setUser(value);
+                }
+                break;
+            case AuthBrowserStorageKey.REALM:
+                if (!store.realm) {
+                    store.setRealm(value);
+                }
+                break;
+            case AuthBrowserStorageKey.REALM_MANAGEMENT:
+                if (!store.realmManagement) {
+                    store.setRealmManagement(value);
+                }
+                break;
         }
     }
 
-    authStore.$subscribe((mutation, state) => {
-        if (mutation.storeId !== 'auth') return;
+    const storeRefs = storeToRefs(store);
 
-        if (state.accessToken) {
-            warehouse.set(AuthBrowserStorageKey.ACCESS_TOKEN, state.accessToken);
+    watch(storeRefs.accessToken, (val) => {
+        if (val) {
+            warehouse.set(AuthBrowserStorageKey.ACCESS_TOKEN, val);
         } else {
             warehouse.remove(AuthBrowserStorageKey.ACCESS_TOKEN);
+            warehouse.remove(AuthBrowserStorageKey.REFRESH_TOKEN);
+            warehouse.remove(AuthBrowserStorageKey.ACCESS_TOKEN_EXPIRE_DATE);
         }
+    });
 
-        if (state.accessTokenExpireDate) {
-            warehouse.set(AuthBrowserStorageKey.ACCESS_TOKEN_EXPIRE_DATE, state.accessTokenExpireDate);
+    watch(storeRefs.accessTokenExpireDate, (val) => {
+        if (val) {
+            warehouse.set(AuthBrowserStorageKey.ACCESS_TOKEN_EXPIRE_DATE, val);
         } else {
             warehouse.remove(AuthBrowserStorageKey.ACCESS_TOKEN_EXPIRE_DATE);
         }
+    });
 
-        if (state.refreshToken) {
-            warehouse.set(AuthBrowserStorageKey.REFRESH_TOKEN, state.refreshToken);
+    watch(storeRefs.refreshToken, (val) => {
+        if (val) {
+            warehouse.set(AuthBrowserStorageKey.REFRESH_TOKEN, val);
         } else {
-            warehouse.remove(AuthBrowserStorageKey.REFRESH_TOKEN);
+            // warehouse.remove(AuthBrowserStorageKey.REFRESH_TOKEN);
+            // warehouse.remove(AuthBrowserStorageKey.ACCESS_TOKEN_EXPIRE_DATE);
         }
+    });
 
-        if (state.user) {
-            warehouse.set(AuthBrowserStorageKey.USER, state.user);
+    watch(storeRefs.user, (val) => {
+        if (val) {
+            warehouse.set(AuthBrowserStorageKey.USER, val);
         } else {
             warehouse.remove(AuthBrowserStorageKey.USER);
         }
+    });
 
-        if (state.realm) {
-            warehouse.set(AuthBrowserStorageKey.REALM, state.realm);
+    watch(storeRefs.realm, (val) => {
+        if (val) {
+            warehouse.set(AuthBrowserStorageKey.REALM, val);
         } else {
             warehouse.remove(AuthBrowserStorageKey.REALM);
         }
+    });
 
-        if (state.realmManagement) {
-            warehouse.set(AuthBrowserStorageKey.REALM_MANAGEMENT, state.realmManagement);
+    watch(storeRefs.realmManagement, (val) => {
+        if (val) {
+            warehouse.set(AuthBrowserStorageKey.REALM_MANAGEMENT, val);
         } else {
             warehouse.remove(AuthBrowserStorageKey.REALM_MANAGEMENT);
         }

@@ -6,7 +6,8 @@
   -->
 
 <script lang="ts">
-import { BModal } from 'bootstrap-vue-next';
+import { LoginForm } from '@personalhealthtrain/client-vue';
+import { BModal, useToast } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, ref } from 'vue';
 import { navigateTo } from '#imports';
@@ -14,10 +15,12 @@ import { useAuthStore } from '../store/auth';
 
 export default defineComponent({
     components: {
+        LoginForm,
         BModal,
     },
     setup() {
         const modalNode = ref<boolean>(false);
+        const toast = useToast();
 
         const store = useAuthStore();
         const storeRefs = storeToRefs(store);
@@ -36,7 +39,19 @@ export default defineComponent({
             modalNode.value = false;
         };
 
+        const handleDone = () => {
+            modalNode.value = false;
+        };
+
+        const handleFailed = (e: Error) => {
+            if (toast) {
+                toast.warning({ body: e.message }, { pos: 'top-center' });
+            }
+        };
+
         return {
+            handleDone,
+            handleFailed,
             loggedIn: storeRefs.loggedIn,
             show,
             hide,
@@ -67,6 +82,11 @@ export default defineComponent({
             <template #title>
                 <i class="fas fa-sign-in-alt" /> Login
             </template>
+
+            <LoginForm
+                @done="handleDone"
+                @failed="handleFailed"
+            />
             <!-- todo login form -->
         </BModal>
     </div>

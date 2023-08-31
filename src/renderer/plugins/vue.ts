@@ -8,8 +8,8 @@
 import type { AuthupAPIClient, Options, SocketManager } from '@personalhealthtrain/client-vue';
 import { install } from '@personalhealthtrain/client-vue';
 import type { APIClient } from '@personalhealthtrain/core';
+import { storeToRefs } from 'pinia';
 import type { Pinia } from 'pinia';
-import { ref } from 'vue';
 import { defineNuxtPlugin } from '#app';
 import { useAuthStore } from '../store/auth';
 
@@ -17,11 +17,9 @@ export default defineNuxtPlugin((ctx) => {
     const authupStore = useAuthStore(ctx.$pinia as Pinia);
     const socketManager = (ctx.$socket as SocketManager);
 
-    const accessToken = ref<string | undefined>();
-
-    authupStore.$subscribe((mutation, state) => {
-        if (state.accessToken !== accessToken.value) {
-            accessToken.value = state.accessToken;
+    const storeRefs = storeToRefs(authupStore);
+    watch(storeRefs.accessToken, (val, oldValue) => {
+        if (val !== oldValue) {
             socketManager.reconnect();
         }
     });

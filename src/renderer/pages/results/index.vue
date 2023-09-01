@@ -5,56 +5,45 @@
   - view the LICENSE file that was distributed with this source code.
   -->
 
-<script>
-import { storeToRefs } from 'pinia';
+<script lang="ts">
+import { useToast } from 'bootstrap-vue-next';
+import TrainResultWizard from '../../components/domains/TrainResultWizard.vue';
 import { LayoutKey, LayoutNavigationID } from '~/config/layout';
 import { defineNuxtComponent, definePageMeta } from '#imports';
-import { useSecretStore } from '~/store/secret';
-import { useAuthStore } from '~/store/auth';
-import TrainResultSelector from '~/components/domains/train-result/TrainResultSelector.vue';
 
 export default defineNuxtComponent({
-    components: { TrainResultSelector },
+    components: { TrainResultWizard },
     async setup() {
         definePageMeta({
             [LayoutKey.NAVIGATION_ID]: LayoutNavigationID.DEFAULT,
         });
 
-        const secretStore = useSecretStore();
-        const secretRefs = storeToRefs(secretStore);
+        const toast = useToast();
 
-        const authStore = useAuthStore();
-        const authRefs = storeToRefs(authStore);
+        const handleFailed = (e: Error) => {
+            if (toast) {
+                toast.warning({ body: e.message }, { pos: 'top-center' });
+            }
+        };
+
+        const handleFinished = () => {
+            if (toast) {
+                toast.success({ body: 'Finished wizard!' }, { pos: 'top-center' });
+            }
+        };
 
         return {
-            loggedIn: authRefs.loggedIn,
-            privateKey: secretRefs.defaultPrivateKey,
+            handleFailed,
+            handleFinished,
         };
     },
 });
 </script>
 <template>
     <div class="container">
-        <h1 class="title no-border mb-2">
-            <i class="fas fa-file-download" /> Result(s)
-        </h1>
-
-        <hr>
-
-        <div
-            v-if="!privateKey"
-            class="alert alert-danger alert-sm"
-        >
-            You first have to load your private and public key or generate them...<br>
-            <nuxt-link
-                type="button"
-                class="btn btn-dark btn-xs"
-                :to="'/settings/encryption'"
-            >
-                <i class="fa fa-cog" /> Settings
-            </nuxt-link>
-        </div>
-
-        <TrainResultSelector />
+        <TrainResultWizard
+            @failed="handleFailed"
+            @finished="handleFinished"
+        />
     </div>
 </template>

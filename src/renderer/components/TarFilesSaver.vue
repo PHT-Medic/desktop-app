@@ -7,68 +7,73 @@
 <script lang="ts">
 import { useToast } from 'bootstrap-vue-next';
 import { join } from 'pathe';
+import type { PropType } from 'vue';
 import {
-    computed, defineComponent, ref, toRef,
+    defineComponent, ref, toRef,
 } from 'vue';
+import type { TarFile } from '../../core';
 import { IPCChannel, useIPCRenderer } from '../core/electron';
 
 export default defineComponent({
     props: {
         items: {
-            type: Array,
+            type: Array as PropType<TarFile[]>,
             default: () => [],
         },
-        destinationPath: {
+        id: {
             type: String,
-            default: '',
+        },
+        displayButton: {
+            type: Boolean,
+            default: true,
         },
     },
-    emits: ['deleted', 'saved'],
-    setup(props, { emit }) {
-        const itemsRef = toRef(props, 'items');
-        const destinationPathRef = toRef(props, 'destinationPath');
-        const busy = ref(false);
-
+    emits: ['saved', 'failed'],
+    setup(props, { emit, expose }) {
+        const ipcRenderer = useIPCRenderer();
         const toast = useToast();
 
-        const isDestinationPathDefined = computed(() => typeof destinationPathRef.value !== 'undefined' &&
-              destinationPathRef.value.length !== 0);
+        const itemsRef = toRef(props, 'items');
 
-        const ipcRenderer = useIPCRenderer();
-        const selectDir = async () => {
-            const output = await ipcRenderer.invoke(IPCChannel.DIR_SELECT);
+        const destinationPath = ref<string | null>(null);
+        const busy = ref(false);
 
-            if (output.canceled || output.filePaths.length === 0) return;
-
-            [destinationPathRef.value] = output.filePaths;
+        const selected = (input: string) => {
+            destinationPath.value = input;
         };
 
-        const drop = (item) => {
+        const drop = (item: TarFile) => {
             const index = itemsRef.value.findIndex((el) => el.path === item.path);
             if (index !== -1) {
                 itemsRef.value.splice(index, 1);
-                emit('deleted', item);
             }
         };
         const save = async () => {
-            if (busy.value) return;
+            if (busy.value || !destinationPath.value || itemsRef.value.length === 0) return;
 
             busy.value = true;
+
+            let directoryPath : string;
+            if (props.id) {
+                directoryPath = join(destinationPath.value, props.id);
+            } else {
+                directoryPath = destinationPath.value;
+            }
 
             try {
                 const savePromises = [];
 
-                await ipcRenderer.invoke(IPCChannel.FS_MKDIR, destinationPathRef.value);
+                await ipcRenderer.invoke(IPCChannel.FS_MKDIR, directoryPath);
 
                 for (let i = 0; i < itemsRef.value.length; i++) {
                     const filePath = join(
-                        destinationPathRef.value,
+                        directoryPath,
                         itemsRef.value[i].path,
                     );
 
-                    const directoryPath = join(filePath, '..');
+                    const fileDirectoryPath = join(filePath, '..');
 
-                    savePromises.push(ipcRenderer.invoke(IPCChannel.FS_MKDIR, directoryPath));
+                    savePromises.push(ipcRenderer.invoke(IPCChannel.FS_MKDIR, fileDirectoryPath));
                     savePromises.push(ipcRenderer.invoke(
                         IPCChannel.FS_WRITE_FILE,
                         filePath,
@@ -84,7 +89,7 @@ export default defineComponent({
                     toast.success({ body: 'The files were successfully saved.' }, { pos: 'top-center' });
                 }
 
-                ipcRenderer.send(IPCChannel.DIR_OPEN, destinationPathRef.value);
+                ipcRenderer.send(IPCChannel.DIR_OPEN, destinationPath.value);
             } catch (e) {
                 emit('failed');
 
@@ -96,10 +101,13 @@ export default defineComponent({
             busy.value = false;
         };
 
+        expose({
+            save,
+        });
+
         return {
-            isDestinationPathDefined,
-            selectDir,
-            destinationPathRef,
+            selected,
+            destinationPath,
             itemsRef,
             save,
             drop,
@@ -111,32 +119,13 @@ export default defineComponent({
     <div>
         <div
             class="form-group"
-            :class="{ 'form-group-error': !isDestinationPathDefined }"
+            :class="{ 'form-group-error': !destinationPath }"
         >
             <label>Directory Path</label>
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <button
-                        type="submit"
-                        class="btn btn-dark btn-sm"
-                        @click.prevent="selectDir"
-                    >
-                        <i class="fa fa-file" />
-                    </button>
-                </div>
-
-                <input
-                    v-model="destinationPathRef"
-                    type="text"
-                    name="name"
-                    class="form-control"
-                    :disabled="true"
-                    placeholder="..."
-                >
-            </div>
+            <DirectoryPicker @selected="selected" />
 
             <div
-                v-if="!isDestinationPathDefined"
+                v-if="!destinationPath"
                 class="form-group-hint group-required"
             >
                 Select a directory path.
@@ -185,9 +174,10 @@ export default defineComponent({
         </div>
 
         <button
-            :disabled="items.length === 0 || !isDestinationPathDefined"
+            v-if="displayButton"
+            :disabled="items.length === 0 || !destinationPath"
             type="button"
-            class="btn btn-xs btn-dark"
+            class="btn btn-sm btn-block btn-primary"
             @click.prevent="save"
         >
             <i class="fas fa-download" /> Save

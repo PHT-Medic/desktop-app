@@ -7,7 +7,6 @@
 
 import type { TrainConfig } from '@personalhealthtrain/core';
 import type { PrivateKey } from 'paillier-bigint';
-import type { TrainResultSourceType } from './constants';
 
 export type TarFile = {
     path: string,
@@ -18,8 +17,11 @@ export type TarFile = {
 // -------------------------------------
 
 export type TrainResultLoaderContext = {
+    token: string,
+    /**
+     * web or file url.
+     */
     source: string,
-    sourceType: `${TrainResultSourceType}`,
 
     rsaPrivateKey: string,
     paillierPrivateKey?: PrivateKey

@@ -5,25 +5,59 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { TrainContainerPath } from '@personalhealthtrain/core';
+import { APIClient, TrainContainerPath } from '@personalhealthtrain/core';
+import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
+import { Readable } from 'node:stream';
+import { isWebURL } from '../../../core';
 import { decompressTarFile, decryptPaillierNumberInTarFiles, decryptSymmetric } from '../../core';
 import { parseTrainConfig } from '../train-config';
-import type { TarFile, TrainResultLoaderContext, TrainResultOutput } from './type';
-import { TrainResultSourceType } from './constants';
+import type { TarFile, TrainResultLoaderContext, TrainResultOutput } from '../../../core';
 
 const CONFIG_FILE = path.basename(TrainContainerPath.CONFIG);
 const RESULT_DIRECTORY = path.basename(TrainContainerPath.RESULTS);
 
 export async function readTrainResult(context: TrainResultLoaderContext) : Promise<TrainResultOutput> {
-    let files : TarFile[] = [];
+    let files : TarFile[];
 
-    switch (context.sourceType) {
-        case TrainResultSourceType.FILE:
-            files = await decompressTarFile(context.source);
-            break;
-        case TrainResultSourceType.URL:
-            break;
+    if (isWebURL(context.source)) {
+        const tmpDir = os.tmpdir();
+        const filePath = path.join(tmpDir, 'pht.tar');
+
+        const apiClient = new APIClient({
+            transform: [],
+        });
+
+        const response = await apiClient.get(context.source, {
+            responseType: 'stream',
+            headers: {
+                AUTHORIZATION: `Bearer ${context.token}`,
+            },
+        });
+
+        if (!response.body) {
+            throw new Error('The response body is empty.');
+        }
+
+        await new Promise<void>((resolve, reject) => {
+            const str = Readable.fromWeb(response.body as any);
+
+            const ws = fs.createWriteStream(filePath);
+            str.pipe(ws);
+            str.on('error', () => {
+                reject();
+            });
+            str.on('end', () => {
+                resolve();
+            });
+        });
+
+        files = await decompressTarFile(context.source);
+
+        await fs.promises.unlink(filePath);
+    } else {
+        files = await decompressTarFile(context.source);
     }
 
     if (files.length === 0) {

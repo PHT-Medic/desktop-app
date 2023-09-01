@@ -50,12 +50,6 @@ export const LayoutSideDefaultNavigation : NavigationElement[] = [
         icon: 'fas fa-file-download',
     },
     {
-        name: 'Trains',
-        type: 'link',
-        url: '/trains',
-        icon: 'fas fa-file-download',
-    },
-    {
         name: 'Settings',
         type: 'link',
         url: '/settings',

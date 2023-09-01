@@ -90,6 +90,7 @@ export default defineNuxtPlugin((ctx) => {
     const storeRefs = storeToRefs(store);
 
     watch(storeRefs.accessToken, (val) => {
+        console.log(val);
         if (val) {
             warehouse.set(AuthBrowserStorageKey.ACCESS_TOKEN, val);
         } else {
@@ -111,8 +112,8 @@ export default defineNuxtPlugin((ctx) => {
         if (val) {
             warehouse.set(AuthBrowserStorageKey.REFRESH_TOKEN, val);
         } else {
-            // warehouse.remove(AuthBrowserStorageKey.REFRESH_TOKEN);
-            // warehouse.remove(AuthBrowserStorageKey.ACCESS_TOKEN_EXPIRE_DATE);
+            warehouse.remove(AuthBrowserStorageKey.REFRESH_TOKEN);
+            warehouse.remove(AuthBrowserStorageKey.ACCESS_TOKEN_EXPIRE_DATE);
         }
     });
 

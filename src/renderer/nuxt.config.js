@@ -19,6 +19,7 @@ export default defineNuxtConfig({
     target: 'static',
     loading: false,
     css: [
+        '@personalhealthtrain/client-vue/dist/index.css',
         '@fortawesome/fontawesome-free/css/all.css',
         'bootstrap-vue-next/dist/bootstrap-vue-next.css',
         'bootstrap/dist/css/bootstrap.min.css',

@@ -61,11 +61,11 @@ export default defineComponent({
         };
 
         const sign = async () => {
-            if (!form.hash || !store.defaultPrivateKey) return;
+            if (!form.hash || !store.rsaPrivateKey) return;
 
             try {
                 form.signature = await useIPCRenderer()
-                    .invoke(IPCChannel.CRYPTO_SIGN, form.hash, store.defaultPrivateKey);
+                    .invoke(IPCChannel.CRYPTO_SIGN, form.hash, store.rsaPrivateKey);
                 if (toast) {
                     toast.success({ body: 'The signature was successfully generated.' }, { pos: 'top-center' });
                 }
@@ -79,7 +79,7 @@ export default defineComponent({
         };
 
         return {
-            privateKey: store.defaultPrivateKey,
+            privateKey: store.rsaPrivateKey,
             message,
             form,
             sign,

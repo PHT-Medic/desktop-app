@@ -18,10 +18,10 @@ export default {
         });
 
         const store = useSecretStore();
-        const { defaultPrivateKey, hePrivateKey } = storeToRefs(store);
+        const { rsaPrivateKey, hePrivateKey } = storeToRefs(store);
 
         return {
-            defaultPrivateKey,
+            defaultPrivateKey: rsaPrivateKey,
             hePrivateKey,
         };
     },

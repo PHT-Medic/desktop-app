@@ -12,18 +12,6 @@ import { defineNuxtPlugin, useCookie } from '#app';
 import { AuthBrowserStorageKey } from '../config/auth';
 import { useAuthStore } from '../store/auth';
 
-declare module '#app' {
-    interface NuxtApp {
-        $warehouse: Adapter;
-    }
-}
-
-declare module '@vue/runtime-core' {
-    interface ComponentCustomProperties {
-        $warehouse: Adapter;
-    }
-}
-
 export default defineNuxtPlugin((ctx) => {
     const warehouse = new Adapter({
         driver: {
@@ -42,8 +30,6 @@ export default defineNuxtPlugin((ctx) => {
             return cookie.value;
         },
     });
-
-    ctx.provide('warehouse', warehouse);
 
     const store = useAuthStore(ctx.$pinia as Pinia);
     const keys: string[] = Object.values(AuthBrowserStorageKey);
@@ -90,7 +76,6 @@ export default defineNuxtPlugin((ctx) => {
     const storeRefs = storeToRefs(store);
 
     watch(storeRefs.accessToken, (val) => {
-        console.log(val);
         if (val) {
             warehouse.set(AuthBrowserStorageKey.ACCESS_TOKEN, val);
         } else {

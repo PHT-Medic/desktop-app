@@ -5,7 +5,7 @@
  * view the LICENSE file that was distributed with this source code.
  */
 
-import { hasOwnProperty } from '@personalhealthtrain/core';
+import { isObject } from '@personalhealthtrain/core';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import type { PaillierPrivateKey, PaillierPublicKey } from '../../main/core/crypto/type';
@@ -13,78 +13,99 @@ import type { PaillierPrivateKey, PaillierPublicKey } from '../../main/core/cryp
 export const useSecretStore = defineStore(
     'secret',
     () => {
-        const defaultPath = ref<string | undefined>(undefined);
-        const defaultPassphrase = ref<string | undefined>(undefined);
-        const defaultPublicKey = ref<string | undefined>(undefined);
-        const defaultPrivateKey = ref<string | undefined>(undefined);
+        const rsaPath = ref<string | undefined>(undefined);
+        const rsaPassphrase = ref<string | undefined>(undefined);
+        const rsaPublicKey = ref<string | undefined>(undefined);
+        const rsaPrivateKey = ref<string | undefined>(undefined);
+
         const hePath = ref<string | undefined>(undefined);
         const hePrivateKey = ref<PaillierPrivateKey | undefined>(undefined);
         const hePublicKey = ref<PaillierPublicKey | undefined>(undefined);
 
-        const setDefaultPath = (path: string) => {
-            defaultPath.value = path;
+        const setRsaPath = (path: string) => {
+            rsaPath.value = path;
         };
 
-        const setDefaultPassphrase = (input: string) => {
-            defaultPassphrase.value = input;
+        const setRsaPassphrase = (input: string) => {
+            rsaPassphrase.value = input;
         };
 
-        const setDefaultKeyPair = (keyPair: {
+        const setRsaKeyPair = (keyPair: {
             privateKey: string,
             publicKey: string
         }) => {
-            defaultPrivateKey.value = keyPair.privateKey;
-            defaultPublicKey.value = keyPair.publicKey;
+            rsaPrivateKey.value = keyPair.privateKey;
+            rsaPublicKey.value = keyPair.publicKey;
         };
 
         const setHePath = (path: string) => {
             hePath.value = path;
         };
 
-        const setHeKeyPair = (keyPair: { privateKey: string, publicKey: string }) => {
-            const publicKeyData = JSON.parse(keyPair.publicKey);
-            if (
-                !hasOwnProperty(publicKeyData, 'n') ||
-                !hasOwnProperty(publicKeyData, 'g')
-            ) {
-                throw new Error('Public key invalid.');
+        const setHePublicKey = (value: string | PaillierPublicKey) => {
+            if (typeof value === 'string') {
+                const data = JSON.parse(value);
+                if (
+                    !isObject(data) ||
+                    typeof data.n !== 'string' ||
+                    typeof data.g !== 'string'
+                ) {
+                    throw new Error('He public key is malformed');
+                }
+
+                hePublicKey.value = {
+                    n: data.n,
+                    g: data.g,
+                };
+
+                return;
             }
 
-            const publicKey : PaillierPublicKey = {
-                n: publicKeyData.n,
-                g: publicKeyData.g,
-            };
+            hePublicKey.value = value;
+        };
 
-            const privateKeyData = JSON.parse(keyPair.privateKey);
+        const setHePrivateKey = (value: string | PaillierPrivateKey) => {
+            if (typeof value === 'string') {
+                const data = JSON.parse(value);
 
-            if (
-                !hasOwnProperty(privateKeyData, 'lambda') ||
-                !hasOwnProperty(privateKeyData, 'mu')
-            ) {
-                throw new Error('Public key invalid.');
+                if (
+                    !isObject(data) ||
+                    typeof data.lambda !== 'string' ||
+                    typeof data.mu !== 'string'
+                ) {
+                    throw new Error('He private key is malformed...');
+                }
+
+                hePrivateKey.value = data as PaillierPrivateKey;
+                return;
             }
 
-            hePrivateKey.value = {
-                lambda: privateKeyData.lambda,
-                mu: privateKeyData.mu,
-            };
-            hePublicKey.value = publicKey;
+            hePrivateKey.value = value;
+        };
+
+        const setHeKeyPair = (keyPair: {
+            privateKey: string | PaillierPrivateKey,
+            publicKey: string | PaillierPublicKey
+        }) => {
+            setHePrivateKey(keyPair.privateKey);
+            setHePublicKey(keyPair.publicKey);
         };
 
         return {
-            defaultPath,
-            defaultPassphrase,
-            defaultPublicKey,
-            defaultPrivateKey,
+            rsaPath,
+            rsaPassphrase,
+            rsaPublicKey,
+            rsaPrivateKey,
+
             hePath,
             hePrivateKey,
             hePublicKey,
 
             setHeKeyPair,
             setHePath,
-            setDefaultKeyPair,
-            setDefaultPath,
-            setDefaultPassphrase,
+            setRsaKeyPair,
+            setRsaPath,
+            setRsaPassphrase,
         };
     },
 );

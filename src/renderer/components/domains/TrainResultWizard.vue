@@ -67,7 +67,7 @@ export default defineComponent({
         });
 
         const read = async () => {
-            if (!secretRefs.defaultPrivateKey.value || !source.value) return;
+            if (!secretRefs.rsaPrivateKey.value || !source.value) return;
 
             let paillierKey;
 
@@ -90,7 +90,7 @@ export default defineComponent({
                 .invoke(IPCChannel.RESULT_READ, {
                     token: authRefs.accessToken.value,
                     source: source.value,
-                    rsaPrivateKey: secretRefs.defaultPrivateKey.value,
+                    rsaPrivateKey: secretRefs.rsaPrivateKey.value,
                     paillierPrivateKey: paillierKey,
                 }) as ResguardResult<TrainResultOutput, Error>;
 
@@ -115,7 +115,7 @@ export default defineComponent({
                 throw new Error('A file or remote source must be defined.');
             }
 
-            if (!secretRefs.defaultPrivateKey.value) {
+            if (!secretRefs.rsaPrivateKey.value) {
                 throw new Error('A private key must be selected.');
             }
 

@@ -17,7 +17,7 @@ export type TarFile = {
 // -------------------------------------
 
 export type TrainResultLoaderContext = {
-    token: string,
+    token?: string,
     /**
      * web or file url.
      */

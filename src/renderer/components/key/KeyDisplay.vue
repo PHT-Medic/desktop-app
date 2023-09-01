@@ -44,7 +44,7 @@ export default defineComponent({
                             return undefined;
                         }
                         case KeyPairVariant.DEFAULT: {
-                            return storeRefs.defaultPrivateKey.value;
+                            return storeRefs.rsaPrivateKey.value;
                         }
                     }
                     break;
@@ -58,7 +58,7 @@ export default defineComponent({
                             return undefined;
                         }
                         case KeyPairVariant.DEFAULT: {
-                            return storeRefs.defaultPublicKey.value;
+                            return storeRefs.rsaPublicKey.value;
                         }
                     }
                     break;

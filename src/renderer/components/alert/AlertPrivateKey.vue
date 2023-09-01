@@ -16,7 +16,7 @@ export default defineComponent({
         const storeRefs = storeToRefs(store);
 
         return {
-            privateKey: storeRefs.defaultPrivateKey,
+            privateKey: storeRefs.rsaPrivateKey,
         };
     },
 });

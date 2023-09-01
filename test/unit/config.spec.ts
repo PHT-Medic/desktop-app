@@ -2,7 +2,6 @@ import { decryptRSAPrivateKey} from "../../src/main/core";
 import path from "node:path";
 import fs from "node:fs";
 import {readTrainResult} from "../../src/main/domains/train-result";
-import {TrainResultSourceType} from "../../src/main/domains/train-result";
 
 describe('src/renderer/domains/train-config*.ts', () => {
     const resultFilePath = path.join(__dirname, '..', 'data', 'result.tar');
@@ -14,7 +13,6 @@ describe('src/renderer/domains/train-config*.ts', () => {
 
         const {files, config} = await readTrainResult({
             source: resultFilePath,
-            sourceType: TrainResultSourceType.FILE,
             rsaPrivateKey: privateKeyDecrypted
         });
 

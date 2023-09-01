@@ -29,11 +29,12 @@ export async function readTrainResult(context: TrainResultLoaderContext) : Promi
             transform: [],
         });
 
+        if (context.token) {
+            apiClient.setAuthorizationHeader({ type: 'Bearer', token: context.token });
+        }
+
         const response = await apiClient.get(context.source, {
             responseType: 'stream',
-            headers: {
-                AUTHORIZATION: `Bearer ${context.token}`,
-            },
         });
 
         if (!response.body) {

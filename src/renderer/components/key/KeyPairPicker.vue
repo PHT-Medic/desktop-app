@@ -43,7 +43,7 @@ export default defineComponent({
                 case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
                     return storeRefs.hePath.value;
                 case KeyPairVariant.DEFAULT:
-                    return storeRefs.defaultPath.value;
+                    return storeRefs.rsaPath.value;
             }
 
             return '';
@@ -56,7 +56,7 @@ export default defineComponent({
                 case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
                     return storeRefs.hePublicKey.value;
                 default:
-                    return storeRefs.defaultPublicKey.value;
+                    return storeRefs.rsaPublicKey.value;
             }
         });
 
@@ -82,7 +82,7 @@ export default defineComponent({
                 case KeyPairVariant.HOMOMORPHIC_ENCRYPTION:
                     return storeRefs.hePrivateKey.value;
                 default:
-                    return storeRefs.defaultPrivateKey.value;
+                    return storeRefs.rsaPrivateKey.value;
             }
         });
 
@@ -105,7 +105,7 @@ export default defineComponent({
 
         form.privateKeyFileName = privateKeyFileName.value;
         form.publicKeyFileName = publicKeyFileName.value;
-        form.passphrase = storeRefs.defaultPassphrase.value || '';
+        form.passphrase = storeRefs.rsaPassphrase.value || '';
 
         const selectDir = async () => {
             const output = await useIPCRenderer().invoke(IPCChannel.DIR_SELECT);
@@ -117,7 +117,7 @@ export default defineComponent({
                     store.setHePath(output.filePaths[0]);
                     break;
                 default:
-                    store.setDefaultPath(output.filePaths[0]);
+                    store.setRsaPath(output.filePaths[0]);
                     break;
             }
         };
@@ -163,8 +163,8 @@ export default defineComponent({
                     store.setHeKeyPair(keyPair);
                     break;
                 case KeyPairVariant.DEFAULT:
-                    store.setDefaultPassphrase(form.passphrase);
-                    store.setDefaultKeyPair(keyPair);
+                    store.setRsaPassphrase(form.passphrase);
+                    store.setRsaKeyPair(keyPair);
                     break;
             }
 
@@ -174,7 +174,7 @@ export default defineComponent({
         };
 
         const load = async () => {
-            if (!isDirectoryPathDefined.value) return;
+            if (!directoryPath.value) return;
 
             const privateKeyPath = join(directoryPath.value, privateKeyFileName.value);
             const publicKeyPath = join(directoryPath.value, publicKeyFileName.value);
@@ -217,13 +217,13 @@ export default defineComponent({
                         return;
                     }
 
-                    store.setDefaultPassphrase(form.passphrase);
+                    store.setRsaPassphrase(form.passphrase);
 
                     keyPair.publicKey = isHex(keyPair.publicKey) ?
                         Buffer.from(keyPair.publicKey, 'hex').toString('utf-8') :
                         keyPair.publicKey;
 
-                    store.setDefaultKeyPair(keyPair);
+                    store.setRsaKeyPair(keyPair);
                     break;
                 }
             }

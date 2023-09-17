@@ -1,4 +1,4 @@
-import { serve } from '@vitron/main';
+import { serve } from 'vitron/main';
 import {
     BrowserWindow, app,
 } from 'electron';
@@ -31,7 +31,6 @@ let mainWindow : BrowserWindow;
 
     await serve(mainWindow, {
         directory: path.join(`${__dirname}/../renderer/`),
-        env: process.env.NODE_ENV || 'production',
         port: process.env.PORT,
     });
 

@@ -6,6 +6,6 @@
  */
 
 import { ipcRenderer } from 'electron';
-import { provide } from 'vitron/provide';
+import { provide } from 'vitron/preload';
 
 provide('ipcRenderer', ipcRenderer);

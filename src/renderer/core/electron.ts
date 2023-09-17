@@ -6,7 +6,7 @@
  */
 
 import type { IpcRenderer } from 'electron';
-import { inject } from 'vitron/inject';
+import { inject } from 'vitron/renderer';
 
 export function useIPCRenderer() : IpcRenderer {
     return inject<IpcRenderer>('ipcRenderer');

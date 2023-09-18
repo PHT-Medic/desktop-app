@@ -64,7 +64,7 @@
         "electron": "^26.1.0",
         "electron-builder": "^24.6.4",
         "electron-builder-notarize": "^1.5.1",
-        "eslint": "^8.48.0",
+        "eslint": "^8.49.0",
         "hapic": "^2.3.0",
         "husky": "^8.0.3",
         "ilingo": "^3.0.0",

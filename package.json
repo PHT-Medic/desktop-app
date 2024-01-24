@@ -61,7 +61,7 @@
         "browser-storage-adapter": "^1.1.2",
         "cookie": "^0.5.0",
         "cross-env": "7.0.3",
-        "electron": "^26.1.0",
+        "electron": "^28.2.0",
         "electron-builder": "^24.6.4",
         "electron-builder-notarize": "^1.5.1",
         "eslint": "^8.53.0",
